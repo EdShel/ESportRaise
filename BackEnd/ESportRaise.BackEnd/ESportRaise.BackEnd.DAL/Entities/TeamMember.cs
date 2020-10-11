@@ -8,6 +8,5 @@
 
         public int TeamId { set; get; }
 
-        public Team Team { set; get; }
     }
 }

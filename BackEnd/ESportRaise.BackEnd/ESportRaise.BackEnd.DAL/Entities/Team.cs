@@ -10,8 +10,5 @@ namespace ESportRaise.BackEnd.DAL.Entities
 
         public int CoachId { set; get; }
 
-        public Coach Coach { set; get; }
-
-        public IList<TeamMember> Members { set; get; }
     }
 }

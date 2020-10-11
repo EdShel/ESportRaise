@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.DAL.Interfaces
 {
-    public interface IRepository<T> where T : class
+    public interface IAsyncRepository<T> where T : class
     {
-        IEnumerable<T> GetAll();
+        Task<IEnumerable<T>> GetAllAsync();
 
-        T Get(int id);
+        Task CreateAsync(T item);
 
-        IEnumerable<T> Find(Predicate<T> predicate);
+        Task UpdateAsync(T item);
 
-        void Create(T item);
-
-        void Update(T item);
-
-        void Delete(int id);
+        Task DeleteAsync(T item);
     }
 }

@@ -10,7 +10,5 @@ namespace ESportRaise.BackEnd.DAL.Entities
 
         public string Name { set; get; }
 
-        public IList<Team> Teams { set; get; }
-
     }
 }

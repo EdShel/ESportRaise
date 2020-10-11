@@ -6,6 +6,5 @@ namespace ESportRaise.BackEnd.DAL.Entities
     {
         public int Id { set; get; }
         
-        public IList<PhysicalState> PhysicalStates { set; get; }
     }
 }
