@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ESportRaise.BackEnd.DAL.Entities
+﻿namespace ESportRaise.BackEnd.DAL.Entities
 {
     public sealed class Team
     {

@@ -2,52 +2,46 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
 using ESportRaise.BackEnd.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESportRaise.BackEnd.API.Controllers
 {
-    [Route("coach/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CoachesController : ControllerBase
     {
-        SqlConnection db;
+        private SqlConnection db;
 
-        CoachAsyncRepository coaches;
+        private CoachAsyncRepository coaches;
 
-        public CoachesController()
+        public CoachesController(SqlConnection dbConnection)
         {
-            db = new SqlConnection("Data Source=DESKTOP-KNVFLPP;Initial Catalog=ESR;Integrated Security=True");
+            db = dbConnection;
             coaches = new CoachAsyncRepository(db);
         }
 
-        // GET api/values
         [HttpGet]
         public async Task<ActionResult<IEnumerable<string>>> Get()
         {
             await db.OpenAsync();
-            var allCoaches =  (await coaches.GetAllAsync())
-                .Select(coach => coach.Name);
+            var allCoaches = await coaches.GetAllAsync();
             db.Close();
             return new JsonResult(allCoaches);
         }
 
-        // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
             return "value";
         }
 
-        // POST api/values
         [HttpPost]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT api/values/5
         public async Task Put(string value)
         {
             await db.OpenAsync();
@@ -58,7 +52,6 @@ namespace ESportRaise.BackEnd.API.Controllers
             db.Close();
         }
 
-        // DELETE api/values/5
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
