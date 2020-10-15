@@ -5,18 +5,19 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using ESportRaise.BackEnd.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ESportRaise.BackEnd.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class CoachesController : ControllerBase
+    public class CoachController : ControllerBase
     {
         private SqlConnection db;
 
         private CoachAsyncRepository coaches;
 
-        public CoachesController(SqlConnection dbConnection)
+        public CoachController(SqlConnection dbConnection)
         {
             db = dbConnection;
             coaches = new CoachAsyncRepository(db);
