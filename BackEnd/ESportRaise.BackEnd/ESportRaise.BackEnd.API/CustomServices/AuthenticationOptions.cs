@@ -9,14 +9,13 @@ namespace ESportRaise.BackEnd.API.CustomServices
 {
     public class AuthenticationOptions : TokenValidationParameters
     {
-
         private string TokenIssuer => "ESportRaiseBackEnd";
 
         private string TokenClient => "ESportRaiseClient";
 
         private string CypherKey => "extremelyStrongKeyHere";
 
-        private int TokenLifetimeMinutes => 1;
+        public int TokenLifetimeMinutes => 1;
 
         public AuthenticationOptions() : base()
         {
