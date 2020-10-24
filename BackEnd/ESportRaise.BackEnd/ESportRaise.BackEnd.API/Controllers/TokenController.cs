@@ -17,6 +17,7 @@ namespace ESportRaise.BackEnd.API.Controllers
 
         public string Password { set; get; }
     }
+
     [Route("[controller]"), ApiController]
     public class TokenController : ControllerBase
     {
@@ -48,13 +49,11 @@ namespace ESportRaise.BackEnd.API.Controllers
                         tokenOptions.IssuerSigningKey, 
                         SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
             var response = new
             {
                 access_token = encodedJwt,
                 username = identity.Name
             };
-
             return new JsonResult(response);
         }
 
