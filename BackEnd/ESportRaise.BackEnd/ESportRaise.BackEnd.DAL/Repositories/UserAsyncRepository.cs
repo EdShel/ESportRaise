@@ -60,13 +60,21 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         public async Task<AppUser> GetUserOrDefaultByUserNameAsync(string userName)
         {
             var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT * FROM User WHERE UserName = @userName";
+            selectCommand.CommandText = "SELECT * FROM AppUser WHERE UserName = @userName";
             selectCommand.Parameters.AddWithValue("@userName", userName);
-            var reader = await selectCommand.ExecuteReaderAsync();
 
-            if (reader.HasRows)
+            SqlDataReader reader = null;
+            try
             {
-                return SelectMapper(reader);
+                reader = await selectCommand.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
+                {
+                    return SelectMapper(reader);
+                }
+            }
+            finally
+            {
+                reader.Close();
             }
             return null;
         }
@@ -74,13 +82,21 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         public async Task<AppUser> GetUserOrDefaultByEmailOrUserNameAsync(string emailOrUserName)
         {
             var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT * FROM User WHERE Email = @emailOrUserName OR UserName = @emailOrUserName";
+            selectCommand.CommandText = "SELECT * FROM AppUser WHERE Email = @emailOrUserName OR UserName = @emailOrUserName";
             selectCommand.Parameters.AddWithValue("@emailOrUserName", emailOrUserName);
-            var reader = await selectCommand.ExecuteReaderAsync();
 
-            if (reader.HasRows)
+            SqlDataReader reader = null;
+            try
             {
-                return SelectMapper(reader);
+                reader = await selectCommand.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
+                {
+                    return SelectMapper(reader);
+                }
+            }
+            finally
+            {
+                reader.Close();
             }
             return null;
         }
@@ -88,7 +104,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         public async Task<bool> IsAnyUserWithEmailAsync(string email)
         {
             var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT 1 FROM User WHERE Email = @email";
+            selectCommand.CommandText = "SELECT 1 FROM AppUser WHERE Email = @email";
             selectCommand.Parameters.AddWithValue("@email", email);
             var existsResult = await selectCommand.ExecuteScalarAsync();
 
@@ -98,7 +114,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         public async Task<bool> IsAnyUserWithUserNameAsync(string userName)
         {
             var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT 1 FROM User WHERE Email = @userName";
+            selectCommand.CommandText = "SELECT 1 FROM AppUser WHERE Email = @userName";
             selectCommand.Parameters.AddWithValue("@userName", userName);
             var existsResult = await selectCommand.ExecuteScalarAsync();
 

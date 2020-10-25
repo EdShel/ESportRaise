@@ -22,11 +22,11 @@ namespace ESportRaise.BackEnd.BLL.DTOs.Tokens
 
         protected ErrorProneOperationResponse(IEnumerable<OperationError> errors = null)
         {
-            errors = errors?.ToList() ?? new List<OperationError>();
+            this.errors = errors?.ToList() ?? new List<OperationError>();
         }
 
         [JsonIgnore]
-        public bool Success { get => !errors?.Any() ?? true; }
+        public bool Success { get => errors == null || errors.Count == 0; }
 
         [JsonIgnore]
         public IEnumerable<OperationError> Errors
@@ -95,7 +95,7 @@ namespace ESportRaise.BackEnd.BLL.DTOs.Tokens
         public string RefreshToken { get; set; }
 
         public TokenRefreshResponse(string error)
-            : base(new[] {new OperationError(error)})
+            : base(new[] { new OperationError(error) })
         {
         }
 
@@ -114,7 +114,7 @@ namespace ESportRaise.BackEnd.BLL.DTOs.Tokens
     public sealed class TokenRevokeResponse : ErrorProneOperationResponse
     {
         public TokenRevokeResponse(string error)
-             : base(new[] {new OperationError(error)})
+             : base(new[] { new OperationError(error) })
         {
 
         }

@@ -53,7 +53,7 @@ namespace ESportRaise.BackEnd.BLL.Services
         {
             var userClaims = new[]
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
                 new Claim(ClaimsIdentity.DefaultRoleClaimType, user.UserRole)
             };
             return userClaims;

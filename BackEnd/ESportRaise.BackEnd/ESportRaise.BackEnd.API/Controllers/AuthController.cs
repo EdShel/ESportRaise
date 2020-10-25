@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using ESportRaise.BackEnd.BLL.DTOs.Tokens;
 using System.Data.SqlClient;
 using ESportRaise.BackEnd.BLL.Interfaces;
+using ESportRaise.BackEnd.API.Models.Auth;
 
 namespace ESportRaise.BackEnd.API.Controllers
 {
@@ -48,10 +49,16 @@ namespace ESportRaise.BackEnd.API.Controllers
             return Ok(response);
         }
 
+        // TODO: check whether User.Identity is accessible after the token has expired
         [HttpPost("refresh")]
-        public async Task<ActionResult> RefreshToken([FromBody] TokenRefreshRequest request)
+        public async Task<ActionResult> RefreshToken([FromBody] TokenRefreshAPIRequest request)
         {
-            TokenRefreshResponse response = await authService.RefreshTokenAsync(request);
+            var requestDTO = new TokenRefreshRequest
+            {
+                RefreshToken = request.RefreshToken,
+                UserName = User.Identity.Name
+            };
+            TokenRefreshResponse response = await authService.RefreshTokenAsync(requestDTO);
             if (!response.Success)
             {
                 return BadRequest(response.Errors);
@@ -60,10 +67,15 @@ namespace ESportRaise.BackEnd.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("refresh")]
-        public async Task<ActionResult> RevokeToken([FromBody] TokenRevokeRequest request)
+        [HttpPost("revoke"), Authorize]
+        public async Task<ActionResult> RevokeToken([FromBody] TokenRevokeAPIRequest request)
         {
-            TokenRevokeResponse response = await authService.RevokeTokenAsync(request);
+            var requestDTO = new TokenRevokeRequest
+            {
+                RefreshToken = request.RefreshToken,
+                UserName = User.Identity.Name
+            };
+            TokenRevokeResponse response = await authService.RevokeTokenAsync(requestDTO);
             if (!response.Success)
             {
                 return BadRequest(response.Errors);
