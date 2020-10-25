@@ -7,55 +7,55 @@ using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.API.Controllers
 {
-    [Route("[controller]"), ApiController]
-    public class TeamController : ControllerBase
-    {
-        private SqlConnection db;
+    //[Route("[controller]"), ApiController]
+    //public class TeamController : ControllerBase
+    //{
+    //    private SqlConnection db;
 
-        private TeamAsyncRepository teams;
+    //    private TeamAsyncRepository teams;
 
-        public TeamController(SqlConnection dbConnection)
-        {
-            db = dbConnection;
-            teams = new TeamAsyncRepository(db);
-        }
+    //    public TeamController(SqlConnection dbConnection)
+    //    {
+    //        db = dbConnection;
+    //        teams = new TeamAsyncRepository(db);
+    //    }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<string>>> Get()
-        {
-            await db.OpenAsync();
-            var allTeams = await teams.GetAllAsync();
-            db.Close();
-            return new ObjectResult(allTeams);
-        }
+    //    [HttpGet]
+    //    public async Task<ActionResult<IEnumerable<string>>> Get()
+    //    {
+    //        await db.OpenAsync();
+    //        var allTeams = await teams.GetAllAsync();
+    //        db.Close();
+    //        return new ObjectResult(allTeams);
+    //    }
 
-        [HttpPost]
-        public async Task Post(string name, int coachId)
-        {
-            await db.OpenAsync();
-            await teams.CreateAsync(new Team
-            {
-                Name = name,
-                CoachId = coachId
-            });
-            db.Close();
-        }
+    //    [HttpPost]
+    //    public async Task Post(string name, int coachId)
+    //    {
+    //        await db.OpenAsync();
+    //        await teams.CreateAsync(new Team
+    //        {
+    //            Name = name,
+    //            CoachId = coachId
+    //        });
+    //        db.Close();
+    //    }
 
-        [HttpPut]
-        public async Task Put(Team team)
-        {
-            await db.OpenAsync();
-            await teams.UpdateAsync(team);
-            db.Close();
-            return;
-        }
+    //    [HttpPut]
+    //    public async Task Put(Team team)
+    //    {
+    //        await db.OpenAsync();
+    //        await teams.UpdateAsync(team);
+    //        db.Close();
+    //        return;
+    //    }
 
-        [HttpDelete]
-        public async Task Delete(int id)
-        {
-            await db.OpenAsync();
-            await teams.DeleteAsync(new Team { Id = id });
-            db.Close();
-        }
-    }
+    //    [HttpDelete]
+    //    public async Task Delete(int id)
+    //    {
+    //        await db.OpenAsync();
+    //        await teams.DeleteAsync(new Team { Id = id });
+    //        db.Close();
+    //    }
+    //}
 }

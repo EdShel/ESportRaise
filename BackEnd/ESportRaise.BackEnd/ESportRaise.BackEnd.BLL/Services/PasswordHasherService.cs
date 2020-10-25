@@ -1,20 +1,26 @@
-﻿using ESportRaise.BackEnd.BLL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ESportRaise.BackEnd.DAL.Entities;
+using ESportRaise.BackEnd.DAL.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
     public class PasswordHasherService : IPasswordHasher
     {
+        private PasswordHasher<User> passwordHasher;
+
+        public PasswordHasherService()
+        {
+            passwordHasher = new PasswordHasher<User>();
+        }
+
         public string HashPassword(string password)
         {
-            throw new NotImplementedException();
+            return passwordHasher.HashPassword(null, password);
         }
 
         public bool VerifyPassword(string hashedPassword, string password)
         {
-            throw new NotImplementedException();
+            return passwordHasher.VerifyHashedPassword(null, hashedPassword, password) == PasswordVerificationResult.Success;
         }
     }
 }

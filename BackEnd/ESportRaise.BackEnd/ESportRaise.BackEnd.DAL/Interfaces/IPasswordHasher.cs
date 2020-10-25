@@ -1,4 +1,4 @@
-﻿namespace ESportRaise.BackEnd.BLL.Interfaces
+﻿namespace ESportRaise.BackEnd.DAL.Interfaces
 {
     public interface IPasswordHasher
     {

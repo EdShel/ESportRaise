@@ -1,11 +1,13 @@
 ﻿using ESportRaise.BackEnd.BLL.DTOs.Tokens;
 using ESportRaise.BackEnd.BLL.Interfaces;
+using ESportRaise.BackEnd.DAL.Entities;
 using ESportRaise.BackEnd.DAL.Repositories;
 using System;
+using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService : IAuthAsyncService
     {
         private UserAsyncRepository usersRepository;
 
@@ -17,22 +19,23 @@ namespace ESportRaise.BackEnd.BLL.Services
             this.tokenFactory = tokenFactory;
         }
 
-        public LoginResponse Login(LoginRequest loginRequest)
+        public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
+        {
+            User user = await usersRepository.GetUserOrDefaultByEmailOrUserNameAsync(loginRequest.EmailOrUserName);
+            if (user )
+        }
+
+        public async Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest refreshRequest)
         {
             throw new NotImplementedException();
         }
 
-        public RegisterResponse Register(RegisterRequest registerRequest)
+        public async Task<RegisterResponse> RegisterAsync(RegisterRequest registerRequest)
         {
             throw new NotImplementedException();
         }
 
-        public TokenRefreshResponse RefreshToken(TokenRefreshRequest refreshRequest)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TokenRevokeResponse RevokeToken(TokenRevokeRequest revokeRequest)
+        public async Task<TokenRevokeResponse> RevokeTokenAsync(TokenRevokeRequest revokeRequest)
         {
             throw new NotImplementedException();
         }
