@@ -21,13 +21,16 @@ namespace ESportRaise.BackEnd.BLL.DTOs.Tokens
 
         protected ErrorProneOperationResponse(IEnumerable<OperationError> errors = null)
         {
-            Success = !errors?.Any() ?? true;
             errors = errors?.ToList() ?? new List<OperationError>();
         }
 
-        public bool Success { get; }
+        public bool Success { get => !errors?.Any() ?? true; }
 
-        public IEnumerable<OperationError> Errors { get => errors; }
+        public IEnumerable<OperationError> Errors
+        {
+            get => errors;
+            set => errors = value.ToList();
+        }
 
         public ErrorProneOperationResponse AddError(string message)
         {
@@ -46,6 +49,10 @@ namespace ESportRaise.BackEnd.BLL.DTOs.Tokens
 
     public sealed class LoginResponse : ErrorProneOperationResponse
     {
+        public LoginResponse(IEnumerable<OperationError> errors = null) : base(errors)
+        {
+        }
+
         public string Token { get; set; }
 
         public string RefreshToken { get; set; }
