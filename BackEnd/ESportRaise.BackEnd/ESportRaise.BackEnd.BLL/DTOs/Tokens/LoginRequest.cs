@@ -40,6 +40,22 @@ namespace ESportRaise.BackEnd.BLL.DTOs.Tokens
         }
     }
 
+    public sealed class RegisterRequest
+    {
+        public string Email { get; set; }
+
+        public string UserName { get; set; }
+
+        public string Password { get; set; }
+
+        public string Role { get; set; }
+    }
+
+    public sealed class RegisterResponse : ErrorProneOperationResponse
+    {
+        
+    }
+
     public sealed class LoginRequest
     {
         public string EmailOrUserName { get; set; }
@@ -60,16 +76,6 @@ namespace ESportRaise.BackEnd.BLL.DTOs.Tokens
         public string Email { get; set; }
 
         public string UserName { get; set; }
-    }
-
-    public sealed class RegisterRequest
-    {
-
-    }
-
-    public sealed class RegisterResponse
-    {
-
     }
 
     public sealed class TokenRefreshRequest

@@ -28,6 +28,13 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         protected override TablePropertyExtractor UpdatePredicatePropertyEqualsValue { get; }
 
+        public async Task CreateAsync(User user, string password)
+        {
+            var hashedPassword = passwordHasher.HashPassword(password);
+            user.HashedPassword = hashedPassword;
+            await base.CreateAsync(user);
+        }
+
         public async Task<User> GetUserOrDefaultByEmailOrUserNameAsync(string emailOrUserName)
         {
             var selectCommand = db.CreateCommand();
@@ -40,6 +47,26 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 return SelectMapper(reader);
             }
             return null;
+        }
+
+        public async Task<bool> IsAnyUserWithEmailAsync(string email)
+        {
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText = "SELECT 1 FROM User WHERE Email = @email";
+            selectCommand.Parameters.AddWithValue("@email", email);
+            var existsResult = await selectCommand.ExecuteScalarAsync();
+
+            return 1.Equals(existsResult);
+        }
+
+        public async Task<bool> IsAnyUserWithUserNameAsync(string userName)
+        {
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText = "SELECT 1 FROM User WHERE Email = @userName";
+            selectCommand.Parameters.AddWithValue("@userName", userName);
+            var existsResult = await selectCommand.ExecuteScalarAsync();
+
+            return 1.Equals(existsResult);
         }
 
         public bool IsUserPasswordCorrect(User user, string password)

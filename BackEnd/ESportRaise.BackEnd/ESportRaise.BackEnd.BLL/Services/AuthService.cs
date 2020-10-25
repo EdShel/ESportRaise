@@ -33,6 +33,7 @@ namespace ESportRaise.BackEnd.BLL.Services
                 var tokenClaims = GetTokenClaimsForUser(user);
                 var refreshToken = refreshTokenFactory.GenerateToken();
                 usersRepository.CreateRefreshTokenAsync(user, refreshToken);
+
                 return new LoginResponse
                 {
                     UserName = user.UserName,
@@ -60,12 +61,39 @@ namespace ESportRaise.BackEnd.BLL.Services
             return userClaims;
         }
 
-        public async Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest refreshRequest)
+        public async Task<RegisterResponse> RegisterAsync(RegisterRequest registerRequest)
         {
-            throw new NotImplementedException();
+            var registerResponse = new RegisterResponse();
+
+            bool emailIsTaken = await usersRepository.IsAnyUserWithEmailAsync(registerRequest.Email);
+            if (emailIsTaken)
+            {
+                registerResponse.AddError("Email is taken!");
+            }
+
+            bool nameIsTaken = await usersRepository.IsAnyUserWithUserNameAsync(registerRequest.UserName);
+            if (nameIsTaken)
+            {
+                registerResponse.AddError("User name is taken!");
+            }
+
+            if (!registerResponse.Success)
+            {
+                return registerResponse;
+            }
+
+            var user = new User
+            {
+                Email = registerRequest.Email,
+                UserName = registerRequest.UserName,
+                Role = registerRequest.Role
+            };
+            await usersRepository.CreateAsync(user, registerRequest.Password);
+
+            return registerResponse;
         }
 
-        public async Task<RegisterResponse> RegisterAsync(RegisterRequest registerRequest)
+        public async Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest refreshRequest)
         {
             throw new NotImplementedException();
         }
