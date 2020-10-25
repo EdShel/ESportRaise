@@ -32,7 +32,7 @@ namespace ESportRaise.BackEnd.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddTransient(_ => new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped(_ => new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
 
             var tokenFactoryService = new JwtTokenGeneratorService(Configuration);
             services.AddSingleton<IAuthTokenFactory>(tokenFactoryService);
