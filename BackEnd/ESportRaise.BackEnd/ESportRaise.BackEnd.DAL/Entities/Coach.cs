@@ -29,9 +29,9 @@ namespace ESportRaise.BackEnd.DAL.Entities
 
     public class RefreshToken
     {
-        public int UserId { get; set; }
+        public int TokenId { get; set; }
 
-        public string IP { get; set; }
+        public int UserId { get; set; }
 
         public string Token { get; set; }
 

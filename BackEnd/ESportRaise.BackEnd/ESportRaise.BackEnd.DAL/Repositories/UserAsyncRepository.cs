@@ -46,5 +46,18 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         {
             return passwordHasher.VerifyPassword(user.HashedPassword, password);
         }
+
+        public async void CreateRefreshTokenAsync(User user, string refreshToken)
+        {
+            var tokenExpirationDate = DateTime.Now.AddDays(7);
+            var insertCommand = db.CreateCommand();
+            insertCommand.CommandText =
+                "INSERT INTO RefreshToken(UserId, Token, ExpirationDate) " +
+                "VALUES(@userId, @token, @expirationDate)";
+            insertCommand.Parameters.AddWithValue("@userId", user.Id);
+            insertCommand.Parameters.AddWithValue("@token", refreshToken);
+            insertCommand.Parameters.AddWithValue("@expirationDate", tokenExpirationDate);
+            await insertCommand.ExecuteNonQueryAsync();
+        }
     }
 }

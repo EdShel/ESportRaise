@@ -16,10 +16,13 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         private ITokenFactory tokenFactory;
 
-        public AuthService(UserAsyncRepository users, ITokenFactory tokenFactory)
+        private IRefreshTokenFactory refreshTokenFactory;
+
+        public AuthService(UserAsyncRepository users, ITokenFactory tokenFactory, IRefreshTokenFactory refreshTokenFactory)
         {
             this.usersRepository = users;
             this.tokenFactory = tokenFactory;
+            this.refreshTokenFactory = refreshTokenFactory;
         }
 
         public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
@@ -28,12 +31,14 @@ namespace ESportRaise.BackEnd.BLL.Services
             if (user != null && usersRepository.IsUserPasswordCorrect(user, loginRequest.Password))
             {
                 var tokenClaims = GetTokenClaimsForUser(user);
+                var refreshToken = refreshTokenFactory.GenerateToken();
+                usersRepository.CreateRefreshTokenAsync(user, refreshToken);
                 return new LoginResponse
                 {
                     UserName = user.UserName,
                     Email = user.Email,
                     Token = tokenFactory.GenerateTokenForClaims(tokenClaims),
-                    RefreshToken = ""
+                    RefreshToken = refreshToken
                 };
             }
             return new LoginResponse

@@ -7,4 +7,9 @@ namespace ESportRaise.BackEnd.BLL.Interfaces
     {
         string GenerateTokenForClaims(IEnumerable<Claim> claims);
     }
+
+    public interface IRefreshTokenFactory
+    {
+        string GenerateToken();
+    }
 }
