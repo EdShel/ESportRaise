@@ -25,7 +25,7 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
         {
-            User user = await usersRepository.GetUserOrDefaultByEmailOrUserNameAsync(loginRequest.EmailOrUserName);
+            AppUser user = await usersRepository.GetUserOrDefaultByEmailOrUserNameAsync(loginRequest.EmailOrUserName);
             if (user != null && usersRepository.IsUserPasswordCorrect(user, loginRequest.Password))
             {
                 var tokenClaims = GetTokenClaimsForUser(user);
@@ -49,12 +49,12 @@ namespace ESportRaise.BackEnd.BLL.Services
             );
         }
 
-        private IEnumerable<Claim> GetTokenClaimsForUser(User user)
+        private IEnumerable<Claim> GetTokenClaimsForUser(AppUser user)
         {
             var userClaims = new[]
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role)
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.UserRole)
             };
             return userClaims;
         }
@@ -80,11 +80,11 @@ namespace ESportRaise.BackEnd.BLL.Services
                 return registerResponse;
             }
 
-            var user = new User
+            var user = new AppUser
             {
                 Email = registerRequest.Email,
                 UserName = registerRequest.UserName,
-                Role = registerRequest.Role
+                UserRole = registerRequest.Role
             };
             await usersRepository.CreateAsync(user, registerRequest.Password);
 
@@ -93,7 +93,7 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         public async Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest refreshRequest)
         {
-            User user = await usersRepository.GetUserOrDefaultByUserNameAsync(refreshRequest.UserName);
+            AppUser user = await usersRepository.GetUserOrDefaultByUserNameAsync(refreshRequest.UserName);
             if (user == null)
             {
                 return new TokenRefreshResponse("Not valid user!");

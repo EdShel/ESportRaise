@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.DAL.Repositories
 {
-    // TOOD: create table for users
-    public class UserAsyncRepository : BasicAsyncRepository<User>
+    public class UserAsyncRepository : BasicAsyncRepository<AppUser>
     {
         private IPasswordHasher passwordHasher;
 
@@ -17,25 +16,48 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             this.passwordHasher = passwordHasher;
         }
 
-        protected override Func<SqlDataReader, User> SelectMapper
+        #region Default mapping
+
+        protected override Func<SqlDataReader, AppUser> SelectMapper
         {
-            get => r => new User();
+            get => r => new AppUser
+            {
+                Id = r.GetInt32(0),
+                UserName = r.GetString(1),
+                Email = r.GetString(2),
+                HashedPassword = r.GetString(3),
+                UserRole = r.GetString(4)
+            };
         }
 
-        protected override Func<User, object[]> InsertValues { get; }
+        protected override Func<AppUser, object[]> InsertValues
+        {
+            get => user => new object[]
+            {
+                user.UserName, user.Email, user.HashedPassword, user.UserRole
+            };
+        }
 
-        protected override Func<User, TablePropertyValuePair[]> UpdatePropertiesAndValuesExtractor { get; }
+        protected override Func<AppUser, TablePropertyValuePair[]> UpdatePropertiesAndValuesExtractor
+        {
+            get => user => new TablePropertyValuePair[] { };
+        }
 
-        protected override TablePropertyExtractor UpdatePredicatePropertyEqualsValue { get; }
+        protected override TablePropertyExtractor UpdatePredicatePropertyEqualsValue
+        {
+            get => new TablePropertyExtractor(nameof(AppUser.Id), user => user.Id);
+        }
 
-        public async Task CreateAsync(User user, string password)
+        #endregion
+
+        public async Task CreateAsync(AppUser user, string password)
         {
             var hashedPassword = passwordHasher.HashPassword(password);
             user.HashedPassword = hashedPassword;
             await base.CreateAsync(user);
         }
 
-        public async Task<User> GetUserOrDefaultByUserNameAsync(string userName)
+        public async Task<AppUser> GetUserOrDefaultByUserNameAsync(string userName)
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = "SELECT * FROM User WHERE UserName = @userName";
@@ -49,7 +71,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return null;
         }
 
-        public async Task<User> GetUserOrDefaultByEmailOrUserNameAsync(string emailOrUserName)
+        public async Task<AppUser> GetUserOrDefaultByEmailOrUserNameAsync(string emailOrUserName)
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = "SELECT * FROM User WHERE Email = @emailOrUserName OR UserName = @emailOrUserName";
@@ -83,12 +105,12 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return 1.Equals(existsResult);
         }
 
-        public bool IsUserPasswordCorrect(User user, string password)
+        public bool IsUserPasswordCorrect(AppUser user, string password)
         {
             return passwordHasher.VerifyPassword(user.HashedPassword, password);
         }
 
-        public async Task CreateRefreshTokenAsync(User user, string refreshToken)
+        public async Task CreateRefreshTokenAsync(AppUser user, string refreshToken)
         {
             var tokenExpirationDate = DateTime.Now.AddDays(7);
             var insertCommand = db.CreateCommand();
@@ -101,7 +123,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             await insertCommand.ExecuteNonQueryAsync();
         }
 
-        public async Task<bool> HasRefreshToken(User user, string refreshToken)
+        public async Task<bool> HasRefreshToken(AppUser user, string refreshToken)
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = "SELECT 1 FROM RefreshToken WHERE UserId = @userId AND Token = @token";
@@ -112,7 +134,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return 1.Equals(searchResult);
         }
 
-        public async Task DeleteRefreshTokenAsync(User user, string refreshToken)
+        public async Task DeleteRefreshTokenAsync(AppUser user, string refreshToken)
         {
             var deleteCommand = db.CreateCommand();
             deleteCommand.CommandText = "DELETE FROM RefreshToken WHERE UserId = @userId AND Token = @token";

@@ -6,11 +6,11 @@ namespace ESportRaise.BackEnd.BLL.Services
 {
     public class IdentityPasswordHasherService : IPasswordHasher
     {
-        private PasswordHasher<User> passwordHasher;
+        private PasswordHasher<AppUser> passwordHasher;
 
         public IdentityPasswordHasherService()
         {
-            passwordHasher = new PasswordHasher<User>();
+            passwordHasher = new PasswordHasher<AppUser>();
         }
 
         public string HashPassword(string password)

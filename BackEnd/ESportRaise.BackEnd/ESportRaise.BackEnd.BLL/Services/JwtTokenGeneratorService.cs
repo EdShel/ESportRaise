@@ -51,7 +51,7 @@ namespace ESportRaise.BackEnd.BLL.Services
         private static AuthTokenSettings GetAuthTokenSettings(IConfiguration configuration)
         {
             var tokenOptionsFromAppsettings = new AuthTokenSettings();
-            //configuration.Bind("AuthenticationToken", tokenOptionsFromAppsettings);
+            configuration.Bind("AuthenticationToken", tokenOptionsFromAppsettings);
             return tokenOptionsFromAppsettings;
         }
 
