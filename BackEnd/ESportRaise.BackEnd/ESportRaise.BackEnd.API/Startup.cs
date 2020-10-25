@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using ESportRaise.BackEnd.BLL.Interfaces;
+using ESportRaise.BackEnd.BLL.Services;
+using ESportRaise.BackEnd.DAL.Interfaces;
+using ESportRaise.BackEnd.DAL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,12 +33,23 @@ namespace ESportRaise.BackEnd.API
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddTransient(_ => new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
+
+            var tokenFactoryService = new JwtTokenGeneratorService(Configuration);
+            services.AddSingleton<IAuthTokenFactory>(tokenFactoryService);
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false; // TODO: If dev, then disable
-                    options.TokenValidationParameters = new AuthenticationOptions();
+                    options.TokenValidationParameters = tokenFactoryService.TokenValidationParameters;
                 });
+
+            services.AddSingleton<IAuthTokenFactory, JwtTokenGeneratorService>();
+            services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
+            services.AddSingleton<IPasswordHasher, IdentityPasswordHasherService>();
+            services.AddTransient<UserAsyncRepository>();
+
+            services.AddTransient<IAuthAsyncService, AuthService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

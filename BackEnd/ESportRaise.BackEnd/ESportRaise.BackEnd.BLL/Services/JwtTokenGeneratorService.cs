@@ -10,7 +10,7 @@ using System.Text;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-    public class JwtTokenGeneratorService : ITokenFactory
+    public class JwtTokenGeneratorService : IAuthTokenFactory
     {
         private readonly int tokenLifetimeMinutes;
 

@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-    public class PasswordHasherService : IPasswordHasher
+    public class IdentityPasswordHasherService : IPasswordHasher
     {
         private PasswordHasher<User> passwordHasher;
 
-        public PasswordHasherService()
+        public IdentityPasswordHasherService()
         {
             passwordHasher = new PasswordHasher<User>();
         }

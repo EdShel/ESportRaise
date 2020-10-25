@@ -2,8 +2,6 @@
 using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.DAL.Entities;
 using ESportRaise.BackEnd.DAL.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,11 +12,11 @@ namespace ESportRaise.BackEnd.BLL.Services
     {
         private UserAsyncRepository usersRepository;
 
-        private ITokenFactory tokenFactory;
+        private IAuthTokenFactory tokenFactory;
 
         private IRefreshTokenFactory refreshTokenFactory;
 
-        public AuthService(UserAsyncRepository users, ITokenFactory tokenFactory, IRefreshTokenFactory refreshTokenFactory)
+        public AuthService(UserAsyncRepository users, IAuthTokenFactory tokenFactory, IRefreshTokenFactory refreshTokenFactory)
         {
             this.usersRepository = users;
             this.tokenFactory = tokenFactory;
@@ -32,7 +30,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             {
                 var tokenClaims = GetTokenClaimsForUser(user);
                 var refreshToken = refreshTokenFactory.GenerateToken();
-                usersRepository.CreateRefreshTokenAsync(user, refreshToken);
+                await usersRepository.CreateRefreshTokenAsync(user, refreshToken);
 
                 return new LoginResponse
                 {
@@ -104,7 +102,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             bool validRefreshToken = await usersRepository.HasRefreshToken(user, refreshRequest.RefreshToken);
             if (!validRefreshToken)
             {
-                return new TokenRefreshResponse("Not valid refresh token");
+                return new TokenRefreshResponse("Not valid refresh token!");
             }
 
             await usersRepository.DeleteRefreshTokenAsync(user, refreshRequest.RefreshToken);
