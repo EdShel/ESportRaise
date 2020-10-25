@@ -95,7 +95,29 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         public async Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest refreshRequest)
         {
-            throw new NotImplementedException();
+            User user = await usersRepository.GetUserOrDefaultByUserNameAsync(refreshRequest.UserName);
+            if (user == null)
+            {
+                return new TokenRefreshResponse("Not valid user!");
+            }
+
+            bool validRefreshToken = await usersRepository.HasRefreshToken(user, refreshRequest.RefreshToken);
+            if (!validRefreshToken)
+            {
+                return new TokenRefreshResponse("Not valid refresh token");
+            }
+
+            await usersRepository.DeleteRefreshTokenAsync(user, refreshRequest.RefreshToken);
+
+            var newRefreshToken = refreshTokenFactory.GenerateToken();
+            await usersRepository.CreateRefreshTokenAsync(user, newRefreshToken);
+
+            var userClaims = GetTokenClaimsForUser(user);
+            return new TokenRefreshResponse
+            {
+                Token = tokenFactory.GenerateTokenForClaims(userClaims),
+                RefreshToken = newRefreshToken
+            };
         }
 
         public async Task<TokenRevokeResponse> RevokeTokenAsync(TokenRevokeRequest revokeRequest)

@@ -53,7 +53,7 @@ namespace ESportRaise.BackEnd.BLL.DTOs.Tokens
 
     public sealed class RegisterResponse : ErrorProneOperationResponse
     {
-        
+
     }
 
     public sealed class LoginRequest
@@ -80,12 +80,30 @@ namespace ESportRaise.BackEnd.BLL.DTOs.Tokens
 
     public sealed class TokenRefreshRequest
     {
+        public string UserName { get; set; }
 
+        //public string AuthToken { get; set; }
+
+        public string RefreshToken { get; set; }
     }
 
-    public sealed class TokenRefreshResponse
+    public sealed class TokenRefreshResponse : ErrorProneOperationResponse
     {
+        public string Token { get; set; }
 
+        public string RefreshToken { get; set; }
+
+        public TokenRefreshResponse(string error)
+            : base(new[]
+            {
+                new OperationError(error)
+            })
+        {
+        }
+
+        public TokenRefreshResponse(IEnumerable<OperationError> errors = null) : base(errors)
+        {
+        }
     }
 
     public sealed class TokenRevokeRequest

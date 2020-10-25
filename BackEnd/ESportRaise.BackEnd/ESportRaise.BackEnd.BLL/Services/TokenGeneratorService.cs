@@ -10,13 +10,13 @@ using System.Text;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-    public class JWTTokenGeneratorService : ITokenFactory
+    public class JwtTokenGeneratorService : ITokenFactory
     {
         private readonly int tokenLifetimeMinutes;
 
         public TokenValidationParameters TokenValidationParameters { get; }
 
-        public JWTTokenGeneratorService(IConfiguration configuration)
+        public JwtTokenGeneratorService(IConfiguration configuration)
         {
             var fromAppsettings = GetAuthTokenSettings(configuration);
             TokenValidationParameters = new TokenValidationParameters

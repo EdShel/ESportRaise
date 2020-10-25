@@ -35,6 +35,20 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             await base.CreateAsync(user);
         }
 
+        public async Task<User> GetUserOrDefaultByUserNameAsync(string userName)
+        {
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText = "SELECT * FROM User WHERE UserName = @userName";
+            selectCommand.Parameters.AddWithValue("@userName", userName);
+            var reader = await selectCommand.ExecuteReaderAsync();
+
+            if (reader.HasRows)
+            {
+                return SelectMapper(reader);
+            }
+            return null;
+        }
+
         public async Task<User> GetUserOrDefaultByEmailOrUserNameAsync(string emailOrUserName)
         {
             var selectCommand = db.CreateCommand();
@@ -74,7 +88,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return passwordHasher.VerifyPassword(user.HashedPassword, password);
         }
 
-        public async void CreateRefreshTokenAsync(User user, string refreshToken)
+        public async Task CreateRefreshTokenAsync(User user, string refreshToken)
         {
             var tokenExpirationDate = DateTime.Now.AddDays(7);
             var insertCommand = db.CreateCommand();
@@ -85,6 +99,26 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             insertCommand.Parameters.AddWithValue("@token", refreshToken);
             insertCommand.Parameters.AddWithValue("@expirationDate", tokenExpirationDate);
             await insertCommand.ExecuteNonQueryAsync();
+        }
+
+        public async Task<bool> HasRefreshToken(User user, string refreshToken)
+        {
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText = "SELECT 1 FROM RefreshToken WHERE UserId = @userId AND Token = @token";
+            selectCommand.Parameters.AddWithValue("@userId", user.Id);
+            selectCommand.Parameters.AddWithValue("@token", refreshToken);
+            var searchResult = await selectCommand.ExecuteScalarAsync();
+
+            return 1.Equals(searchResult);
+        }
+
+        public async Task DeleteRefreshTokenAsync(User user, string refreshToken)
+        {
+            var deleteCommand = db.CreateCommand();
+            deleteCommand.CommandText = "DELETE FROM RefreshToken WHERE UserId = @userId AND Token = @token";
+            deleteCommand.Parameters.AddWithValue("@userId", user.Id);
+            deleteCommand.Parameters.AddWithValue("@token", refreshToken);
+            await deleteCommand.ExecuteNonQueryAsync();
         }
     }
 }
