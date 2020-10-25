@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,8 +25,10 @@ namespace ESportRaise.BackEnd.BLL.DTOs.Tokens
             errors = errors?.ToList() ?? new List<OperationError>();
         }
 
+        [JsonIgnore]
         public bool Success { get => !errors?.Any() ?? true; }
 
+        [JsonIgnore]
         public IEnumerable<OperationError> Errors
         {
             get => errors;
