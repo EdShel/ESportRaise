@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESportRaise.BackEnd.DAL", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESportRaise.BackEnd.API", "ESportRaise.BackEnd.API\ESportRaise.BackEnd.API.csproj", "{8E0A0756-D93D-4E80-9920-274176595499}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESportRaise.BackEnd.BLL", "ESportRaise.BackEnd.BLL\ESportRaise.BackEnd.BLL.csproj", "{CD38C297-E18F-4033-A79E-A3A32BFD7CA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESportRaise.BackEnd.BLL", "ESportRaise.BackEnd.BLL\ESportRaise.BackEnd.BLL.csproj", "{CD38C297-E18F-4033-A79E-A3A32BFD7CA2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

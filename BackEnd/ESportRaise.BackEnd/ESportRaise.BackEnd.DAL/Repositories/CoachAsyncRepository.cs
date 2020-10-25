@@ -1,58 +1,64 @@
 ﻿using ESportRaise.BackEnd.DAL.Entities;
-using ESportRaise.BackEnd.DAL.Interfaces;
-using System.Collections.Generic;
+using System;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.DAL.Repositories
 {
-    public sealed class CoachAsyncRepository : IAsyncRepository<Coach>
+    // TOOD: create table for users
+    public class UserAsyncRepository : BasicAsyncRepository<User>
     {
-        private readonly SqlConnection dbConnection;
-
-        public CoachAsyncRepository(SqlConnection databaseConnection)
+        public UserAsyncRepository(SqlConnection databaseConnection)
+            : base(databaseConnection)
         {
-            this.dbConnection = databaseConnection;
         }
 
-        public async Task CreateAsync(Coach item)
-        {
-            var insertCommand = new SqlCommand("INSERT INTO Coach(Name) VALUES(@name)", dbConnection);
-            insertCommand.Parameters.AddWithValue("@name", item.Name);
-            await insertCommand.ExecuteNonQueryAsync();
+        protected override Func<SqlDataReader, User> SelectMapper {
+            get => r => new User();
         }
 
-        public async Task DeleteAsync(Coach item)
-        {
-            var deleteCommand = new SqlCommand("DELETE FROM Coach WHERE Id = @id", dbConnection);
-            deleteCommand.Parameters.AddWithValue("@id", item.Id);
-            await deleteCommand.ExecuteNonQueryAsync();
-        }
+        protected override Func<User, object[]> InsertValues { get; }
 
-        public async Task<IEnumerable<Coach>> GetAllAsync()
+        protected override Func<User, TablePropertyValuePair[]> UpdatePropertiesAndValuesExtractor { get; }
+
+        protected override TablePropertyExtractor UpdatePredicatePropertyEqualsValue { get; }
+
+        public async Task<User> GetUserOrDefaultByEmailAsync(string email)
         {
-            var selectCommand = new SqlCommand("SELECT Id, Name FROM Coach", dbConnection);
-            var resultReader = await selectCommand.ExecuteReaderAsync();
-            var coaches = new List<Coach>();
-            while(await resultReader.ReadAsync())
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText = "SELECT * FROM User WHERE Email = @email";
+            selectCommand.Parameters.AddWithValue("@email", email);
+            var reader = await selectCommand.ExecuteReaderAsync();
+
+            if (reader.HasRows)
             {
-                var coach = new Coach()
-                {
-                    Id = resultReader.GetInt32(0),
-                    Name = resultReader.GetString(1)
-                };
-                coaches.Add(coach);
+                return SelectMapper(reader);
             }
-
-            return coaches;
+            return null;
         }
 
-        public async Task UpdateAsync(Coach item)
+        public async Task<User> GetUserOrDefaultByUserNameAsync(string userName)
         {
-            var updateCommand = new SqlCommand("UPDATE Coach SET Name = @name WHERE Id = @id", dbConnection);
-            updateCommand.Parameters.AddWithValue("@name", item.Name);
-            updateCommand.Parameters.AddWithValue("@id", item.Id);
-            await updateCommand.ExecuteNonQueryAsync();
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText = "SELECT * FROM User WHERE UserName = @userName";
+            selectCommand.Parameters.AddWithValue("@userName", userName);
+            var reader = await selectCommand.ExecuteReaderAsync();
+
+            if (reader.HasRows)
+            {
+                return SelectMapper(reader);
+            }
+            return null;
+        }
+
+        public bool IsPasswordCorrect(string hashedPassword, string password)
+        {
+            return false;
+        }
+
+        private static string HashPassword(string password)
+        {
+            return password;
         }
     }
 }

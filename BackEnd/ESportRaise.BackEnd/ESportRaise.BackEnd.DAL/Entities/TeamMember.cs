@@ -2,11 +2,8 @@
 {
     public sealed class TeamMember
     {
-        public int Id { set; get; }
+        public string Name { get; set; }
 
-        public string Name { set; get; }
-
-        public int TeamId { set; get; }
-
+        public int TeamId { get; set; }
     }
 }

@@ -6,11 +6,20 @@ namespace ESportRaise.BackEnd.BLL.DTOs.Tokens
 {
     public sealed class LoginRequest
     {
+        public string EmailOrUserName { get; set; }
+
+        public string Password { get; set; }
     }
 
     public sealed class LoginResponse
     {
+        public string Token { get; set; }
 
+        public string RefreshToken { get; set; }
+
+        public string Email { get; set; }
+
+        public string UserName { get; set; }
     }
 
     public sealed class RegisterRequest

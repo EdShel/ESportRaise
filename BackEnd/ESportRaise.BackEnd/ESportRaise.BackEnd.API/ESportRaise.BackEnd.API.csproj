@@ -10,11 +10,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ESportRaise.BackEnd.BLL\ESportRaise.BackEnd.BLL.csproj" />
     <ProjectReference Include="..\ESportRaise.BackEnd.DAL\ESportRaise.BackEnd.DAL.csproj" />
   </ItemGroup>
 

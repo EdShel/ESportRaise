@@ -3,8 +3,8 @@ using System.Security.Claims;
 
 namespace ESportRaise.BackEnd.BLL.Interfaces
 {
-    public interface ITokenGenerator
+    public interface ITokenFactory
     {
-        string GenerateTokenForClaims(IEnumerable<Claim>);
+        string GenerateTokenForClaims(IEnumerable<Claim> claims);
     }
 }
