@@ -1,5 +1,5 @@
-﻿using ESportRaise.BackEnd.BLL.DTOs;
-using ESportRaise.BackEnd.BLL.DTOs.Auth;
+﻿using ESportRaise.BackEnd.BLL.DTOs.Auth;
+using ESportRaise.BackEnd.BLL.Exceptions;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.DAL.Entities;
 using ESportRaise.BackEnd.DAL.Repositories;
@@ -41,7 +41,7 @@ namespace ESportRaise.BackEnd.BLL.Services
                     RefreshToken = refreshToken
                 };
             }
-            return new LoginServiceResponse("Email, user name or password is incorrect!");
+            throw new BadRequestException("Email, user name or password is incorrect!");
         }
 
         private IEnumerable<Claim> GetTokenClaimsForUser(AppUser user)
@@ -56,23 +56,16 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         public async Task<RegisterServiceResponse> RegisterAsync(RegisterServiceRequest registerRequest)
         {
-            var registerResponse = new RegisterServiceResponse();
-
             bool emailIsTaken = await usersRepository.IsAnyUserWithEmailAsync(registerRequest.Email);
             if (emailIsTaken)
             {
-                registerResponse.AddError("Email is taken!");
+                throw new BadRequestException("Email is taken!");
             }
 
             bool nameIsTaken = await usersRepository.IsAnyUserWithUserNameAsync(registerRequest.UserName);
             if (nameIsTaken)
             {
-                registerResponse.AddError("User name is taken!");
-            }
-
-            if (!registerResponse.Success)
-            {
-                return registerResponse;
+                throw new BadRequestException("User name is taken!");
             }
 
             var user = new AppUser
@@ -83,7 +76,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             };
             await usersRepository.CreateAsync(user, registerRequest.Password);
 
-            return registerResponse;
+            return new RegisterServiceResponse();
         }
 
         public async Task<TokenServiceRefreshResponse> RefreshTokenAsync(TokenServiceRefreshRequest refreshRequest)
@@ -91,13 +84,13 @@ namespace ESportRaise.BackEnd.BLL.Services
             AppUser user = await usersRepository.GetUserOrDefaultByUserNameAsync(refreshRequest.UserName);
             if (user == null)
             {
-                return new TokenServiceRefreshResponse("Not valid user!");
+                throw new BadRequestException("Not valid user!");
             }
 
             bool validRefreshToken = await usersRepository.HasRefreshToken(user, refreshRequest.RefreshToken);
             if (!validRefreshToken)
             {
-                return new TokenServiceRefreshResponse("Not valid refresh token!");
+                throw new BadRequestException("Not valid refresh token!");
             }
 
             await usersRepository.DeleteRefreshTokenAsync(user, refreshRequest.RefreshToken);
@@ -118,13 +111,13 @@ namespace ESportRaise.BackEnd.BLL.Services
             var user = await usersRepository.GetUserOrDefaultByUserNameAsync(revokeRequest.UserName);
             if (user == null)
             {
-                return new TokenServiceRevokeResponse("Not valid user!");
+                throw new BadRequestException("Not valid user!");
             }
 
             bool validRefreshToken = await usersRepository.HasRefreshToken(user, revokeRequest.RefreshToken);
             if (!validRefreshToken)
             {
-                return new TokenServiceRevokeResponse("Not valid refresh token!");
+                throw new BadRequestException("Not valid refresh token!");
             }
 
             await usersRepository.DeleteRefreshTokenAsync(user, revokeRequest.RefreshToken);

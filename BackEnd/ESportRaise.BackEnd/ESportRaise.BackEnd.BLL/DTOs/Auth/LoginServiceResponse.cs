@@ -2,16 +2,8 @@
 
 namespace ESportRaise.BackEnd.BLL.DTOs.Auth
 {
-    public sealed class LoginServiceResponse : ErrorProneOperationResponse
+    public sealed class LoginServiceResponse
     {
-        public LoginServiceResponse(IEnumerable<OperationError> errors = null) : base(errors)
-        {
-        }
-
-        public LoginServiceResponse(string error) : base(error)
-        {
-        }
-
         public string Token { get; set; }
 
         public string RefreshToken { get; set; }

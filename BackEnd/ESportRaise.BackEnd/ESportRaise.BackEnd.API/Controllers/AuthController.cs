@@ -29,10 +29,6 @@ namespace ESportRaise.BackEnd.API.Controllers
         public async Task<ActionResult> Register([FromBody] RegisterServiceRequest request)
         {
             RegisterServiceResponse response = await authService.RegisterAsync(request);
-            if (!response.Success)
-            {
-                return BadRequest(response.Errors);
-            }
 
             return Ok();
         }
@@ -41,10 +37,6 @@ namespace ESportRaise.BackEnd.API.Controllers
         public async Task<ActionResult> Login([FromBody] LoginServiceRequest request)
         {
             LoginServiceResponse response = await authService.LoginAsync(request);
-            if (!response.Success)
-            {
-                return BadRequest(response.Errors);
-            }
 
             return Ok(response);
         }
@@ -59,10 +51,6 @@ namespace ESportRaise.BackEnd.API.Controllers
                 UserName = User.Identity.Name
             };
             TokenServiceRefreshResponse response = await authService.RefreshTokenAsync(requestDTO);
-            if (!response.Success)
-            {
-                return BadRequest(response.Errors);
-            }
 
             return Ok(response);
         }
@@ -76,10 +64,6 @@ namespace ESportRaise.BackEnd.API.Controllers
                 UserName = User.Identity.Name
             };
             TokenServiceRevokeResponse response = await authService.RevokeTokenAsync(requestDTO);
-            if (!response.Success)
-            {
-                return BadRequest(response.Errors);
-            }
 
             return Ok();
         }

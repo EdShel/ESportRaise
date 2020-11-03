@@ -27,20 +27,6 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             db.Open();
         }
 
-        #region Connection management
-
-        public async Task OpenConnectionAsync()
-        {
-            await db.OpenAsync();
-        }
-
-        public void CloseConnection()
-        {
-            db.Close();
-        }
-
-        #endregion
-
         #region To implement
 
         protected abstract Func<SqlDataReader, T> SelectMapper { get; }

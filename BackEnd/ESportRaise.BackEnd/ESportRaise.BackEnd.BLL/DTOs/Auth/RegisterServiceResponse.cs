@@ -1,6 +1,6 @@
 ﻿namespace ESportRaise.BackEnd.BLL.DTOs.Auth
 {
-    public sealed class RegisterServiceResponse : ErrorProneOperationResponse
+    public sealed class RegisterServiceResponse 
     {
 
     }
