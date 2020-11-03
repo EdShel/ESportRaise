@@ -48,25 +48,29 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = $"SELECT * FROM {tableName} WHERE Id = @id";
             selectCommand.Parameters.AddWithValue("@id", id);
-            var reader = await selectCommand.ExecuteReaderAsync();
-            if (!reader.HasRows)
+            using (var reader = await selectCommand.ExecuteReaderAsync())
             {
-                throw new ArgumentException($"Not found {tableName} with Id = {id}");
+                if (await reader.ReadAsync())
+                {
+                    return SelectMapper(reader);
+                }
+                return null;
             }
-            return SelectMapper(reader);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = $"SELECT * FROM {tableName}";
-            var reader = await selectCommand.ExecuteReaderAsync();
-            var items = new List<T>();
-            while (await reader.ReadAsync())
+            using (var reader = await selectCommand.ExecuteReaderAsync())
             {
-                items.Add(SelectMapper(reader));
+                var items = new List<T>();
+                while (await reader.ReadAsync())
+                {
+                    items.Add(SelectMapper(reader));
+                }
+                return items;
             }
-            return items;
         }
 
         public async Task CreateAsync(T item)
@@ -128,7 +132,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 sb.Append('=');
                 sb.Append($"@{i}");
             }
-            sb.Append("WHERE ");
+            sb.Append(" WHERE ");
             sb.Append(UpdatePredicatePropertyEqualsValue.PropertyName);
             sb.Append("=@id");
             return sb.ToString();
@@ -161,7 +165,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         }
 
         #region IDisposable Pattern
-        
+
         protected virtual void Dispose(bool disposing)
         {
             if (!isDisposed)
