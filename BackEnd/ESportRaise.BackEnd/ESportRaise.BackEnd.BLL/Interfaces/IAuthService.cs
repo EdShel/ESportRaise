@@ -1,16 +1,16 @@
-﻿using ESportRaise.BackEnd.BLL.DTOs.Tokens;
+﻿using ESportRaise.BackEnd.BLL.DTOs.Auth;
 using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Interfaces
 {
     public interface IAuthAsyncService
     {
-        Task<LoginResponse> LoginAsync(LoginRequest loginRequest);
+        Task<LoginServiceResponse> LoginAsync(LoginServiceRequest loginRequest);
 
-        Task<RegisterResponse> RegisterAsync(RegisterRequest registerRequest);
+        Task<RegisterServiceResponse> RegisterAsync(RegisterServiceRequest registerRequest);
 
-        Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest refreshRequest);
+        Task<TokenServiceRefreshResponse> RefreshTokenAsync(TokenServiceRefreshRequest refreshRequest);
 
-        Task<TokenRevokeResponse> RevokeTokenAsync(TokenRevokeRequest revokeRequest);
+        Task<TokenServiceRevokeResponse> RevokeTokenAsync(TokenServiceRevokeRequest revokeRequest);
     }
 }

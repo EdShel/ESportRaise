@@ -27,6 +27,22 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             db.Open();
         }
 
+        #region Connection management
+
+        public async Task OpenConnectionAsync()
+        {
+            await db.OpenAsync();
+        }
+
+        public void CloseConnection()
+        {
+            db.Close();
+        }
+
+        #endregion
+
+        #region To implement
+
         protected abstract Func<SqlDataReader, T> SelectMapper { get; }
 
         protected abstract Func<T, object[]> InsertValues { get; }
@@ -34,6 +50,10 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         protected abstract Func<T, TablePropertyValuePair[]> UpdatePropertiesAndValuesExtractor { get; }
 
         protected abstract TablePropertyExtractor UpdatePredicatePropertyEqualsValue { get; }
+
+        #endregion
+
+        #region Default CRUD implementations
 
         public async Task DeleteAsync(int id)
         {
@@ -138,32 +158,8 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return sb.ToString();
         }
 
-        protected struct TablePropertyValuePair
-        {
-            public string PropertyName;
-
-            public object PropertyValue;
-
-            public TablePropertyValuePair(string propertyName, object propertyValue)
-            {
-                PropertyName = propertyName;
-                PropertyValue = propertyValue;
-            }
-        }
-
-        protected struct TablePropertyExtractor
-        {
-            public string PropertyName;
-
-            public Func<T, object> PropertyExtractor;
-
-            public TablePropertyExtractor(string propertyName, Func<T, object> propertyExtractor)
-            {
-                PropertyName = propertyName;
-                PropertyExtractor = propertyExtractor;
-            }
-        }
-
+        #endregion
+ 
         #region IDisposable Pattern
 
         protected virtual void Dispose(bool disposing)
@@ -188,6 +184,36 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        #endregion
+
+        #region Nested classes
+
+        protected struct TablePropertyValuePair
+        {
+            public string PropertyName;
+
+            public object PropertyValue;
+
+            public TablePropertyValuePair(string propertyName, object propertyValue)
+            {
+                PropertyName = propertyName;
+                PropertyValue = propertyValue;
+            }
+        }
+
+        protected struct TablePropertyExtractor
+        {
+            public string PropertyName;
+
+            public Func<T, object> PropertyExtractor;
+
+            public TablePropertyExtractor(string propertyName, Func<T, object> propertyExtractor)
+            {
+                PropertyName = propertyName;
+                PropertyExtractor = propertyExtractor;
+            }
         }
 
         #endregion

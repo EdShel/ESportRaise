@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
-using ESportRaise.BackEnd.BLL.DTOs.Tokens;
+using ESportRaise.BackEnd.BLL.DTOs.Auth;
 using System.Data.SqlClient;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.API.Models.Auth;
@@ -26,9 +26,9 @@ namespace ESportRaise.BackEnd.API.Controllers
 
         // TODO: allow Admin registration only by admins
         [HttpPost("register")]
-        public async Task<ActionResult> Register([FromBody] RegisterRequest request)
+        public async Task<ActionResult> Register([FromBody] RegisterServiceRequest request)
         {
-            RegisterResponse response = await authService.RegisterAsync(request);
+            RegisterServiceResponse response = await authService.RegisterAsync(request);
             if (!response.Success)
             {
                 return BadRequest(response.Errors);
@@ -38,9 +38,9 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] LoginRequest request)
+        public async Task<ActionResult> Login([FromBody] LoginServiceRequest request)
         {
-            LoginResponse response = await authService.LoginAsync(request);
+            LoginServiceResponse response = await authService.LoginAsync(request);
             if (!response.Success)
             {
                 return BadRequest(response.Errors);
@@ -53,12 +53,12 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpPost("refresh")]
         public async Task<ActionResult> RefreshToken([FromBody] TokenRefreshAPIRequest request)
         {
-            var requestDTO = new TokenRefreshRequest
+            var requestDTO = new TokenServiceRefreshRequest
             {
                 RefreshToken = request.RefreshToken,
                 UserName = User.Identity.Name
             };
-            TokenRefreshResponse response = await authService.RefreshTokenAsync(requestDTO);
+            TokenServiceRefreshResponse response = await authService.RefreshTokenAsync(requestDTO);
             if (!response.Success)
             {
                 return BadRequest(response.Errors);
@@ -70,12 +70,12 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpPost("revoke"), Authorize]
         public async Task<ActionResult> RevokeToken([FromBody] TokenRevokeAPIRequest request)
         {
-            var requestDTO = new TokenRevokeRequest
+            var requestDTO = new TokenServiceRevokeRequest
             {
                 RefreshToken = request.RefreshToken,
                 UserName = User.Identity.Name
             };
-            TokenRevokeResponse response = await authService.RevokeTokenAsync(requestDTO);
+            TokenServiceRevokeResponse response = await authService.RevokeTokenAsync(requestDTO);
             if (!response.Success)
             {
                 return BadRequest(response.Errors);
