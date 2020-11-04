@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using ESportRaise.BackEnd.API.Middleware;
+using ESportRaise.BackEnd.API.Models.Training;
+using ESportRaise.BackEnd.BLL.DTOs.Training;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.BLL.Services;
 using ESportRaise.BackEnd.DAL.Interfaces;
@@ -60,6 +63,12 @@ namespace ESportRaise.BackEnd.API
             services.AddTransient<IAuthAsyncService, AuthService>();
             services.AddTransient<IStreamingApiService, YouTubeV3Service>();
             services.AddTransient<ITrainingService, TrainingService>();
+
+            var mapperConfig = new MapperConfiguration(config =>
+            {
+                config.CreateMap<SaveStateRecordRequest, SaveStateRecordServiceRequest>();
+            });
+            services.AddSingleton(new Mapper(mapperConfig));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -10,7 +10,7 @@ namespace ESportRaise.BackEnd.BLL.DTOs.Training
 
         public int TrainingId { get; set; }
 
-        public int HeartBit { get; set; }
+        public int HeartRate { get; set; }
 
         public float Temperature { get; set; }
     }

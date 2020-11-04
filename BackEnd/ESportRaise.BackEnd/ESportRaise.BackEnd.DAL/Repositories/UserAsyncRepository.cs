@@ -6,50 +6,6 @@ using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.DAL.Repositories
 {
-    public class TrainingAsyncRepository : BasicAsyncRepository<Training>
-    {
-        public TrainingAsyncRepository(SqlConnection sqlConnection) : base(sqlConnection)
-        {
-        }
-
-        public async Task<int> GetTrainingId(int userId, int idlenessMinutesForNewTraining)
-        {
-            var getTrainingCommand = db.CreateCommand();
-            getTrainingCommand.CommandText = "EXEC GiveTrainingId @userId, @idleMins";
-            getTrainingCommand.Parameters.AddWithValue("@userId", userId);
-            getTrainingCommand.Parameters.AddWithValue("@idleMins", idlenessMinutesForNewTraining);
-
-            return (int)await getTrainingCommand.ExecuteScalarAsync();
-        }
-
-        #region CRUD
-
-        protected override Func<SqlDataReader, Training> SelectMapper
-        {
-            get => r => new Training
-            {
-                Id = r.GetInt32(0),
-                BeginTime = r.GetDateTime(1)
-            };
-        }
-
-        protected override Func<Training, object[]> InsertValues
-        {
-            get => t => new object[0];
-        }
-
-        protected override Func<Training, TablePropertyValuePair[]> UpdatePropertiesAndValuesExtractor
-        {
-            get => t => new TablePropertyValuePair[0];
-        }
-
-        protected override TablePropertyExtractor UpdatePredicatePropertyEqualsValue
-        {
-            get => new TablePropertyExtractor("Id", t => t.Id);
-        }
-
-        #endregion
-    }
 
     public class UserAsyncRepository : BasicAsyncRepository<AppUser>
     {
