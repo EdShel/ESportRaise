@@ -11,6 +11,7 @@ using ESportRaise.BackEnd.BLL.DTOs.Auth;
 using System.Data.SqlClient;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.API.Models.Auth;
+using Newtonsoft.Json;
 
 namespace ESportRaise.BackEnd.API.Controllers
 {
@@ -19,9 +20,12 @@ namespace ESportRaise.BackEnd.API.Controllers
     {
         private IAuthAsyncService authService;
 
-        public AuthController(IAuthAsyncService authService)
+        private IStreamingApiService streamingApiService;
+
+        public AuthController(IAuthAsyncService authService, IStreamingApiService streamingApiService)
         {
             this.authService = authService;
+            this.streamingApiService = streamingApiService;
         }
 
         // TODO: allow Admin registration only by admins
@@ -73,6 +77,17 @@ namespace ESportRaise.BackEnd.API.Controllers
         public string Check()
         {
             return "You're allowed to see it";
+        }
+
+        [HttpGet("test")]
+        public async Task<IActionResult> Test(string url)
+        {
+            BLL.DTOs.LiveStreaming.RetrieveIdServiceResponse r = await streamingApiService.GetUserId(new BLL.DTOs.LiveStreaming.RetrieveIdServiceRequest
+            {
+                ChannelUrl = url
+            });
+
+            return new JsonResult(r);
         }
     }
 }

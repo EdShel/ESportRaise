@@ -25,13 +25,18 @@ namespace ESportRaise.BackEnd.API
     {
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            Configuration = configuration;
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile("confidential.json", false)
+                .Build();
         }
 
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton(Configuration);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddScoped(_ => new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -51,6 +56,7 @@ namespace ESportRaise.BackEnd.API
             services.AddTransient<UserAsyncRepository>();
 
             services.AddTransient<IAuthAsyncService, AuthService>();
+            services.AddTransient<IStreamingApiService, YouTubeV3Service>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
