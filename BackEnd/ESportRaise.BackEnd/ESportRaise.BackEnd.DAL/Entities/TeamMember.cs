@@ -2,8 +2,11 @@
 {
     public sealed class TeamMember
     {
-        public string Name { get; set; }
+        public int Id { get; set; }
 
         public int TeamId { get; set; }
+
+        public string YouTubeId { get; set; }
+
     }
 }

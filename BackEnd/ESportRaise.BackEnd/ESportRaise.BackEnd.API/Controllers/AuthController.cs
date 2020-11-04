@@ -1,20 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
+﻿using ESportRaise.BackEnd.API.Models.Auth;
 using ESportRaise.BackEnd.BLL.DTOs.Auth;
-using System.Data.SqlClient;
 using ESportRaise.BackEnd.BLL.Interfaces;
-using ESportRaise.BackEnd.API.Models.Auth;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.API.Controllers
 {
+
     [Route("[controller]"), ApiController]
     public class AuthController : ControllerBase
     {

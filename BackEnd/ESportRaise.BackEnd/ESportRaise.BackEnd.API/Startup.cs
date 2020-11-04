@@ -50,13 +50,16 @@ namespace ESportRaise.BackEnd.API
                     options.TokenValidationParameters = tokenFactoryService.TokenValidationParameters;
                 });
 
+            services.AddTransient<UserAsyncRepository>();
+            services.AddTransient<TrainingAsyncRepository>();
+
             services.AddSingleton<IAuthTokenFactory, JwtTokenGeneratorService>();
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
             services.AddSingleton<IPasswordHasher, IdentityPasswordHasherService>();
-            services.AddTransient<UserAsyncRepository>();
 
             services.AddTransient<IAuthAsyncService, AuthService>();
             services.AddTransient<IStreamingApiService, YouTubeV3Service>();
+            services.AddTransient<ITrainingService, TrainingService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

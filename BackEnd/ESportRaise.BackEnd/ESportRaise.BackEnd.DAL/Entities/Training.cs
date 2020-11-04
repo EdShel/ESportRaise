@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace ESportRaise.BackEnd.DAL.Entities
 {
     public sealed class Training
     {
-        public int Id { set; get; }
+        public int Id { get; set; }
         
+        public int TeamId { get; set; }
+
+        public DateTime BeginTime { get; set; }
     }
 }
