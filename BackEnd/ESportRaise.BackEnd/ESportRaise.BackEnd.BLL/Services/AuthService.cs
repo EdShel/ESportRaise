@@ -119,18 +119,22 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         private static bool TryParseUserNameFromUrl(string channelUrl, out string userName)
         {
-            const string namedChannelLinkBase = "www.youtube.com/c/";
+            string namedChannelLinkBase = "www.youtube.com/c/";
             bool isNamedChannelUrl = channelUrl.Contains(namedChannelLinkBase);
-            if (isNamedChannelUrl)
+            if (!isNamedChannelUrl)
             {
-                int namedChannelUrlIndex = channelUrl.IndexOf(namedChannelLinkBase);
-                int userNameIndex = namedChannelLinkBase.Length + namedChannelUrlIndex;
-                userName = channelUrl.Substring(userNameIndex);
-                return CanBeUserName(userName);
+                namedChannelLinkBase = "www.youtube.com/user/";
+                if (!channelUrl.Contains(namedChannelLinkBase))
+                {
+                    userName = null;
+                    return false;
+                }
             }
 
-            userName = null;
-            return false;
+            int namedChannelUrlIndex = channelUrl.IndexOf(namedChannelLinkBase);
+            int userNameIndex = namedChannelLinkBase.Length + namedChannelUrlIndex;
+            userName = channelUrl.Substring(userNameIndex);
+            return CanBeUserName(userName);
         }
 
         private static bool CanBeUserName(string possibleUserName)
