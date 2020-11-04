@@ -29,7 +29,7 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         #region YouTube API interaction
 
-        private static async Task<JObject> GetJsonBodyForRequest(string url)
+        private static async Task<JObject> SendApiRequestForUrl(string url)
         {
             HttpWebRequest apiRequest = WebRequest.CreateHttp(url);
             apiRequest.Method = "GET";
@@ -47,7 +47,7 @@ namespace ESportRaise.BackEnd.BLL.Services
                 }
             }
 
-            return null;
+            throw new BadRequestException($"Server responded with an error.");
         }
 
         #endregion
@@ -105,7 +105,7 @@ namespace ESportRaise.BackEnd.BLL.Services
         {
             string idRequestUrl = $"{BASE_API_URL}/channels?part=id&id={userId}&key={apiKey}";
 
-            JObject responseObject = await GetJsonBodyForRequest(idRequestUrl);
+            JObject responseObject = await SendApiRequestForUrl(idRequestUrl);
             JArray usersArray = responseObject["items"] as JArray;
 
             if (usersArray == null || usersArray.Count == 0)
@@ -146,7 +146,7 @@ namespace ESportRaise.BackEnd.BLL.Services
         {
             string idRequestUrl = $"{BASE_API_URL}/channels?part=id&forUsername={userName}&key={apiKey}";
 
-            JObject responseObject = await GetJsonBodyForRequest(idRequestUrl);
+            JObject responseObject = await SendApiRequestForUrl(idRequestUrl);
             JArray usersArray = responseObject["items"] as JArray;
 
             if (usersArray == null || usersArray.Count == 0)
@@ -162,7 +162,21 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         public async Task<LiveStreamServiceResponse> GetCurrentLiveStream(LiveStreamServiceRequest request)
         {
-            throw new NotImplementedException();
+            string userId = request.LiveStreamingServiceUserId;
+            string liveStreamsUrl = $"{BASE_API_URL}/search?channelId={userId}&eventType=live&type=video&key={apiKey}";
+            JObject result = await SendApiRequestForUrl(liveStreamsUrl);
+
+            JArray liveStreams = result["items"] as JArray;
+            if (liveStreams == null || liveStreams.Count == 0)
+            {
+                return new LiveStreamServiceResponse();
+            }
+
+            string liveStreamId = liveStreams[0]["id"]["videoId"].Value<string>();
+            return new LiveStreamServiceResponse
+            {
+                LiveStreamId = liveStreamId
+            };
         }
     }
 

@@ -89,5 +89,16 @@ namespace ESportRaise.BackEnd.API.Controllers
 
             return new JsonResult(r);
         }
+
+        [HttpGet("live")]
+        public async Task<IActionResult> Live(string userId)
+        {
+            BLL.DTOs.LiveStreaming.LiveStreamServiceResponse r = await streamingApiService.GetCurrentLiveStream(new BLL.DTOs.LiveStreaming.LiveStreamServiceRequest
+            {
+                LiveStreamingServiceUserId = userId
+            });
+
+            return new JsonResult(r);
+        }
     }
 }
