@@ -1,5 +1,6 @@
 ﻿using ESportRaise.BackEnd.BLL.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,8 +29,15 @@ namespace ESportRaise.BackEnd.API.Middleware
 
                 context.Response.ContentType = "application/json";
 
+                var errorObject = new
+                {
+                    Code = context.Response.StatusCode,
+                    Message = exception.Message
+                };
+                string jsonError = JsonConvert.SerializeObject(errorObject);
+
                 await context.Response.Body.WriteAsync(
-                    Encoding.UTF8.GetBytes(exception.Message));
+                    Encoding.UTF8.GetBytes(jsonError));
             }
         }
     }

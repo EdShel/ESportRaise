@@ -27,13 +27,40 @@ namespace ESportRaise.BackEnd.BLL.Services
             apiKey = configuration.GetValue<string>("YouTubeApiKey");
         }
 
+        #region YouTube API interaction
+
+        private static async Task<JObject> GetJsonBodyForRequest(string url)
+        {
+            HttpWebRequest apiRequest = WebRequest.CreateHttp(url);
+            apiRequest.Method = "GET";
+            apiRequest.Accept = "application/json";
+            apiRequest.ContentType = "application/json; charset=utf-8;";
+
+            HttpWebResponse apiResponse = (await apiRequest.GetResponseAsync()) as HttpWebResponse;
+
+            if (apiResponse.StatusCode == HttpStatusCode.OK)
+            {
+                using (var responseReader = new StreamReader(apiResponse.GetResponseStream()))
+                {
+                    string responseBody = await responseReader.ReadToEndAsync();
+                    return JObject.Parse(responseBody);
+                }
+            }
+
+            return null;
+        }
+
+        #endregion
+
+        #region Finding out user id
+
         public async Task<RetrieveIdServiceResponse> GetUserId(RetrieveIdServiceRequest request)
         {
             string channelUrl = request.ChannelUrl;
             bool isLikeUserId = TryParseUserIdFromUrl(channelUrl, out string parsedUserId);
             if (isLikeUserId)
             {
-                bool isVerifiedId = await IsRegisteredUserId(parsedUserId);
+                bool isVerifiedId = await IsUserRegistered(parsedUserId);
                 if (isVerifiedId)
                 {
                     return new RetrieveIdServiceResponse { LiveStreamingServiceUserId = parsedUserId };
@@ -44,7 +71,10 @@ namespace ESportRaise.BackEnd.BLL.Services
             if (isLikeUserName)
             {
                 string userId = await GetUserIdByUserName(parsedUserName);
-                return new RetrieveIdServiceResponse { LiveStreamingServiceUserId = userId };
+                if (userId != null)
+                {
+                    return new RetrieveIdServiceResponse { LiveStreamingServiceUserId = userId };
+                }
             }
 
             throw new NotFoundException("Not valid or outdated channel URL is given!");
@@ -71,24 +101,19 @@ namespace ESportRaise.BackEnd.BLL.Services
             return new Regex(@"^UC[a-zA-Z0-9\-]+$").IsMatch(possibleUserId);
         }
 
-        private async Task<bool> IsRegisteredUserId(string userId)
+        private async Task<bool> IsUserRegistered(string userId)
         {
             string idRequestUrl = $"{BASE_API_URL}/channels?part=id&id={userId}&key={apiKey}";
-            HttpWebRequest idRequest = WebRequest.CreateHttp(idRequestUrl);
-            idRequest.Method = "GET";
-            idRequest.Accept = "application/json";
-            idRequest.ContentType = "application/json; charset=utf-8;";
 
-            string realUserId;
-            HttpWebResponse idResponse = (await idRequest.GetResponseAsync()) as HttpWebResponse;
-            using(var responseReader = new StreamReader(idResponse.GetResponseStream()))
+            JObject responseObject = await GetJsonBodyForRequest(idRequestUrl);
+            JArray usersArray = responseObject["items"] as JArray;
+
+            if (usersArray == null || usersArray.Count == 0)
             {
-                string responseBody = await responseReader.ReadToEndAsync();
-                JObject responseObject = JObject.Parse(responseBody);
-                JArray usersArray = responseObject["items"] as JArray;
-                realUserId = usersArray[0]["id"].Value<string>();
+                return false;
             }
 
+            string realUserId = usersArray[0]["id"].Value<string>();
             return realUserId == userId;
         }
 
@@ -113,32 +138,23 @@ namespace ESportRaise.BackEnd.BLL.Services
             return new Regex(@"^[a-zA-Z0-9\-]+$").IsMatch(possibleUserName);
         }
 
-        private Task<bool> CheckWhetherUserIdIsValid(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
         private async Task<string> GetUserIdByUserName(string userName)
         {
             string idRequestUrl = $"{BASE_API_URL}/channels?part=id&forUsername={userName}&key={apiKey}";
 
-            HttpWebRequest idRequest = WebRequest.CreateHttp(idRequestUrl);
-            idRequest.Method = "GET";
-            idRequest.Accept = "application/json";
-            idRequest.ContentType = "application/json; charset=utf-8;";
+            JObject responseObject = await GetJsonBodyForRequest(idRequestUrl);
+            JArray usersArray = responseObject["items"] as JArray;
 
-            string realUserId;
-            HttpWebResponse idResponse = (await idRequest.GetResponseAsync()) as HttpWebResponse;
-            using (var responseReader = new StreamReader(idResponse.GetResponseStream()))
+            if (usersArray == null || usersArray.Count == 0)
             {
-                string responseBody = await responseReader.ReadToEndAsync();
-                JObject responseObject = JObject.Parse(responseBody);
-                JArray usersArray = responseObject["items"] as JArray;
-                realUserId = usersArray[0]["id"].Value<string>();
+                return null;
             }
 
-            return realUserId;
+            string userId = usersArray[0]["id"].Value<string>();
+            return userId;
         }
+
+        #endregion
 
         public async Task<LiveStreamServiceResponse> GetCurrentLiveStream(LiveStreamServiceRequest request)
         {
