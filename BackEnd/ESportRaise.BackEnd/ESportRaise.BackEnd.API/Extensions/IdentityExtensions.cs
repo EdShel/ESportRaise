@@ -1,7 +1,7 @@
 ﻿using ESportRaise.BackEnd.BLL.Constants;
-using System;
+using ESportRaise.BackEnd.BLL.Services;
 using System.Linq;
-using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace System.Security.Claims
 {
@@ -11,6 +11,24 @@ namespace System.Security.Claims
         {
             return Convert.ToInt32(principal.Claims
                 .First(cl => cl.Type == AuthConstants.ID_CLAIM_TYPE).Value);
+        }
+
+        public static async Task<bool> IsAuthorizedToAccessTeamAsync(
+            this ClaimsPrincipal principal, 
+            int teamId, 
+            TeamMemberService teamMemberService)
+        {
+            if (principal.IsInRole(AuthConstants.ADMIN_ROLE))
+            {
+                return true;
+            }
+
+            if (await teamMemberService.GetTeamIdAsync(principal.GetUserId()) == teamId)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
