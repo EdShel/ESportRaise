@@ -13,7 +13,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         }
 
-        public async override Task CreateAsync(StateRecord stateRecord)
+        public async override Task<int> CreateAsync(StateRecord stateRecord)
         {
             var saveCommand = db.CreateCommand();
             saveCommand.CommandText =
@@ -23,6 +23,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             saveCommand.Parameters.AddWithValue("@trainingId", stateRecord.HeartRate);
             saveCommand.Parameters.AddWithValue("@trainingId", stateRecord.Temperature);
             await saveCommand.ExecuteNonQueryAsync();
+            return default;
         }
 
         public async Task<IEnumerable<StateRecord>> GetMostRecentForUserAsync(

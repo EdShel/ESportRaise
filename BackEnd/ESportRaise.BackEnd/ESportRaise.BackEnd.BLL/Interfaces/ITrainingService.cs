@@ -7,6 +7,4 @@ namespace ESportRaise.BackEnd.BLL.Interfaces
     {
         Task<InitiateTrainingServiceResponse> InitiateTrainingAsync(InitiateTrainingServiceRequest request);
     }
-
-    public interface
 }
