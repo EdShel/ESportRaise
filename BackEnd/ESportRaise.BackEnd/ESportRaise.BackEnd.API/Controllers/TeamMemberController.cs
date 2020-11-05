@@ -16,9 +16,10 @@ namespace ESportRaise.BackEnd.API.Controllers
 
         private readonly YouTubeV3Service youTubeService;
 
-        public TeamMemberController(TeamMemberService memberService)
+        public TeamMemberController(TeamMemberService memberService, YouTubeV3Service youTubeService)
         {
             this.memberService = memberService;
+            this.youTubeService = youTubeService;
         }
 
         [HttpPut("youTube")]

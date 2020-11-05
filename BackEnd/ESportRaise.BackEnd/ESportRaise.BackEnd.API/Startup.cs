@@ -55,7 +55,7 @@ namespace ESportRaise.BackEnd.API
 
             services.AddTransient<AppUserService>();
             services.AddTransient<IAuthAsyncService, AuthService>();
-            services.AddTransient<IStreamingApiService, YouTubeV3Service>();
+            services.AddTransient<YouTubeV3Service>();
             services.AddTransient<ITrainingService, TrainingService>();
             services.AddTransient<TeamService>();
             services.AddTransient<TeamMemberService>();

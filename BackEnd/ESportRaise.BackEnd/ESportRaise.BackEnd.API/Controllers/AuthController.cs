@@ -1,6 +1,8 @@
 ﻿using ESportRaise.BackEnd.API.Models.Auth;
+using ESportRaise.BackEnd.BLL.DTOs.AppUser;
 using ESportRaise.BackEnd.BLL.DTOs.Auth;
 using ESportRaise.BackEnd.BLL.Interfaces;
+using ESportRaise.BackEnd.BLL.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -12,13 +14,14 @@ namespace ESportRaise.BackEnd.API.Controllers
     {
         private IAuthAsyncService authService;
 
-        private IStreamingApiService streamingApiService;
+        private readonly AppUserService appUserService;
 
-        public AuthController(IAuthAsyncService authService, IStreamingApiService streamingApiService)
+        public AuthController(IAuthAsyncService authService, AppUserService appUserService)
         {
             this.authService = authService;
-            this.streamingApiService = streamingApiService;
+            this.appUserService = appUserService;
         }
+
 
         // TODO: allow Admin registration only by admins
         [HttpPost("register")]
@@ -64,33 +67,16 @@ namespace ESportRaise.BackEnd.API.Controllers
             return Ok();
         }
 
-        [Authorize]
-        [HttpGet]
-        public string Check()
+        [HttpGet("me"), Authorize]
+        public async Task<IActionResult> GetInfoAboutCurrentUser()
         {
-            return "You're allowed to see it";
-        }
-
-        [HttpGet("test")]
-        public async Task<IActionResult> Test(string url)
-        {
-            BLL.DTOs.LiveStreaming.RetrieveIdServiceResponse r = await streamingApiService.GetUserId(new BLL.DTOs.LiveStreaming.RetrieveIdServiceRequest
+            AppUserDTO currentUser = await appUserService.GetUserAsync(User.Identity.Name);
+            return new JsonResult(new
             {
-                ChannelUrl = url
+                Id = currentUser.Id,
+                Name = currentUser.UserName,
+                Email = currentUser.Email
             });
-
-            return new JsonResult(r);
-        }
-
-        [HttpGet("live")]
-        public async Task<IActionResult> Live(string userId)
-        {
-            BLL.DTOs.LiveStreaming.LiveStreamServiceResponse r = await streamingApiService.GetCurrentLiveStream(new BLL.DTOs.LiveStreaming.LiveStreamServiceRequest
-            {
-                LiveStreamingServiceUserId = userId
-            });
-
-            return new JsonResult(r);
         }
     }
 }
