@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 using System.Data.SqlClient;
 
 namespace ESportRaise.BackEnd.API
@@ -30,7 +31,7 @@ namespace ESportRaise.BackEnd.API
         {
             services.AddSingleton(Configuration);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddScoped(_ => new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient(_ => new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
 
             var tokenFactoryService = new JwtTokenGeneratorService(Configuration);
             services.AddSingleton<IAuthTokenFactory>(tokenFactoryService);
@@ -52,19 +53,31 @@ namespace ESportRaise.BackEnd.API
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
             services.AddSingleton<IPasswordHasher, IdentityPasswordHasherService>();
 
+            services.AddTransient<AppUserService>();
             services.AddTransient<IAuthAsyncService, AuthService>();
             services.AddTransient<IStreamingApiService, YouTubeV3Service>();
             services.AddTransient<ITrainingService, TrainingService>();
             services.AddTransient<TeamService>();
             services.AddTransient<TeamMemberService>();
             services.AddTransient<IStateRecordService, StateRecordService>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ESR API");
+                });
+
             }
             else
             {

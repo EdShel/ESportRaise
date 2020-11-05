@@ -49,7 +49,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         protected override object[] ExtractInsertValues(TeamMember item)
         {
-            return new object[] { item.TeamId, item.YouTubeId };
+            return new object[] { item.Id, item.TeamId, item.YouTubeId };
         }
 
         protected override TablePropertyValuePair[] ExtractUpdateProperties(TeamMember item)

@@ -98,6 +98,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             }
             else
             {
+                await insertCommand.ExecuteNonQueryAsync();
                 return default;
             }
         }
@@ -165,7 +166,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             {
                 if (disposing)
                 {
-                    db.Close();
+                    db.Dispose();
                 }
 
                 isDisposed = true;

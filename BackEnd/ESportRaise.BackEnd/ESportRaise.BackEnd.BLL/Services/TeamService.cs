@@ -45,6 +45,11 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         public async Task AddTeamMemberAsync(int teamId, int userId)
         {
+            Team team = await teams.GetAsync(teamId);
+            if (team == null)
+            {
+                throw new BadRequestException("Team does not exist!");
+            }
             var teamMember = new TeamMember
             {
                 Id = userId,
