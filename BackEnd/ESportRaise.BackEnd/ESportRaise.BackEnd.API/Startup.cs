@@ -43,6 +43,9 @@ namespace ESportRaise.BackEnd.API
                 });
 
             services.AddTransient<AppUserRepository>();
+            services.AddTransient<StateRecordRepository>();
+            services.AddTransient<TeamMemberRepository>();
+            services.AddTransient<TeamRepository>();
             services.AddTransient<TrainingAsyncRepository>();
 
             services.AddSingleton<IAuthTokenFactory, JwtTokenGeneratorService>();
@@ -52,6 +55,9 @@ namespace ESportRaise.BackEnd.API
             services.AddTransient<IAuthAsyncService, AuthService>();
             services.AddTransient<IStreamingApiService, YouTubeV3Service>();
             services.AddTransient<ITrainingService, TrainingService>();
+            services.AddTransient<TeamService>();
+            services.AddTransient<TeamMemberService>();
+            services.AddTransient<IStateRecordService, StateRecordService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

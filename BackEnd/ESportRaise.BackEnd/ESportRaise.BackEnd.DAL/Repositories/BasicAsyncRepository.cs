@@ -117,7 +117,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             sb.Append(");");
             if (HasIdentityId)
             {
-                sb.Append("SELECT CAST(scope_identity() AS int");
+                sb.Append("SELECT CAST(scope_identity() AS int)");
             }
             return sb.ToString();
         }
