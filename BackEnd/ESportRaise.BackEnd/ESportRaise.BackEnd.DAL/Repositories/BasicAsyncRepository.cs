@@ -16,6 +16,8 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         private bool isDisposed = false;
 
+        protected static bool HasIdentityId { get; set; } = true;
+
         static BasicAsyncRepository()
         {
             tableName = typeof(T).Name;
@@ -31,11 +33,11 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         protected abstract T MapFromReader(SqlDataReader r);
 
-        protected abstract object[] ExtractValues(T item);
+        protected abstract object[] ExtractInsertValues(T item);
 
         protected abstract TablePropertyValuePair[] ExtractUpdateProperties(T item);
 
-        protected abstract TablePropertyExtractor GetUpdateIdentifierExtractor();
+        protected abstract int GetPrimaryKeyValue(T item);
 
         #endregion
 
@@ -49,7 +51,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public async virtual Task<T> SelectAsync(int id)
+        public async virtual Task<T> GetAsync(int id)
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = $"SELECT * FROM {tableName} WHERE Id = @id";
@@ -79,18 +81,25 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             }
         }
 
-        public async virtual Task CreateAsync(T item)
+        public async virtual Task<int> CreateAsync(T item)
         {
-            var values = ExtractValues(item);
+            var values = ExtractInsertValues(item);
             var insertCommand = db.CreateCommand();
             insertCommand.CommandText = GenerateInsertCommandOfValues(values);
 
             for (int i = 0; i < values.Length; i++)
             {
-                insertCommand.Parameters.AddWithValue($"@{i}", values[i]);
+                insertCommand.Parameters.AddWithValue($"@{i}", values[i] ?? DBNull.Value);
             }
 
-            await insertCommand.ExecuteNonQueryAsync();
+            if (HasIdentityId)
+            {
+                return (int)await insertCommand.ExecuteScalarAsync();
+            }
+            else
+            {
+                return default;
+            }
         }
 
         private static string GenerateInsertCommandOfValues(object[] values)
@@ -105,7 +114,11 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 sb.Append('@');
                 sb.Append(i);
             }
-            sb.Append(')');
+            sb.Append(");");
+            if (HasIdentityId)
+            {
+                sb.Append("SELECT CAST(scope_identity() AS int");
+            }
             return sb.ToString();
         }
 
@@ -117,10 +130,10 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
             for (int i = 0; i < fieldsAndValues.Length; i++)
             {
-                updateCommand.Parameters.AddWithValue($"@{i}", fieldsAndValues[i].PropertyValue);
+                updateCommand.Parameters.AddWithValue($"@{i}", fieldsAndValues[i].PropertyValue ?? DBNull.Value);
             }
 
-            updateCommand.Parameters.AddWithValue($"@id", GetUpdateIdentifierExtractor().PropertyExtractor(item));
+            updateCommand.Parameters.AddWithValue($"@id", GetPrimaryKeyValue(item));
 
             await updateCommand.ExecuteNonQueryAsync();
         }
@@ -138,14 +151,12 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 sb.Append('=');
                 sb.Append($"@{i}");
             }
-            sb.Append(" WHERE ");
-            sb.Append(GetUpdateIdentifierExtractor().PropertyName);
-            sb.Append("=@id");
+            sb.Append(" WHERE Id = @id");
             return sb.ToString();
         }
 
         #endregion
- 
+
         #region IDisposable Pattern
 
         protected virtual void Dispose(bool disposing)
@@ -186,19 +197,6 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             {
                 PropertyName = propertyName;
                 PropertyValue = propertyValue;
-            }
-        }
-
-        protected struct TablePropertyExtractor
-        {
-            public string PropertyName;
-
-            public Func<T, object> PropertyExtractor;
-
-            public TablePropertyExtractor(string propertyName, Func<T, object> propertyExtractor)
-            {
-                PropertyName = propertyName;
-                PropertyExtractor = propertyExtractor;
             }
         }
 

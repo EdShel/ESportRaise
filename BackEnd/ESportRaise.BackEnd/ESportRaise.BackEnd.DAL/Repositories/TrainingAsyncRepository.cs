@@ -33,7 +33,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             };
         }
 
-        protected override object[] ExtractValues(Training item)
+        protected override object[] ExtractInsertValues(Training item)
         {
             return new object[0];
         }
@@ -43,9 +43,9 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return new TablePropertyValuePair[0];
         }
 
-        protected override TablePropertyExtractor GetUpdateIdentifierExtractor()
+        protected override int GetPrimaryKeyValue(Training t)
         {
-            return new TablePropertyExtractor("Id", t => t.Id);
+            return t.Id;
         }
 
         #endregion

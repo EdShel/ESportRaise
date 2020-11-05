@@ -7,7 +7,7 @@ namespace ESportRaise.BackEnd.DAL.Interfaces
     {
         Task<IEnumerable<T>> GetAllAsync();
 
-        Task CreateAsync(T item);
+        Task<int> CreateAsync(T item);
 
         Task UpdateAsync(T item);
 

@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.DAL.Repositories
 {
-
-    public class UserAsyncRepository : BasicAsyncRepository<AppUser>
+    public class AppUserRepository : BasicAsyncRepository<AppUser>
     {
         private IPasswordHasher passwordHasher;
 
-        public UserAsyncRepository(SqlConnection databaseConnection, IPasswordHasher passwordHasher)
+        public AppUserRepository(SqlConnection databaseConnection, IPasswordHasher passwordHasher)
             : base(databaseConnection)
         {
             this.passwordHasher = passwordHasher;
@@ -140,7 +139,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             };
         }
 
-        protected override object[] ExtractValues(AppUser user)
+        protected override object[] ExtractInsertValues(AppUser user)
         {
             return new object[]
             {
@@ -153,9 +152,9 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return new TablePropertyValuePair[] { };
         }
 
-        protected override TablePropertyExtractor GetUpdateIdentifierExtractor()
+        protected override int GetPrimaryKeyValue(AppUser user)
         {
-            return new TablePropertyExtractor(nameof(AppUser.Id), user => user.Id);
+            return user.Id;
         }
 
         #endregion

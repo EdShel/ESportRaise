@@ -55,7 +55,7 @@ namespace ESportRaise.BackEnd.API
                     options.TokenValidationParameters = tokenFactoryService.TokenValidationParameters;
                 });
 
-            services.AddTransient<UserAsyncRepository>();
+            services.AddTransient<AppUserRepository>();
             services.AddTransient<TrainingAsyncRepository>();
 
             services.AddSingleton<IAuthTokenFactory, JwtTokenGeneratorService>();

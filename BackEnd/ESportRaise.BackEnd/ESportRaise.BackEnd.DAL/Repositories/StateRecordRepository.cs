@@ -86,7 +86,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             };
         }
 
-        protected override object[] ExtractValues(StateRecord item)
+        protected override object[] ExtractInsertValues(StateRecord item)
         {
             throw new NotImplementedException();
         }
@@ -96,9 +96,9 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             throw new NotImplementedException();
         }
 
-        protected override TablePropertyExtractor GetUpdateIdentifierExtractor()
+        protected override int GetPrimaryKeyValue(StateRecord item)
         {
-            throw new NotImplementedException();
+            return item.Id;
         }
 
         #endregion

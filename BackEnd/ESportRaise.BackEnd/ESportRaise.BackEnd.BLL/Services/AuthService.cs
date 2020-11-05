@@ -13,13 +13,13 @@ namespace ESportRaise.BackEnd.BLL.Services
 {
     public class AuthService : IAuthAsyncService
     {
-        private UserAsyncRepository usersRepository;
+        private AppUserRepository usersRepository;
 
         private IAuthTokenFactory tokenFactory;
 
         private IRefreshTokenFactory refreshTokenFactory;
 
-        public AuthService(UserAsyncRepository users, IAuthTokenFactory tokenFactory, IRefreshTokenFactory refreshTokenFactory)
+        public AuthService(AppUserRepository users, IAuthTokenFactory tokenFactory, IRefreshTokenFactory refreshTokenFactory)
         {
             this.usersRepository = users;
             this.tokenFactory = tokenFactory;
