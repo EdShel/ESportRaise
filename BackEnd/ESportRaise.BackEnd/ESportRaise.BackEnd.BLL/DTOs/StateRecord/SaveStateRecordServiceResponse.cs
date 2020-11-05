@@ -1,4 +1,4 @@
-﻿namespace ESportRaise.BackEnd.BLL.DTOs.Training
+﻿namespace ESportRaise.BackEnd.BLL.DTOs.StateRecord
 {
     public class SaveStateRecordServiceResponse
     {

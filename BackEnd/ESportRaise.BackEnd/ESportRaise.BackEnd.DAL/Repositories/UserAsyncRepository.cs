@@ -17,40 +17,6 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             this.passwordHasher = passwordHasher;
         }
 
-        #region Default mapping
-
-        protected override Func<SqlDataReader, AppUser> SelectMapper
-        {
-            get => r => new AppUser
-            {
-                Id = r.GetInt32(0),
-                UserName = r.GetString(1),
-                Email = r.GetString(2),
-                HashedPassword = r.GetString(3),
-                UserRole = r.GetString(4)
-            };
-        }
-
-        protected override Func<AppUser, object[]> InsertValues
-        {
-            get => user => new object[]
-            {
-                user.UserName, user.Email, user.HashedPassword, user.UserRole
-            };
-        }
-
-        protected override Func<AppUser, TablePropertyValuePair[]> UpdatePropertiesAndValuesExtractor
-        {
-            get => user => new TablePropertyValuePair[] { };
-        }
-
-        protected override TablePropertyExtractor UpdatePredicatePropertyEqualsValue
-        {
-            get => new TablePropertyExtractor(nameof(AppUser.Id), user => user.Id);
-        }
-
-        #endregion
-
         public async Task CreateAsync(AppUser user, string password)
         {
             var hashedPassword = passwordHasher.HashPassword(password);
@@ -70,7 +36,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 reader = await selectCommand.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
                 {
-                    return SelectMapper(reader);
+                    return MapFromReader(reader);
                 }
             }
             finally
@@ -92,7 +58,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 reader = await selectCommand.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
                 {
-                    return SelectMapper(reader);
+                    return MapFromReader(reader);
                 }
             }
             finally
@@ -159,5 +125,40 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             deleteCommand.Parameters.AddWithValue("@token", refreshToken);
             await deleteCommand.ExecuteNonQueryAsync();
         }
+
+        #region Default mapping
+
+        protected override AppUser MapFromReader(SqlDataReader r)
+        {
+            return new AppUser
+            {
+                Id = r.GetInt32(0),
+                UserName = r.GetString(1),
+                Email = r.GetString(2),
+                HashedPassword = r.GetString(3),
+                UserRole = r.GetString(4)
+            };
+        }
+
+        protected override object[] ExtractValues(AppUser user)
+        {
+            return new object[]
+            {
+                user.UserName, user.Email, user.HashedPassword, user.UserRole
+            };
+        }
+
+        protected override TablePropertyValuePair[] ExtractUpdateProperties(AppUser item)
+        {
+            return new TablePropertyValuePair[] { };
+        }
+
+        protected override TablePropertyExtractor GetUpdateIdentifierExtractor()
+        {
+            return new TablePropertyExtractor(nameof(AppUser.Id), user => user.Id);
+        }
+
+        #endregion
+
     }
 }

@@ -21,42 +21,31 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return (int)await getTrainingCommand.ExecuteScalarAsync();
         }
 
-        public async Task SaveStateRecordAsync(StateRecord stateRecord)
-        {
-            var saveCommand = db.CreateCommand();
-            saveCommand.CommandText = 
-                "EXEC SaveStateRecord @teamMember, @trainingId, @heartRate, @temperature";
-            saveCommand.Parameters.AddWithValue("@teamMember", stateRecord.TeamMemberId);
-            saveCommand.Parameters.AddWithValue("@trainingId", stateRecord.TrainingId);
-            saveCommand.Parameters.AddWithValue("@trainingId", stateRecord.HeartRate);
-            saveCommand.Parameters.AddWithValue("@trainingId", stateRecord.Temperature);
-            await saveCommand.ExecuteNonQueryAsync();
-        }
 
         #region CRUD
 
-        protected override Func<SqlDataReader, Training> SelectMapper
+        protected override Training MapFromReader(SqlDataReader r)
         {
-            get => r => new Training
+            return new Training
             {
                 Id = r.GetInt32(0),
                 BeginTime = r.GetDateTime(1)
             };
         }
 
-        protected override Func<Training, object[]> InsertValues
+        protected override object[] ExtractValues(Training item)
         {
-            get => t => new object[0];
+            return new object[0];
         }
 
-        protected override Func<Training, TablePropertyValuePair[]> UpdatePropertiesAndValuesExtractor
+        protected override TablePropertyValuePair[] ExtractUpdateProperties(Training item)
         {
-            get => t => new TablePropertyValuePair[0];
+            return new TablePropertyValuePair[0];
         }
 
-        protected override TablePropertyExtractor UpdatePredicatePropertyEqualsValue
+        protected override TablePropertyExtractor GetUpdateIdentifierExtractor()
         {
-            get => new TablePropertyExtractor("Id", t => t.Id);
+            return new TablePropertyExtractor("Id", t => t.Id);
         }
 
         #endregion

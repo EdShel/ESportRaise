@@ -29,19 +29,19 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         #region To implement
 
-        protected abstract Func<SqlDataReader, T> SelectMapper { get; }
+        protected abstract T MapFromReader(SqlDataReader r);
 
-        protected abstract Func<T, object[]> InsertValues { get; }
+        protected abstract object[] ExtractValues(T item);
 
-        protected abstract Func<T, TablePropertyValuePair[]> UpdatePropertiesAndValuesExtractor { get; }
+        protected abstract TablePropertyValuePair[] ExtractUpdateProperties(T item);
 
-        protected abstract TablePropertyExtractor UpdatePredicatePropertyEqualsValue { get; }
+        protected abstract TablePropertyExtractor GetUpdateIdentifierExtractor();
 
         #endregion
 
         #region Default CRUD implementations
 
-        public async Task DeleteAsync(int id)
+        public async virtual Task DeleteAsync(int id)
         {
             var deleteCommand = db.CreateCommand();
             deleteCommand.CommandText = $"DELETE FROM {tableName} WHERE Id = @id";
@@ -49,7 +49,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public async Task<T> SelectAsync(int id)
+        public async virtual Task<T> SelectAsync(int id)
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = $"SELECT * FROM {tableName} WHERE Id = @id";
@@ -58,13 +58,13 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             {
                 if (await reader.ReadAsync())
                 {
-                    return SelectMapper(reader);
+                    return MapFromReader(reader);
                 }
                 return null;
             }
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async virtual Task<IEnumerable<T>> GetAllAsync()
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = $"SELECT * FROM {tableName}";
@@ -73,15 +73,15 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 var items = new List<T>();
                 while (await reader.ReadAsync())
                 {
-                    items.Add(SelectMapper(reader));
+                    items.Add(MapFromReader(reader));
                 }
                 return items;
             }
         }
 
-        public async Task CreateAsync(T item)
+        public async virtual Task CreateAsync(T item)
         {
-            var values = InsertValues(item);
+            var values = ExtractValues(item);
             var insertCommand = db.CreateCommand();
             insertCommand.CommandText = GenerateInsertCommandOfValues(values);
 
@@ -109,9 +109,9 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return sb.ToString();
         }
 
-        public async Task UpdateAsync(T item)
+        public async virtual Task UpdateAsync(T item)
         {
-            var fieldsAndValues = UpdatePropertiesAndValuesExtractor(item);
+            var fieldsAndValues = ExtractUpdateProperties(item);
             var updateCommand = db.CreateCommand();
             updateCommand.CommandText = GenerateUpdateCommandOfPropertiesAndValues(fieldsAndValues);
 
@@ -120,7 +120,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 updateCommand.Parameters.AddWithValue($"@{i}", fieldsAndValues[i].PropertyValue);
             }
 
-            updateCommand.Parameters.AddWithValue($"@id", UpdatePredicatePropertyEqualsValue.PropertyExtractor(item));
+            updateCommand.Parameters.AddWithValue($"@id", GetUpdateIdentifierExtractor().PropertyExtractor(item));
 
             await updateCommand.ExecuteNonQueryAsync();
         }
@@ -139,7 +139,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 sb.Append($"@{i}");
             }
             sb.Append(" WHERE ");
-            sb.Append(UpdatePredicatePropertyEqualsValue.PropertyName);
+            sb.Append(GetUpdateIdentifierExtractor().PropertyName);
             sb.Append("=@id");
             return sb.ToString();
         }

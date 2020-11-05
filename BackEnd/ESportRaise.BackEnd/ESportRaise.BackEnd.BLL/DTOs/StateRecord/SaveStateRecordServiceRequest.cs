@@ -1,10 +1,10 @@
-﻿namespace ESportRaise.BackEnd.API.Models.Training
+﻿namespace ESportRaise.BackEnd.BLL.DTOs.StateRecord
 {
-    public class SaveStateRecordRequest
+    public class SaveStateRecordServiceRequest
     {
-        public int UserId { get; set; }
-
         public int TrainingId { get; set; }
+
+        public int TeamMemberId { get; set; }
 
         public int HeartRate { get; set; }
 

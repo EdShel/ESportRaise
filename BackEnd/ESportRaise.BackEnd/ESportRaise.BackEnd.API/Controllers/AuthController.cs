@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.API.Controllers
 {
-
     [Route("[controller]"), ApiController]
     public class AuthController : ControllerBase
     {
