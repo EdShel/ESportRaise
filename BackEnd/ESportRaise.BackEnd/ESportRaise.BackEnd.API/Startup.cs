@@ -65,6 +65,9 @@ namespace ESportRaise.BackEnd.API
             services.AddTransient<TrainingService>();
             services.AddTransient<YouTubeV3Service>();
 
+            services.AddTransient<DatabaseRepository>();
+            services.AddTransient<DatabaseBackupService>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
