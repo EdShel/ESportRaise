@@ -15,9 +15,12 @@ namespace ESportRaise.BackEnd.API.Controllers
     {
         private DatabaseBackupService databaseBackupService;
 
-        public AdminController(DatabaseBackupService databaseBackupService)
+        private ConfigChangeService configChangeService;
+
+        public AdminController(DatabaseBackupService databaseBackupService, ConfigChangeService configChangeService)
         {
             this.databaseBackupService = databaseBackupService;
+            this.configChangeService = configChangeService;
         }
 
         [HttpPost("backupDb")]
@@ -26,6 +29,19 @@ namespace ESportRaise.BackEnd.API.Controllers
             await databaseBackupService.BackupDatabase(request.BackupFile);
 
             return Ok();
+        }
+
+        [HttpGet("getBackup")]
+        public IActionResult SendBackup(string file)
+        {
+            System.IO.Stream backupFileStream = databaseBackupService.GetBackupAsStream(file);
+            return File(backupFileStream, "application/octet-stream");
+        }
+
+        [HttpGet("config")]
+        public IActionResult GetConfiguration()
+        {
+            return Ok(configChangeService.GetConfigurations());
         }
     }
 }

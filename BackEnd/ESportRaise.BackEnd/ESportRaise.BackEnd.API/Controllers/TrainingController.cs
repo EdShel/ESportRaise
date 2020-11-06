@@ -39,7 +39,17 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpGet("broadcast")]
         public async Task<IActionResult> GetVideoStreamsForTraining(int trainingId)
         {
-            trainingService.
+            IEnumerable<VideoStreamDTO> videoStreams = await trainingService.GetVideoStreamsAsync(trainingId);
+            return new JsonResult(new
+            {
+                TrainingId = trainingId,
+                Streams = videoStreams.Select(stream => new
+                {
+                    stream.Id,
+                    stream.TeamMemberId,
+                    stream.StreamId
+                })
+            });
         }
 
         [HttpGet("last")]

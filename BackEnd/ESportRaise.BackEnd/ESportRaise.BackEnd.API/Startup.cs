@@ -21,7 +21,7 @@ namespace ESportRaise.BackEnd.API
             Configuration = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", false, true)
-                .AddJsonFile("confidential.json", false)
+                .AddJsonFile("confidential.json", false, true)
                 .Build();
         }
 
@@ -56,6 +56,7 @@ namespace ESportRaise.BackEnd.API
 
             services.AddTransient<AppUserService>();
             services.AddTransient<IAuthAsyncService, AuthService>();
+            services.AddTransient<ConfigChangeService>();
             services.AddTransient<CriticalMomentService>();
             services.AddSingleton<IAuthTokenFactory, JwtTokenGeneratorService>();
             services.AddTransient<IStateRecordService, StateRecordService>();
