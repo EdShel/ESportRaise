@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ESportRaise.BackEnd.API.Models.Admin
 {
@@ -6,5 +7,9 @@ namespace ESportRaise.BackEnd.API.Models.Admin
     {
         [Required]
         public string BackupFile { get; set; }
+    }
+
+    public class ConfigurationChangeRequest : List<KeyValuePair<string, string>>
+    {
     }
 }

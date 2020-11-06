@@ -1,5 +1,6 @@
 ﻿using ESportRaise.BackEnd.API.Models.Admin;
 using ESportRaise.BackEnd.BLL.Constants;
+using ESportRaise.BackEnd.BLL.DTOs.ConfigChange;
 using ESportRaise.BackEnd.BLL.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,6 +43,17 @@ namespace ESportRaise.BackEnd.API.Controllers
         public IActionResult GetConfiguration()
         {
             return Ok(configChangeService.GetConfigurations());
+        }
+
+        [HttpPut("config")]
+        public IActionResult SetConfiguration([FromBody] ConfigurationChangeRequest request)
+        {
+            configChangeService.ChangeConfiguration(request.Select(opt => new ConfigurationOption
+            {
+                Key = opt.Key,
+                Value = opt.Value
+            }));
+            return Ok();
         }
     }
 }
