@@ -10,6 +10,11 @@ namespace ESportRaise.BackEnd.BLL.DTOs.CriticalMoment
 
         public DateTime End { get; set; }
 
+        public double GetDurationInSeconds()
+        {
+            return (End - Begin).TotalSeconds;
+        }
+
         public static IEnumerable<TimeInterval> MergeIntervals(IEnumerable<TimeInterval> intervals)
         {
             var accumulator = intervals.First();

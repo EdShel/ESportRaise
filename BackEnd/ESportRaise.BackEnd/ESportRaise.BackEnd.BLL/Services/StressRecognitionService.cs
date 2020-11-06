@@ -9,15 +9,19 @@ namespace ESportRaise.BackEnd.BLL.Services
 {
     public sealed class StressRecognitionService
     {
-        private readonly int heartRateQuarterDuration;
+        private readonly IndicatorParameters heartRateParameters;
 
-        private readonly int temperatureQuarterDuration;
+        private readonly IndicatorParameters temperatureParameters;
 
         public StressRecognitionService(IConfiguration configuration)
         {
             var recognitionSettings = configuration.GetSection("StressRecognition");
-            heartRateQuarterDuration = recognitionSettings.GetValue<int>("HeartRateQuarterDurationSeconds");
-            temperatureQuarterDuration = recognitionSettings.GetValue<int>("TemperatureQuarterDurationSeconds");
+
+            heartRateParameters = new IndicatorParameters();
+            recognitionSettings.Bind("HeartRate", heartRateParameters);
+
+            temperatureParameters = new IndicatorParameters();
+            recognitionSettings.Bind("Temperature", temperatureParameters);
         }
 
         public IEnumerable<TimeInterval> FindCriticalMoments(IEnumerable<StateRecord> states)
@@ -33,12 +37,14 @@ namespace ESportRaise.BackEnd.BLL.Services
                 var abnormalHeartRateIntervals = GetStressfulSpansForHealthIndicator(
                     statesOfPerson,
                     state => state.HeartRate,
-                    heartRateQuarterDuration);
+                    heartRateParameters)
+                    .ToArray();
 
                 var abnormalTemperatureIntervs = GetStressfulSpansForHealthIndicator(
                     statesOfPerson,
                     state => state.Temperature,
-                    temperatureQuarterDuration);
+                    temperatureParameters)
+                    .ToArray();
 
                 var criticalMoments = new[]
                 {
@@ -55,97 +61,44 @@ namespace ESportRaise.BackEnd.BLL.Services
         private static IEnumerable<TimeInterval> GetStressfulSpansForHealthIndicator(
             IEnumerable<StateRecord> statesOfPerson,
             Func<StateRecord, float> healthIndicatorExtractor,
-            int quarterDuration)
+            IndicatorParameters parameters)
         {
             DateTime begin = statesOfPerson.First().CreateTime;
             var normalizedStates = statesOfPerson.Select(state => new PhysicalState
             {
                 StateIndicator = healthIndicatorExtractor(state),
-                RelativeTimeInSeconds = (state.CreateTime - begin).TotalSeconds
-            });
+                Time = state.CreateTime
 
-            var stdevsForHeartRate = GetStdDevsForQuarters(
-                    normalizedStates,
-                    quarterDuration)
-                .ToArray();
+            }).ToArray();
 
-            var stressfulQuarters = GetStressfulQuartersIndices(stdevsForHeartRate);
-            var criticalMoments = stressfulQuarters.Select(quarter => new TimeInterval
+            double mean = normalizedStates.Select(state => state.StateIndicator).Average();
+            double stdev = StandardDeviation(normalizedStates.Select(state => state.StateIndicator));
+
+            int abnormalValuesInRow = 0;
+            for (int i = 0; i < normalizedStates.Length; i++)
             {
-                Begin = begin.AddSeconds(quarter.BeginQuarterIndex * quarterDuration),
-                End = begin.AddSeconds(quarter.EndQuarterIndex * quarterDuration)
-            });
-            return criticalMoments;
-        }
-        private class CriticalQuarterSpan
-        {
-            public int BeginQuarterIndex { get; set; }
+                PhysicalState state = normalizedStates[i];
+                float indicator = state.StateIndicator;
 
-            public int EndQuarterIndex { get; set; }
-        }
-
-        private static IEnumerable<CriticalQuarterSpan> GetStressfulQuartersIndices(IEnumerable<QuarterStdevs> quartersStdevs)
-        {
-            bool isStressfulStateNow = false;
-            int stressQuarterBegin = -1;
-            foreach (var stdevs in quartersStdevs)
-            {
-                double stdevFromOneToThreeFourth = stdevs.FromOneToThreeFourth;
-                double stdevFourFourth = stdevs.FourFourth;
-                bool differByTwoSigma = stdevFourFourth / stdevFromOneToThreeFourth >= 2d;
-                if (differByTwoSigma)
+                bool isAbnormalValue = indicator - mean >= parameters.SigmaCoefficient * stdev;
+                bool isLastRecord = i == normalizedStates.Length - 1;
+                if (isAbnormalValue && !isLastRecord)
                 {
-                    if (isStressfulStateNow)
-                    {
-                        yield return new CriticalQuarterSpan
-                        {
-                            BeginQuarterIndex = stressQuarterBegin,
-                            EndQuarterIndex = stdevs.QuarterEndIndex
-                        };
-                        isStressfulStateNow = false;
-                    }
-                    else
-                    {
-                        isStressfulStateNow = true;
-                        stressQuarterBegin = stdevs.QuarterEndIndex;
-                    }
+                    abnormalValuesInRow++;
                 }
-            }
-        }
-
-        private static IEnumerable<QuarterStdevs> GetStdDevsForQuarters(
-            IEnumerable<PhysicalState> normalizedStates,
-            int quarterDur)
-        {
-            var statesByQuarters = normalizedStates
-                .GroupBy(state => (int)(state.RelativeTimeInSeconds / quarterDur));
-
-            int quartersCount = statesByQuarters.Select(k => k.Key).Max();
-            if (quartersCount < 3)
-            {
-                yield break;
-            }
-
-            for (int i = 3; i < quartersCount; i++)
-            {
-                double quarterStdev = StandardDeviation(
-                    statesByQuarters
-                    .Where(stateQuarter => stateQuarter.Key == i)
-                    .SelectMany(stateQuarter => stateQuarter
-                        .Select(state => state.StateIndicator)));
-                double previousThreeQuartersStdev = StandardDeviation(
-                    statesByQuarters
-                        .Where(stateQuarter => i - stateQuarter.Key > 0 && i - stateQuarter.Key <= 3)
-                        .SelectMany(stateQuarter => stateQuarter
-                            .Select(state => state.StateIndicator)));
-
-                yield return new QuarterStdevs
+                else if (abnormalValuesInRow > 0)
                 {
-                    QuarterBeginIndex = i - 3,
-                    QuarterEndIndex = i,
-                    FromOneToThreeFourth = previousThreeQuartersStdev,
-                    FourFourth = quarterStdev
-                };
+                    var interval = new TimeInterval
+                    {
+                        Begin = normalizedStates[i - abnormalValuesInRow].Time,
+                        End = normalizedStates[i].Time
+                    };
+                    if (interval.GetDurationInSeconds() >= parameters.MinDurationSeconds)
+                    {
+                        yield return interval;
+                    }
+                    abnormalValuesInRow = 0;
+                }
             }
         }
 
@@ -163,18 +116,19 @@ namespace ESportRaise.BackEnd.BLL.Services
         {
             public float StateIndicator { get; set; }
 
-            public double RelativeTimeInSeconds { get; set; }
+            public DateTime Time { get; set; }
+
+            public override string ToString()
+            {
+                return $"{StateIndicator} - {Time.ToString("hh:mm:ss")}";
+            }
         }
 
-        private class QuarterStdevs
+        private class IndicatorParameters
         {
-            public int QuarterBeginIndex { get; set; }
+            public double MinDurationSeconds { get; set; }
 
-            public int QuarterEndIndex { get; set; }
-
-            public double FromOneToThreeFourth { get; set; }
-
-            public double FourFourth { get; set; }
+            public double SigmaCoefficient { get; set; }
         }
     }
 }

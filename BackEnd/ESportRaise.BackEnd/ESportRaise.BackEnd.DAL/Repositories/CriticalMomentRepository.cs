@@ -1,6 +1,7 @@
 ﻿using ESportRaise.BackEnd.DAL.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -26,7 +27,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         {
             var insertCommand = db.CreateCommand();
             insertCommand.CommandText =
-                "INSERT INTO CriticalMomentsCache VALUES(@trainingId, TRUE)";
+                "INSERT INTO CriticalMomentsCache(TrainingId) VALUES(@trainingId)";
             insertCommand.Parameters.AddWithValue("@trainingId", trainingId);
             await insertCommand.ExecuteNonQueryAsync();
         }
@@ -52,9 +53,9 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             string insertSql = $"INSERT INTO {nameof(CriticalMoment)} VALUES(@trainingId, @beginTime, @endTime)";
             var insertCommand = db.CreateCommand();
             insertCommand.CommandText = insertSql;
-            insertCommand.Parameters.Add("@trainingId");
-            insertCommand.Parameters.Add("@beginTime");
-            insertCommand.Parameters.Add("@endTime");
+            insertCommand.Parameters.Add("@trainingId", SqlDbType.Int);
+            insertCommand.Parameters.Add("@beginTime", SqlDbType.DateTime);
+            insertCommand.Parameters.Add("@endTime", SqlDbType.DateTime);
             using(var transaction = db.BeginTransaction())
             {
                 insertCommand.Transaction = transaction;
