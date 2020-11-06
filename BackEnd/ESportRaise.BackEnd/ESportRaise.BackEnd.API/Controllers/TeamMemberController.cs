@@ -1,6 +1,7 @@
 ﻿using ESportRaise.BackEnd.API.Models.TeamMember;
 using ESportRaise.BackEnd.BLL.Constants;
 using ESportRaise.BackEnd.BLL.DTOs.LiveStreaming;
+using ESportRaise.BackEnd.BLL.Exceptions;
 using ESportRaise.BackEnd.BLL.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,13 +26,13 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpPut("youTube")]
         public async Task<IActionResult> ChangeYouTubeAccount([FromBody] EditYouTubeIdRequest request)
         {
-            var apiIdRequest = new RetrieveIdServiceRequest
-            {
-                ChannelUrl = request.ChannelUrl
-            };
-            RetrieveIdServiceResponse apiIdResponse = await youTubeService.GetUserId(apiIdRequest);
             int userId = User.GetUserId();
-            await memberService.ChangeYouTubeChannelId(userId, apiIdResponse.LiveStreamingServiceUserId);
+            if (memberService.GetTeamMemberOrNullAsync(userId) == null)
+            {
+                throw new BadRequestException("You need to belong to a team first!");
+            }
+            string channelId = await youTubeService.GetUserId(request.ChannelUrl);
+            await memberService.ChangeYouTubeChannelId(userId, channelId);
 
             return Ok();
         }

@@ -1,6 +1,6 @@
 ﻿namespace ESportRaise.BackEnd.BLL.DTOs.Auth
 {
-    public sealed class TokenServiceRevokeRequest
+    public sealed class TokenRevokeDTO
     {
         public string UserName { get; set; }
 

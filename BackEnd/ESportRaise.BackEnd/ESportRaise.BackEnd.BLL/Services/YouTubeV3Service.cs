@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-
     public sealed class YouTubeV3Service : IStreamingApiService
     {
         private const string BASE_API_URL = "https://www.googleapis.com/youtube/v3";
@@ -49,16 +48,15 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         #region Finding out user id
 
-        public async Task<RetrieveIdServiceResponse> GetUserId(RetrieveIdServiceRequest request)
+        public async Task<string> GetUserId(string channelUrl)
         {
-            string channelUrl = request.ChannelUrl;
             bool isLikeUserId = TryParseUserIdFromUrl(channelUrl, out string parsedUserId);
             if (isLikeUserId)
             {
                 bool isVerifiedId = await IsUserRegistered(parsedUserId);
                 if (isVerifiedId)
                 {
-                    return new RetrieveIdServiceResponse { LiveStreamingServiceUserId = parsedUserId };
+                    return parsedUserId;
                 }
             }
 
@@ -68,7 +66,7 @@ namespace ESportRaise.BackEnd.BLL.Services
                 string userId = await GetUserIdByUserName(parsedUserName);
                 if (userId != null)
                 {
-                    return new RetrieveIdServiceResponse { LiveStreamingServiceUserId = userId };
+                    return userId;
                 }
             }
 
@@ -155,7 +153,7 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         #endregion
 
-        public async Task<LiveStreamServiceResponse> GetCurrentLiveStream(LiveStreamServiceRequest request)
+        public async Task<LiveStreamResponseDTO> GetCurrentLiveStream(LiveStreamRequestDTO request)
         {
             string userId = request.LiveStreamingServiceUserId;
             string liveStreamsUrl = $"{BASE_API_URL}/search?channelId={userId}&eventType=live&type=video&key={apiKey}";
@@ -164,11 +162,11 @@ namespace ESportRaise.BackEnd.BLL.Services
             JArray liveStreams = result["items"] as JArray;
             if (liveStreams == null || liveStreams.Count == 0)
             {
-                return new LiveStreamServiceResponse();
+                return new LiveStreamResponseDTO();
             }
 
             string liveStreamId = liveStreams[0]["id"]["videoId"].Value<string>();
-            return new LiveStreamServiceResponse
+            return new LiveStreamResponseDTO
             {
                 LiveStreamId = liveStreamId
             };

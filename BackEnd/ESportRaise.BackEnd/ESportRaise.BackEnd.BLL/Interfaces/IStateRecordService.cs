@@ -5,8 +5,8 @@ namespace ESportRaise.BackEnd.BLL.Interfaces
 {
     public interface IStateRecordService
     {
-        Task<SaveStateRecordServiceResponse> SaveStateRecordAsync(SaveStateRecordServiceRequest request);
+        Task SaveStateRecordAsync(StateRecordDTO request);
 
-        Task<GetStateRecordServiceResponse> GetRecentAsync(GetStateRecordServiceRequest request);
+        Task<StateRecordSlimDTO> GetRecentAsync(StateRecordRequestDTO request);
     }
 }

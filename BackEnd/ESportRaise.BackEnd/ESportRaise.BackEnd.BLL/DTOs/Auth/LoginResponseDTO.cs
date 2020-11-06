@@ -2,7 +2,7 @@
 
 namespace ESportRaise.BackEnd.BLL.DTOs.Auth
 {
-    public sealed class LoginServiceResponse
+    public sealed class LoginResponseDTO
     {
         public string Token { get; set; }
 

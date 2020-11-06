@@ -26,7 +26,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             this.refreshTokenFactory = refreshTokenFactory;
         }
 
-        public async Task<LoginServiceResponse> LoginAsync(LoginServiceRequest loginRequest)
+        public async Task<LoginResponseDTO> LoginAsync(LoginRequestDTO loginRequest)
         {
             AppUser user = await usersRepository.GetUserOrDefaultByEmailOrUserNameAsync(loginRequest.EmailOrUserName);
             if (user != null && usersRepository.IsUserPasswordCorrect(user, loginRequest.Password))
@@ -35,7 +35,7 @@ namespace ESportRaise.BackEnd.BLL.Services
                 var refreshToken = refreshTokenFactory.GenerateToken();
                 await usersRepository.CreateRefreshTokenAsync(user, refreshToken);
 
-                return new LoginServiceResponse
+                return new LoginResponseDTO
                 {
                     UserName = user.UserName,
                     Email = user.Email,
@@ -57,7 +57,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             return userClaims;
         }
 
-        public async Task<RegisterServiceResponse> RegisterAsync(RegisterServiceRequest registerRequest)
+        public async Task RegisterAsync(RegisterDTO registerRequest)
         {
             bool emailIsTaken = await usersRepository.IsAnyUserWithEmailAsync(registerRequest.Email);
             if (emailIsTaken)
@@ -78,11 +78,9 @@ namespace ESportRaise.BackEnd.BLL.Services
                 UserRole = registerRequest.Role
             };
             await usersRepository.CreateAsync(user, registerRequest.Password);
-
-            return new RegisterServiceResponse();
         }
 
-        public async Task<TokenServiceRefreshResponse> RefreshTokenAsync(TokenServiceRefreshRequest refreshRequest)
+        public async Task<TokenRefreshResponseDTO> RefreshTokenAsync(TokenRefreshRequestDTO refreshRequest)
         {
             AppUser user = await usersRepository.GetUserOrDefaultByUserNameAsync(refreshRequest.UserName);
             if (user == null)
@@ -102,14 +100,14 @@ namespace ESportRaise.BackEnd.BLL.Services
             await usersRepository.CreateRefreshTokenAsync(user, newRefreshToken);
 
             var userClaims = GetTokenClaimsForUser(user);
-            return new TokenServiceRefreshResponse
+            return new TokenRefreshResponseDTO
             {
                 Token = tokenFactory.GenerateTokenForClaims(userClaims),
                 RefreshToken = newRefreshToken
             };
         }
 
-        public async Task<TokenServiceRevokeResponse> RevokeTokenAsync(TokenServiceRevokeRequest revokeRequest)
+        public async Task RevokeTokenAsync(TokenRevokeDTO revokeRequest)
         {
             var user = await usersRepository.GetUserOrDefaultByUserNameAsync(revokeRequest.UserName);
             if (user == null)
@@ -124,8 +122,6 @@ namespace ESportRaise.BackEnd.BLL.Services
             }
 
             await usersRepository.DeleteRefreshTokenAsync(user, revokeRequest.RefreshToken);
-
-            return new TokenServiceRevokeResponse();
         }
     }
 }

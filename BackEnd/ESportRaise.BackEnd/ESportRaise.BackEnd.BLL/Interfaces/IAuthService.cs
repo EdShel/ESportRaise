@@ -5,12 +5,12 @@ namespace ESportRaise.BackEnd.BLL.Interfaces
 {
     public interface IAuthAsyncService
     {
-        Task<LoginServiceResponse> LoginAsync(LoginServiceRequest loginRequest);
+        Task<LoginResponseDTO> LoginAsync(LoginRequestDTO loginRequest);
 
-        Task<RegisterServiceResponse> RegisterAsync(RegisterServiceRequest registerRequest);
+        Task RegisterAsync(RegisterDTO registerRequest);
 
-        Task<TokenServiceRefreshResponse> RefreshTokenAsync(TokenServiceRefreshRequest refreshRequest);
+        Task<TokenRefreshResponseDTO> RefreshTokenAsync(TokenRefreshRequestDTO refreshRequest);
 
-        Task<TokenServiceRevokeResponse> RevokeTokenAsync(TokenServiceRevokeRequest revokeRequest);
+        Task RevokeTokenAsync(TokenRevokeDTO revokeRequest);
     }
 }

@@ -104,12 +104,11 @@ namespace ESportRaise.BackEnd.BLL.Services
             });
         }
 
-        public async Task<InitiateTrainingServiceResponse> InitiateTrainingAsync(InitiateTrainingServiceRequest request)
+        public async Task<int> InitiateTrainingAsync(int userId)
         {
             int trainingId;
             try
             {
-                int userId = request.UserId;
                 trainingId = await trainings.GiveNewTrainingIdAsync(userId, idlenessMinutesForNewTraining);
 
                 TeamMember teamMember = await members.GetAsync(userId);
@@ -118,7 +117,7 @@ namespace ESportRaise.BackEnd.BLL.Services
                     throw new BadRequestException("User doesn't belong to a team!");
                 }
 
-                LiveStreamServiceResponse streamResponse = await youTubeService.GetCurrentLiveStream(new LiveStreamServiceRequest
+                LiveStreamResponseDTO streamResponse = await youTubeService.GetCurrentLiveStream(new LiveStreamRequestDTO
                 {
                     LiveStreamingServiceUserId = teamMember.YouTubeId
                 });
@@ -141,10 +140,7 @@ namespace ESportRaise.BackEnd.BLL.Services
                 throw ex;
             }
 
-            return new InitiateTrainingServiceResponse
-            {
-                TrainingId = trainingId
-            };
+            return trainingId;
         }
 
         public async Task<IEnumerable<VideoStreamDTO>> GetVideoStreamsAsync(int trainingId)

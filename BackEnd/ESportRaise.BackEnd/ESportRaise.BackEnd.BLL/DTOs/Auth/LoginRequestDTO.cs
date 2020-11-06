@@ -1,6 +1,6 @@
 ﻿namespace ESportRaise.BackEnd.BLL.DTOs.Auth
 {
-    public sealed class LoginServiceRequest
+    public sealed class LoginRequestDTO
     {
         public string EmailOrUserName { get; set; }
 

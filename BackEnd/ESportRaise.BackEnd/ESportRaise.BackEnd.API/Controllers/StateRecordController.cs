@@ -34,7 +34,7 @@ namespace ESportRaise.BackEnd.API.Controllers
             await ValidateAccessToTraining(request.TrainingId);
 
             int userId = User.GetUserId();
-            var serviceRequest = new SaveStateRecordServiceRequest
+            var serviceRequest = new StateRecordDTO
             {
                 TeamMemberId = userId,
                 TrainingId = request.TrainingId,
@@ -45,11 +45,11 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpGet("list")]
-        public async Task<IActionResult> GetRecords([FromBody] GetStateRecordServiceRequest request)
+        public async Task<IActionResult> GetRecords([FromBody] StateRecordRequestDTO request)
         {
             await ValidateAccessToTraining(request.TrainingId);
 
-            var serviceRequest = new GetStateRecordServiceRequest
+            var serviceRequest = new StateRecordRequestDTO
             {
                 TeamMemberId = request.TeamMemberId,
                 TrainingId = request.TrainingId,

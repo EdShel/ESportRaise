@@ -20,7 +20,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             this.stateRecords = stateRecords;
         }
 
-        public async Task<SaveStateRecordServiceResponse> SaveStateRecordAsync(SaveStateRecordServiceRequest request)
+        public async Task SaveStateRecordAsync(StateRecordDTO request)
         {
             StateRecord stateRecord = new StateRecord
             {
@@ -41,10 +41,9 @@ namespace ESportRaise.BackEnd.BLL.Services
                 }
                 throw ex;
             }
-            return new SaveStateRecordServiceResponse();
         }
 
-        public async Task<GetStateRecordServiceResponse> GetRecentAsync(GetStateRecordServiceRequest request)
+        public async Task<StateRecordSlimDTO> GetRecentAsync(StateRecordRequestDTO request)
         {
             IEnumerable<StateRecord> records;
             if (request.TeamMemberId == default)
@@ -59,10 +58,10 @@ namespace ESportRaise.BackEnd.BLL.Services
                     request.TeamMemberId.Value);
             }
 
-            return new GetStateRecordServiceResponse
+            return new StateRecordSlimDTO
             {
                 TrainingId = request.TrainingId,
-                StateRecords = records.Select(rec => new GetStateRecordServiceResponse.StateRecord
+                StateRecords = records.Select(rec => new StateRecordSlimDTO.StateRecord
                 {
                     CreateTime = rec.CreateTime,
                     TeamMemberId = rec.TeamMemberId,

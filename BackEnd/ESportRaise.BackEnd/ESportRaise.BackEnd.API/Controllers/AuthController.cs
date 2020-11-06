@@ -25,17 +25,17 @@ namespace ESportRaise.BackEnd.API.Controllers
 
         // TODO: allow Admin registration only by admins
         [HttpPost("register")]
-        public async Task<ActionResult> Register([FromBody] RegisterServiceRequest request)
+        public async Task<ActionResult> Register([FromBody] RegisterDTO request)
         {
-            RegisterServiceResponse response = await authService.RegisterAsync(request);
+            await authService.RegisterAsync(request);
 
             return Ok();
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] LoginServiceRequest request)
+        public async Task<ActionResult> Login([FromBody] LoginRequestDTO request)
         {
-            LoginServiceResponse response = await authService.LoginAsync(request);
+            LoginResponseDTO response = await authService.LoginAsync(request);
 
             return Ok(response);
         }
@@ -44,12 +44,12 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpPost("refresh")]
         public async Task<ActionResult> RefreshToken([FromBody] TokenRefreshAPIRequest request)
         {
-            var requestDTO = new TokenServiceRefreshRequest
+            var requestDTO = new TokenRefreshRequestDTO
             {
                 RefreshToken = request.RefreshToken,
                 UserName = User.Identity.Name
             };
-            TokenServiceRefreshResponse response = await authService.RefreshTokenAsync(requestDTO);
+            TokenRefreshResponseDTO response = await authService.RefreshTokenAsync(requestDTO);
 
             return Ok(response);
         }
@@ -57,12 +57,12 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpPost("revoke"), Authorize]
         public async Task<ActionResult> RevokeToken([FromBody] TokenRevokeAPIRequest request)
         {
-            var requestDTO = new TokenServiceRevokeRequest
+            var requestDTO = new TokenRevokeDTO
             {
                 RefreshToken = request.RefreshToken,
                 UserName = User.Identity.Name
             };
-            TokenServiceRevokeResponse response = await authService.RevokeTokenAsync(requestDTO);
+            await authService.RevokeTokenAsync(requestDTO);
 
             return Ok();
         }

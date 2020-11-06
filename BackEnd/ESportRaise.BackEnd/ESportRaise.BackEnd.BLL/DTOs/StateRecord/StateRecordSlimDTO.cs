@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ESportRaise.BackEnd.BLL.DTOs.StateRecord
 {
-    public class GetStateRecordServiceResponse
+    public class StateRecordSlimDTO
     {
         public int TrainingId { get; set; }
 

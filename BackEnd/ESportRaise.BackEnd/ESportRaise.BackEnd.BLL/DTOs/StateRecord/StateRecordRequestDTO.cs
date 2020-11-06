@@ -1,6 +1,6 @@
 ﻿namespace ESportRaise.BackEnd.BLL.DTOs.StateRecord
 {
-    public class GetStateRecordServiceRequest
+    public class StateRecordRequestDTO
     {
         public int TrainingId { get; set; }
 

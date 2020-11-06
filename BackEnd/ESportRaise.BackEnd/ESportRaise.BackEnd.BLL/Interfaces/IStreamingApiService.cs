@@ -5,8 +5,8 @@ namespace ESportRaise.BackEnd.BLL.Interfaces
 {
     public interface IStreamingApiService
     {
-        Task<RetrieveIdServiceResponse> GetUserId(RetrieveIdServiceRequest request);
+        Task<string> GetUserId(string channelUrl);
 
-        Task<LiveStreamServiceResponse> GetCurrentLiveStream(LiveStreamServiceRequest request);
+        Task<LiveStreamResponseDTO> GetCurrentLiveStream(LiveStreamRequestDTO request);
     }
 }

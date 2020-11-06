@@ -1,6 +1,6 @@
 ﻿namespace ESportRaise.BackEnd.BLL.DTOs.LiveStreaming
 {
-    public class LiveStreamServiceResponse
+    public class LiveStreamResponseDTO
     {
         public bool HasLivestream => !string.IsNullOrEmpty(LiveStreamId);
 

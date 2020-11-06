@@ -28,11 +28,10 @@ namespace ESportRaise.BackEnd.API.Controllers
         public async Task<IActionResult> Initiate()
         {
             int userId = User.GetUserId();
-            var request = new InitiateTrainingServiceRequest { UserId = userId };
-            var response = await trainingService.InitiateTrainingAsync(request);
+            int trainingId = await trainingService.InitiateTrainingAsync(userId);
             return new JsonResult(new
             {
-                TrainingId = response.TrainingId
+                TrainingId = trainingId
             });
         }
 
