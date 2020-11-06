@@ -26,7 +26,7 @@ namespace ESportRaise.BackEnd.API.Controllers
 
 
         [HttpPost("register")]
-        public async Task<ActionResult> RegisterAsync([FromBody] RegisterDTO request)
+        public async Task<ActionResult> RegisterAsync([FromBody] RegisterRequest request)
         {
             if (request.Role == AuthConstants.ADMIN_ROLE)
             {
@@ -37,15 +37,27 @@ namespace ESportRaise.BackEnd.API.Controllers
                     throw new ForbiddenException("You need to be an admin to register admins!");
                 }
             }
-            await authService.RegisterAsync(request);
+            var registerDTO = new RegisterDTO
+            {
+                Email = request.Email,
+                UserName = request.UserName,
+                Password = request.Password,
+                Role = request.Role
+            };
+            await authService.RegisterAsync(registerDTO);
 
             return Ok();
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> LoginAsync([FromBody] LoginRequestDTO request)
+        public async Task<ActionResult> LoginAsync([FromBody] LoginRequest request)
         {
-            LoginResponseDTO response = await authService.LoginAsync(request);
+            var loginDTO = new LoginRequestDTO
+            {
+                EmailOrUserName = request.EmailOrUserName,
+                Password = request.Password
+            };
+            LoginResponseDTO response = await authService.LoginAsync(loginDTO);
 
             return Ok(response);
         }

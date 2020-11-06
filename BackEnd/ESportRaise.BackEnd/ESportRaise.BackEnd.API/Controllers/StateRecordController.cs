@@ -45,15 +45,15 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpGet("list")]
-        public async Task<IActionResult> GetRecordsAsync([FromBody] StateRecordRequestDTO request)
+        public async Task<IActionResult> GetRecordsAsync([FromBody] GetStateRecordRequest request)
         {
             await ValidateAccessToTraining(request.TrainingId);
 
             var serviceRequest = new StateRecordRequestDTO
             {
-                TeamMemberId = request.TeamMemberId,
+                TeamMemberId = request.UserId,
                 TrainingId = request.TrainingId,
-                TimeInSeconds = request.TimeInSeconds
+                TimeInSeconds = request.TimeInSecs
             };
             var serviceResponse = await stateRecordService.GetRecentAsync(serviceRequest);
             return new JsonResult(new

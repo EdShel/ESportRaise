@@ -7,5 +7,7 @@
         public const string ADMIN_ROLE = "Admin";
 
         public const string MEMBER_ROLE = "Member";
+
+        public const string PASSWORD_REGEX = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{6,20}$";
     }
 }
