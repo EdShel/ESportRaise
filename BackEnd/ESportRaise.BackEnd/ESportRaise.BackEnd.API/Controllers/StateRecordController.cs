@@ -6,6 +6,9 @@ using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.API.Models.StateRecord;
 using ESportRaise.BackEnd.BLL.DTOs.StateRecord;
 using System.Linq;
+using ESportRaise.BackEnd.BLL.Services;
+using ESportRaise.BackEnd.BLL.DTOs.Training;
+using ESportRaise.BackEnd.BLL.Exceptions;
 
 namespace ESportRaise.BackEnd.API.Controllers
 {
@@ -14,16 +17,23 @@ namespace ESportRaise.BackEnd.API.Controllers
     {
         private readonly IStateRecordService stateRecordService;
 
-        public StateRecordController(IStateRecordService stateRecordService)
+        private readonly TrainingService trainingService;
+
+        private readonly TeamMemberService teamMemberService;
+
+        public StateRecordController(IStateRecordService stateRecordService, TrainingService trainingService, TeamMemberService teamMemberService)
         {
             this.stateRecordService = stateRecordService;
+            this.trainingService = trainingService;
+            this.teamMemberService = teamMemberService;
         }
 
         [HttpPost("stateRecord")]
         public async Task StateRecord([FromBody] SaveStateRecordRequest request)
         {
+            await ValidateAccessToTraining(request.TrainingId);
+
             int userId = User.GetUserId();
-            // TODO: check if this user belongs to the team
             var serviceRequest = new SaveStateRecordServiceRequest
             {
                 TeamMemberId = userId,
@@ -37,7 +47,8 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpGet("list")]
         public async Task<IActionResult> GetRecords([FromBody] GetStateRecordServiceRequest request)
         {
-            // TODO: check access
+            await ValidateAccessToTraining(request.TrainingId);
+
             var serviceRequest = new GetStateRecordServiceRequest
             {
                 TeamMemberId = request.TeamMemberId,
@@ -56,6 +67,20 @@ namespace ESportRaise.BackEnd.API.Controllers
                     rec.Temperature
                 })
             });
+        }
+
+        private async Task ValidateAccessToTraining(int trainingId)
+        {
+            TrainingDTO training = await trainingService.GetTrainingAsync(trainingId);
+            if (training == null)
+            {
+                throw new BadRequestException("Invalid training id!");
+            }
+
+            if (!await User.IsAuthorizedToAccessTeamAsync(training.Id, teamMemberService))
+            {
+                throw new ForbiddenException("Not allowed to access state of this team's players!");
+            }
         }
     }
 }

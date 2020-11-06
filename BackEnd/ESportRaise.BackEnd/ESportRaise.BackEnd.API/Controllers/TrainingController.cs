@@ -39,6 +39,8 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpGet("broadcast")]
         public async Task<IActionResult> GetVideoStreamsForTraining(int trainingId)
         {
+            await ValidateAccessToTraining(trainingId);
+
             IEnumerable<VideoStreamDTO> videoStreams = await trainingService.GetVideoStreamsAsync(trainingId);
             return new JsonResult(new
             {
@@ -83,11 +85,22 @@ namespace ESportRaise.BackEnd.API.Controllers
             });
         }
 
+        private async Task ValidateAccessToTraining(int trainingId)
+        {
+            TrainingDTO training = await trainingService.GetTrainingAsync(trainingId);
+            if (training == null)
+            {
+                throw new BadRequestException("Invalid training id!");
+            }
+
+            await ValidateAccessToTeam(training.TeamId);
+        }
+
         private async Task ValidateAccessToTeam(int teamId)
         {
             if (!await User.IsAuthorizedToAccessTeamAsync(teamId, teamMemberService))
             {
-                throw new ForbiddenException("Not allowed to access team!");
+                throw new ForbiddenException("Not allowed to access team's training!");
             }
         }
     }

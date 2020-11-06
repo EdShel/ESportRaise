@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace ESportRaise.BackEnd.API.Controllers
 {
@@ -8,7 +9,7 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpGet]
         public IActionResult Check()
         {
-            return Ok();
+            return Ok(DateTime.Now);
         }
     }
 }

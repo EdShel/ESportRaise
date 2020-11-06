@@ -1,6 +1,7 @@
 ﻿using ESportRaise.BackEnd.API.Models.Team;
 using ESportRaise.BackEnd.BLL.DTOs.AppUser;
 using ESportRaise.BackEnd.BLL.DTOs.Team;
+using ESportRaise.BackEnd.BLL.Exceptions;
 using ESportRaise.BackEnd.BLL.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,8 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpPost("addMember")]
         public async Task<IActionResult> AddTeamMember([FromBody] AddTeamMemberRequest request)
         {
+            await ValidateAccessToTeam(request.TeamId);
+
             AppUserDTO newTeamMember = await users.GetUserAsync(request.User);
             await teamService.AddTeamMemberAsync(request.TeamId, newTeamMember.Id);
             return Ok();
@@ -52,6 +55,8 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpPost("removeMember")]
         public async Task<IActionResult> RemoveTeamMember([FromBody] RemoveTeamMemberRequest request)
         {
+            await ValidateAccessToTeam(request.TeamId);
+
             AppUserDTO deletedMember = await users.GetUserAsync(request.User);
             await teamService.RemoveTeamMemberAsync(request.TeamId, deletedMember.Id);
             return Ok();
@@ -60,6 +65,8 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpGet("full")]
         public async Task<IActionResult> GetFullTeam(int id)
         {
+            await ValidateAccessToTeam(id);
+
             TeamDTO team = await teamService.GetTeamAsync(id);
             return new JsonResult(new
             {
@@ -71,6 +78,14 @@ namespace ESportRaise.BackEnd.API.Controllers
                     Name = member.UserName
                 })
             });
+        }
+
+        private async Task ValidateAccessToTeam(int teamId)
+        {
+            if (!await User.IsAuthorizedToAccessTeamAsync(teamId, teamMemberService))
+            {
+                throw new ForbiddenException("Not allowed to access the team!");
+            }
         }
     }
 }

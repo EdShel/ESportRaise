@@ -1,4 +1,5 @@
 ﻿using ESportRaise.BackEnd.BLL.DTOs.CriticalMoment;
+using ESportRaise.BackEnd.BLL.DTOs.Training;
 using ESportRaise.BackEnd.BLL.Exceptions;
 using ESportRaise.BackEnd.BLL.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -15,18 +16,33 @@ namespace ESportRaise.BackEnd.API.Controllers
     {
         private readonly CriticalMomentService criticalMomentService;
 
+        private readonly TrainingService trainingService;
+
         private readonly TeamMemberService teamMemberService;
 
-        public CriticalMomentController(CriticalMomentService criticalMomentService, TeamMemberService teamMemberService)
+        public CriticalMomentController(
+            CriticalMomentService criticalMomentService, 
+            TrainingService trainingService, 
+            TeamMemberService teamMemberService)
         {
             this.criticalMomentService = criticalMomentService;
+            this.trainingService = trainingService;
             this.teamMemberService = teamMemberService;
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTrainingCriticalMoments(int id)
         {
-            IEnumerable<CriticalMomentDTO> moments = await criticalMomentService.GetCriticalMomentsForTrainingAsync(id);
+            TrainingDTO training = await trainingService.GetTrainingAsync(id);
+            if (training == null)
+            {
+                throw new NotFoundException("Training doesn't exist!");
+            }
+            await ValidateAccessToTeam(training.TeamId);
+
+            IEnumerable<CriticalMomentDTO> moments = await criticalMomentService
+                .GetCriticalMomentsForTrainingAsync(id);
+
             return new JsonResult(new
             {
                 TeamId = id,

@@ -113,6 +113,11 @@ namespace ESportRaise.BackEnd.BLL.Services
                 trainingId = await trainings.GiveNewTrainingIdAsync(userId, idlenessMinutesForNewTraining);
 
                 TeamMember teamMember = await members.GetAsync(userId);
+                if (teamMember == null)
+                {
+                    throw new BadRequestException("User doesn't belong to a team!");
+                }
+
                 LiveStreamServiceResponse streamResponse = await youTubeService.GetCurrentLiveStream(new LiveStreamServiceRequest
                 {
                     LiveStreamingServiceUserId = teamMember.YouTubeId
