@@ -35,15 +35,30 @@ namespace ESportRaise.BackEnd.API.Controllers
             });
         }
 
-        [HttpGet("broadcast")]
-        public async Task<IActionResult> GetVideoStreamsForTraining(int trainingId)
+        [HttpPost("stop")]
+        public async Task<IActionResult> StopAsync()
         {
-            await ValidateAccessToTraining(trainingId);
+            int userId = User.GetUserId();
+            int teamId = await teamMemberService.GetTeamIdAsync(userId);
+            var training = await trainingService.GetCurrentTrainingForTeamAsync(teamId);
+            if (training == null)
+            {
+                throw new BadRequestException("Your team doesn't have trainings now!");
+            }
 
-            IEnumerable<VideoStreamDTO> videoStreams = await trainingService.GetVideoStreamsAsync(trainingId);
+            await trainingService.StopTrainingAsync(training.Id);
+            return Ok();
+        }
+
+        [HttpGet("broadcast")]
+        public async Task<IActionResult> GetVideoStreamsForTraining(int id)
+        {
+            await ValidateAccessToTraining(id);
+
+            IEnumerable<VideoStreamDTO> videoStreams = await trainingService.GetVideoStreamsAsync(id);
             return new JsonResult(new
             {
-                TrainingId = trainingId,
+                TrainingId = id,
                 Streams = videoStreams.Select(stream => new
                 {
                     stream.Id,

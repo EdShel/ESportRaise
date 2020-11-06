@@ -18,8 +18,8 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             selectCommand.CommandText = 
                 "SELECT HasCachedMoments FROM CriticalMomentsCache WHERE TrainingId = @id";
             selectCommand.Parameters.AddWithValue("@id", trainingId);
-            bool hasCache = (bool)await selectCommand.ExecuteScalarAsync();
-            return hasCache;
+            var obj = await selectCommand.ExecuteScalarAsync();
+            return Convert.ToBoolean(obj);
         }
 
         public async Task SetCachedForTrainingAsync(int trainingId)

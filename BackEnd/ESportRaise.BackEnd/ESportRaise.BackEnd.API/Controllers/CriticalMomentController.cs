@@ -30,7 +30,7 @@ namespace ESportRaise.BackEnd.API.Controllers
             this.teamMemberService = teamMemberService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("all")]
         public async Task<IActionResult> GetTrainingCriticalMomentsAsync(int id)
         {
             TrainingDTO training = await trainingService.GetTrainingAsync(id);

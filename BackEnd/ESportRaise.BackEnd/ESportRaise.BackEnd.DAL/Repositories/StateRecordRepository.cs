@@ -20,8 +20,8 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 "EXEC SaveStateRecord @teamMember, @trainingId, @heartRate, @temperature";
             saveCommand.Parameters.AddWithValue("@teamMember", stateRecord.TeamMemberId);
             saveCommand.Parameters.AddWithValue("@trainingId", stateRecord.TrainingId);
-            saveCommand.Parameters.AddWithValue("@trainingId", stateRecord.HeartRate);
-            saveCommand.Parameters.AddWithValue("@trainingId", stateRecord.Temperature);
+            saveCommand.Parameters.AddWithValue("@heartRate", stateRecord.HeartRate);
+            saveCommand.Parameters.AddWithValue("@temperature", stateRecord.Temperature);
             await saveCommand.ExecuteNonQueryAsync();
             return default;
         }
@@ -76,7 +76,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = 
-                "SELECT * FROM StateRecord WEHRE TrainingId = @trainingId ORDER BY CreateTime";
+                "SELECT * FROM StateRecord WHERE TrainingId = @trainingId ORDER BY CreateTime";
             selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
             using (var r = await selectCommand.ExecuteReaderAsync())
             {
@@ -95,12 +95,12 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         {
             return new StateRecord
             {
-                Id = r.GetInt32(0),
+                Id = r.GetInt64(0),
                 TeamMemberId = r.GetInt32(1),
                 TrainingId = r.GetInt32(2),
                 CreateTime = r.GetDateTime(3),
                 HeartRate = r.GetInt32(4),
-                Temperature = r.GetFloat(5)
+                Temperature = (float)r.GetDouble(5)
             };
         }
 
@@ -116,7 +116,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         protected override int GetPrimaryKeyValue(StateRecord item)
         {
-            return item.Id;
+            throw new NotImplementedException();
         }
 
         #endregion

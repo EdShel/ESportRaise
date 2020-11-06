@@ -28,7 +28,7 @@ namespace ESportRaise.BackEnd.API.Controllers
             this.teamMemberService = teamMemberService;
         }
 
-        [HttpPost("stateRecord")]
+        [HttpPost("send")]
         public async Task StateRecordAsync([FromBody] SaveStateRecordRequest request)
         {
             await ValidateAccessToTraining(request.TrainingId);
@@ -96,7 +96,7 @@ namespace ESportRaise.BackEnd.API.Controllers
                 throw new BadRequestException("Invalid training id!");
             }
 
-            if (!await User.IsAuthorizedToAccessTeamAsync(training.Id, teamMemberService))
+            if (!await User.IsAuthorizedToAccessTeamAsync(training.TeamId, teamMemberService))
             {
                 throw new ForbiddenException("Not allowed to access state of this team's players!");
             }

@@ -42,8 +42,7 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         public async Task<bool> IsTrainingOverAsync(int trainingId)
         {
-            DateTime trainingEnd = await trainings.GetTrainingEndTimeAsync(trainingId);
-            return (trainingEnd - DateTime.Now).Minutes >= idlenessMinutesForNewTraining;
+            return await trainings.IsTrainingOver(trainingId, idlenessMinutesForNewTraining);
         }
 
         public async Task StopTrainingAsync(int trainingId)

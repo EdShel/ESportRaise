@@ -20,6 +20,19 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             await stopCommand.ExecuteNonQueryAsync();
         }
 
+        public async Task<bool> IsTrainingOver(int trainingId, int idlenessMinutesForNewTraining)
+        {
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText = "SELECT TrainingId FROM LastTraining WHERE TrainingId = @id";
+            selectCommand.Parameters.AddWithValue("@id", trainingId);
+            bool isPending = trainingId == Convert.ToInt32(await selectCommand.ExecuteScalarAsync());
+            if (!isPending)
+            {
+                return true;
+            }
+
+            return (DateTime.Now - await GetTrainingEndTimeAsync(trainingId)).Minutes >= idlenessMinutesForNewTraining;
+        }
 
         public async Task<DateTime> GetTrainingEndTimeAsync(int trainingId)
         {
@@ -29,7 +42,8 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 "WHERE TrainingId = @trainingId";
             checkCommand.Parameters.AddWithValue("@trainingId", trainingId);
 
-            DateTime lastRecordTime = (DateTime)await checkCommand.ExecuteScalarAsync();
+            object lastRecordObj = await checkCommand.ExecuteScalarAsync();
+            DateTime lastRecordTime = DBNull.Value.Equals(lastRecordObj) ? default : (DateTime)lastRecordObj;
             if (lastRecordTime != default)
             {
                 return lastRecordTime;
@@ -38,7 +52,9 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             var getBeginCommand = db.CreateCommand();
             getBeginCommand.CommandText = "SELECT BeginTime FROM Training WHERE Id = @id";
             getBeginCommand.Parameters.AddWithValue("@id", trainingId);
-            return (DateTime)await getBeginCommand.ExecuteScalarAsync();
+
+            object trainingCreationTimeObj = await getBeginCommand.ExecuteScalarAsync();
+            return DBNull.Value.Equals(trainingCreationTimeObj) ? default : (DateTime)trainingCreationTimeObj;
         }
 
         public async Task<int> GiveNewTrainingIdAsync(int userId, int idlenessMinutesForNewTraining)
@@ -48,7 +64,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             getTrainingCommand.Parameters.AddWithValue("@userId", userId);
             getTrainingCommand.Parameters.AddWithValue("@idleMins", idlenessMinutesForNewTraining);
 
-            return (int)await getTrainingCommand.ExecuteScalarAsync();
+            return Convert.ToInt32(await getTrainingCommand.ExecuteScalarAsync());
         }
 
         public async Task<Training> GetCurrentTrainingForTeamAsync(int teamId)
@@ -74,7 +90,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = "SELECT * FROM Training " +
                                         "WHERE TeamId = @teamId AND " +
-                                        "DATEDIFF(HOUR, BeginTime, @time) <= @hours";
+                                        "DATEDIFF(HOUR, BeginTime, @time) BETWEEN 0 AND @hours";
             selectCommand.Parameters.AddWithValue("@teamId", teamId);
             selectCommand.Parameters.AddWithValue("@time", dateTime);
             selectCommand.Parameters.AddWithValue("@hours", hours);
@@ -82,7 +98,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             using (var r = await selectCommand.ExecuteReaderAsync())
             {
                 List<Training> trainings = new List<Training>();
-                if (await r.ReadAsync())
+                while (await r.ReadAsync())
                 {
                     trainings.Add(MapFromReader(r));
                 }
@@ -97,7 +113,8 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return new Training
             {
                 Id = r.GetInt32(0),
-                BeginTime = r.GetDateTime(1)
+                TeamId = r.GetInt32(1),
+                BeginTime = r.GetDateTime(2)
             };
         }
 
