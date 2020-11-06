@@ -41,7 +41,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return (DateTime)await getBeginCommand.ExecuteScalarAsync();
         }
 
-        public async Task<int> GetTrainingIdAsync(int userId, int idlenessMinutesForNewTraining)
+        public async Task<int> GiveNewTrainingIdAsync(int userId, int idlenessMinutesForNewTraining)
         {
             var getTrainingCommand = db.CreateCommand();
             getTrainingCommand.CommandText = "EXEC GiveTrainingId @userId, @idleMins";

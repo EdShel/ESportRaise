@@ -1,6 +1,5 @@
 ﻿using ESportRaise.BackEnd.BLL.DTOs.Training;
 using ESportRaise.BackEnd.BLL.Exceptions;
-using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.BLL.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +14,11 @@ namespace ESportRaise.BackEnd.API.Controllers
     [Route("[controller]"), ApiController, Authorize]
     public class TrainingController : Controller
     {
-        private readonly ITrainingService trainingService;
+        private readonly TrainingService trainingService;
 
         private readonly TeamMemberService teamMemberService;
 
-        public TrainingController(ITrainingService trainingService, TeamMemberService teamMemberService)
+        public TrainingController(TrainingService trainingService, TeamMemberService teamMemberService)
         {
             this.trainingService = trainingService;
             this.teamMemberService = teamMemberService;
@@ -35,6 +34,12 @@ namespace ESportRaise.BackEnd.API.Controllers
             {
                 TrainingId = response.TrainingId
             });
+        }
+
+        [HttpGet("broadcast")]
+        public async Task<IActionResult> GetVideoStreamsForTraining(int trainingId)
+        {
+            trainingService.
         }
 
         [HttpGet("last")]

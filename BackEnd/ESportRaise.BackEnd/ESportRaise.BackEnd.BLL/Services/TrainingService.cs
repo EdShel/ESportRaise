@@ -1,4 +1,5 @@
-﻿using ESportRaise.BackEnd.BLL.DTOs.Training;
+﻿using ESportRaise.BackEnd.BLL.DTOs.LiveStreaming;
+using ESportRaise.BackEnd.BLL.DTOs.Training;
 using ESportRaise.BackEnd.BLL.Exceptions;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.DAL.Constants;
@@ -18,12 +19,26 @@ namespace ESportRaise.BackEnd.BLL.Services
     {
         private readonly int idlenessMinutesForNewTraining;
 
-        private TrainingRepository trainings;
+        private readonly TrainingRepository trainings;
 
-        public TrainingService(IConfiguration configuration, TrainingRepository trainings)
+        private readonly TeamMemberRepository members;
+
+        private readonly YouTubeV3Service youTubeService;
+
+        private readonly VideoStreamRepository videoStreams;
+
+        public TrainingService(
+            IConfiguration configuration,
+            TrainingRepository trainings,
+            TeamMemberRepository members,
+            YouTubeV3Service youTubeService,
+            VideoStreamRepository videoStreams)
         {
             idlenessMinutesForNewTraining = configuration.GetValue<int>("IdlenessMinutesForNewTraining");
             this.trainings = trainings;
+            this.members = members;
+            this.youTubeService = youTubeService;
+            this.videoStreams = videoStreams;
         }
 
         public async Task<bool> IsTrainingOver(int trainingId)
@@ -95,11 +110,26 @@ namespace ESportRaise.BackEnd.BLL.Services
             try
             {
                 int userId = request.UserId;
-                trainingId = await trainings.GetTrainingIdAsync(userId, idlenessMinutesForNewTraining);
+                trainingId = await trainings.GiveNewTrainingIdAsync(userId, idlenessMinutesForNewTraining);
+
+                TeamMember teamMember = await members.GetAsync(userId);
+                LiveStreamServiceResponse streamResponse = await youTubeService.GetCurrentLiveStream(new LiveStreamServiceRequest
+                {
+                    LiveStreamingServiceUserId = teamMember.YouTubeId
+                });
+                if (streamResponse.HasLivestream)
+                {
+                    await videoStreams.CreateAsync(new VideoStream
+                    {
+                        TeamMemberId = userId,
+                        TrainingId = trainingId,
+                        YouTubeId = streamResponse.LiveStreamId
+                    });
+                }
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
-                if(ex.Number == SqlErrorCodes.USER_DOES_NOT_EXIST)
+                if (ex.Number == SqlErrorCodes.USER_DOES_NOT_EXIST)
                 {
                     throw new BadRequestException("Invalid user!");
                 }
@@ -112,5 +142,20 @@ namespace ESportRaise.BackEnd.BLL.Services
             };
         }
 
+        public async Task<IEnumerable<VideoStreamDTO>> GetVideoStreamsAsync(int trainingId)
+        {
+            Training training = await trainings.GetAsync(trainingId);
+            if (training == null)
+            {
+                throw new NotFoundException("Training doesn't exist");
+            }
+            var streams = await videoStreams.GetForTrainingAsync(trainingId);
+            return streams.Select(stream => new VideoStreamDTO
+            {
+                Id = stream.Id,
+                TeamMemberId = stream.TeamMemberId,
+                StreamId = stream.YouTubeId
+            });
+        }
     }
 }
