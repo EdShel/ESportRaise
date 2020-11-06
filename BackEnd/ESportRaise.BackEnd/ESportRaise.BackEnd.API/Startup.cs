@@ -1,4 +1,5 @@
-﻿using ESportRaise.BackEnd.API.Middleware;
+﻿using ESportRaise.BackEnd.API.Filters;
+using ESportRaise.BackEnd.API.Middleware;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.BLL.Services;
 using ESportRaise.BackEnd.DAL.Interfaces;
@@ -30,7 +31,11 @@ namespace ESportRaise.BackEnd.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(Configuration);
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options =>
+                {
+                    options.Filters.Add<InputValidationActionFilter>();
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddTransient(_ => new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
 
             var tokenFactoryService = new JwtTokenGeneratorService(Configuration);

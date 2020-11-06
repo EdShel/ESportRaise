@@ -51,7 +51,7 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<ActionResult> RefreshTokenAsync([FromBody] TokenRefreshAPIRequest request)
+        public async Task<ActionResult> RefreshTokenAsync([FromBody] TokenRefreshRequest request)
         {
             var requestDTO = new TokenRefreshRequestDTO
             {
@@ -64,7 +64,7 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpPost("revoke"), Authorize]
-        public async Task<ActionResult> RevokeTokenAsync([FromBody] TokenRevokeAPIRequest request)
+        public async Task<ActionResult> RevokeTokenAsync([FromBody] TokenRevokeRequest request)
         {
             var requestDTO = new TokenRevokeDTO
             {

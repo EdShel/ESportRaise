@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-    // TODO: every async method name with async suffix
     public class TrainingService : ITrainingService
     {
         private readonly int idlenessMinutesForNewTraining;
