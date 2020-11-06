@@ -14,7 +14,7 @@ namespace ESportRaise.BackEnd.API.Models.Auth
         [Required, RegularExpression(AuthConstants.PASSWORD_REGEX)]
         public string Password { get; set; }
 
-        [Required, RegularExpression(@"^Member|Admin$")]
+        [Required, RegularExpression(@"^(Member)|(Admin)$")]
         public string Role { get; set; }
     }
 }

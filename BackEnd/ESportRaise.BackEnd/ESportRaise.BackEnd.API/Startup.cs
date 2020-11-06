@@ -33,7 +33,7 @@ namespace ESportRaise.BackEnd.API
             services.AddSingleton(Configuration);
             services.AddMvc(options =>
                 {
-                    options.Filters.Add<InputValidationActionFilter>();
+                    //options.Filters.Add<InputValidationActionFilter>();
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddTransient(_ => new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));

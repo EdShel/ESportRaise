@@ -35,5 +35,21 @@ namespace ESportRaise.BackEnd.BLL.Services
                 UserName = user.UserName
             };
         }
+
+        public async Task<AppUserDTO> GetUserAsync(int id)
+        {
+            AppUser user = await users.GetAsync(id);
+            if (user == null)
+            {
+                throw new NotFoundException("User doesn't exist!");
+            }
+
+            return new AppUserDTO
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName
+            };
+        }
     }
 }

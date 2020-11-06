@@ -24,7 +24,6 @@ namespace ESportRaise.BackEnd.API.Controllers
             this.appUserService = appUserService;
         }
 
-
         [HttpPost("register")]
         public async Task<ActionResult> RegisterAsync([FromBody] RegisterRequest request)
         {
@@ -97,6 +96,18 @@ namespace ESportRaise.BackEnd.API.Controllers
                 Id = currentUser.Id,
                 Name = currentUser.UserName,
                 Email = currentUser.Email
+            });
+        }
+
+        [HttpGet("user"), Authorize]
+        public async Task<IActionResult> GetInfoAboutAnotherUserAsync(int id)
+        {
+            AppUserDTO user = await appUserService.GetUserAsync(id);
+            return new JsonResult(new
+            {
+                Id = user.Id,
+                Name = user.UserName,
+                Email = user.Email
             });
         }
     }

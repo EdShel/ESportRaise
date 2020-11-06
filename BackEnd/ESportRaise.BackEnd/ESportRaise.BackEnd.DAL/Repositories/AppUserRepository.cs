@@ -128,7 +128,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         public async Task<int> GetRegisteredAdminsCount()
         {
             var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT COUNT(*) FROM AppUser WHERE Role = 'Admin'";
+            selectCommand.CommandText = "SELECT COUNT(*) FROM AppUser WHERE UserRole = 'Admin'";
             return (int)await selectCommand.ExecuteScalarAsync();
         }
 
