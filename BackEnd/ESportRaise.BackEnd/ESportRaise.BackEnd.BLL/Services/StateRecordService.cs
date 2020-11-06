@@ -70,5 +70,22 @@ namespace ESportRaise.BackEnd.BLL.Services
                 })
             };
         }
+
+        public async Task<StateRecordSlimDTO> GetForTrainingAsync(int trainingId)
+        {
+            IEnumerable<StateRecord> records = await stateRecords.GetForTrainingAsync(trainingId);
+
+            return new StateRecordSlimDTO
+            {
+                TrainingId = trainingId,
+                StateRecords = records.Select(rec => new StateRecordSlimDTO.StateRecord
+                {
+                    CreateTime = rec.CreateTime,
+                    TeamMemberId = rec.TeamMemberId,
+                    HeartRate = rec.HeartRate,
+                    Temperature = rec.Temperature
+                })
+            };
+        }
     }
 }

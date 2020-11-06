@@ -8,5 +8,7 @@ namespace ESportRaise.BackEnd.BLL.Interfaces
         Task SaveStateRecordAsync(StateRecordDTO request);
 
         Task<StateRecordSlimDTO> GetRecentAsync(StateRecordRequestDTO request);
+
+        Task<StateRecordSlimDTO> GetForTrainingAsync(int trainingId);
     }
 }
