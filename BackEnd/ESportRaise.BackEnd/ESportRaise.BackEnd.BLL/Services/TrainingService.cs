@@ -18,20 +18,57 @@ namespace ESportRaise.BackEnd.BLL.Services
     {
         private readonly int idlenessMinutesForNewTraining;
 
-        private TrainingAsyncRepository trainings;
+        private TrainingRepository trainings;
 
-        public TrainingService(IConfiguration configuration, TrainingAsyncRepository trainings)
+        public TrainingService(IConfiguration configuration, TrainingRepository trainings)
         {
             idlenessMinutesForNewTraining = configuration.GetValue<int>("IdlenessMinutesForNewTraining");
             this.trainings = trainings;
         }
 
-        public async Task<TrainingDTO> GetLastTrainingForTeamAsync(int teamId)
+        public async Task<bool> IsTrainingOver(int trainingId)
         {
-            Training training = await trainings.GetLastForTeamAsync(teamId);
+            DateTime trainingEnd = await trainings.GetTrainingEndTimeAsync(trainingId);
+            return (trainingEnd - DateTime.Now).Minutes >= idlenessMinutesForNewTraining;
+        }
+
+        public async Task StopTraining(int trainingId)
+        {
+            Training training = await trainings.GetAsync(trainingId);
+            if (training == null)
+            {
+                throw new NotFoundException("Training doesn't exist!");
+            }
+            await trainings.StopCurrentTrainingForTeamAsync(training.TeamId);
+        }
+
+        public async Task<TrainingDTO> GetTrainingAsync(int trainingId)
+        {
+            Training training = await trainings.GetAsync(trainingId);
+            if (training == null)
+            {
+                throw new NotFoundException("Training doesn't exist!");
+            }
+            return new TrainingDTO
+            {
+                Id = training.Id,
+                TeamId = training.TeamId,
+                BeginTime = training.BeginTime
+            };
+        }
+
+        public async Task<TrainingDTO> GetCurrentTrainingForTeamAsync(int teamId)
+        {
+            Training training = await trainings.GetCurrentTrainingForTeamAsync(teamId);
             if (training == null)
             {
                 throw new NotFoundException("Team doesn't have any trainings!");
+            }
+            DateTime trainingEnd = await trainings.GetTrainingEndTimeAsync(training.Id);
+            if ((DateTime.Now - trainingEnd).Minutes >= idlenessMinutesForNewTraining)
+            {
+                await trainings.StopCurrentTrainingForTeamAsync(teamId);
+                throw new NotFoundException("The training is over");
             }
             return new TrainingDTO
             {

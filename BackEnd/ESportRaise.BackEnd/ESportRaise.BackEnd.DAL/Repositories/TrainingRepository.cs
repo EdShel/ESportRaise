@@ -6,10 +6,39 @@ using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.DAL.Repositories
 {
-    public class TrainingAsyncRepository : BasicAsyncRepository<Training>
+    public class TrainingRepository : BasicAsyncRepository<Training>
     {
-        public TrainingAsyncRepository(SqlConnection sqlConnection) : base(sqlConnection)
+        public TrainingRepository(SqlConnection sqlConnection) : base(sqlConnection)
         {
+        }
+
+        public async Task StopCurrentTrainingForTeamAsync(int teamId)
+        {
+            var stopCommand = db.CreateCommand();
+            stopCommand.CommandText = "UPDATE LastTraining SET TrainingId = NULL WHERE TeamId = @teamId";
+            stopCommand.Parameters.AddWithValue("@teamId", teamId);
+            await stopCommand.ExecuteNonQueryAsync();
+        }
+
+
+        public async Task<DateTime> GetTrainingEndTimeAsync(int trainingId)
+        {
+            var checkCommand = db.CreateCommand();
+            checkCommand.CommandText = 
+                "SELECT MAX(CreateTime) FROM StateRecord " +
+                "WHERE TrainingId = @trainingId";
+            checkCommand.Parameters.AddWithValue("@trainingId", trainingId);
+
+            DateTime lastRecordTime = (DateTime)await checkCommand.ExecuteScalarAsync();
+            if (lastRecordTime != default)
+            {
+                return lastRecordTime;
+            }
+
+            var getBeginCommand = db.CreateCommand();
+            getBeginCommand.CommandText = "SELECT BeginTime FROM Training WHERE Id = @id";
+            getBeginCommand.Parameters.AddWithValue("@id", trainingId);
+            return (DateTime)await getBeginCommand.ExecuteScalarAsync();
         }
 
         public async Task<int> GetTrainingIdAsync(int userId, int idlenessMinutesForNewTraining)
@@ -22,7 +51,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return (int)await getTrainingCommand.ExecuteScalarAsync();
         }
 
-        public async Task<Training> GetLastForTeamAsync(int teamId)
+        public async Task<Training> GetCurrentTrainingForTeamAsync(int teamId)
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = "SELECT t.Id, t.TeamId, t.BeginTime " +

@@ -9,7 +9,7 @@ namespace ESportRaise.BackEnd.BLL.Interfaces
     {
         Task<InitiateTrainingServiceResponse> InitiateTrainingAsync(InitiateTrainingServiceRequest request);
 
-        Task<TrainingDTO> GetLastTrainingForTeamAsync(int teamId);
+        Task<TrainingDTO> GetCurrentTrainingForTeamAsync(int teamId);
 
         Task<IEnumerable<TrainingDTO>> GetTrainingsBeforeDateTime(int teamId, DateTime dateTime, int hours);
     }

@@ -26,7 +26,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             return default;
         }
 
-        public async Task<IEnumerable<StateRecord>> GetMostRecentForUserAsync(
+        public async Task<IEnumerable<StateRecord>> GetForTrainingAndUserMostRecentAsync(
             int trainingId,
             int seconds,
             int userId)
@@ -50,7 +50,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<StateRecord>> GetMostRecentAsync(
+        public async Task<IEnumerable<StateRecord>> GetForTrainingMostRecentAsync(
             int trainingId,
             int seconds)
         {
@@ -65,6 +65,23 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             {
                 var states = new List<StateRecord>();
                 while (await r.ReadAsync())
+                {
+                    states.Add(MapFromReader(r));
+                }
+                return states;
+            }
+        }
+
+        public async Task<IEnumerable<StateRecord>> GetForTrainingAsync(int trainingId)
+        {
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText = 
+                "SELECT * FROM StateRecord WEHRE TrainingId = @trainingId ORDER BY CreateTime";
+            selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
+            using (var r = await selectCommand.ExecuteReaderAsync())
+            {
+                var states = new List<StateRecord>();
+                while(await r.ReadAsync())
                 {
                     states.Add(MapFromReader(r));
                 }

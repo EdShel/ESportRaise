@@ -49,11 +49,11 @@ namespace ESportRaise.BackEnd.BLL.Services
             IEnumerable<StateRecord> records;
             if (request.TeamMemberId == default)
             {
-                records = await stateRecords.GetMostRecentAsync(request.TrainingId, request.TimeInSeconds);
+                records = await stateRecords.GetForTrainingMostRecentAsync(request.TrainingId, request.TimeInSeconds);
             }
             else
             {
-                records = await stateRecords.GetMostRecentForUserAsync(
+                records = await stateRecords.GetForTrainingAndUserMostRecentAsync(
                     request.TrainingId,
                     request.TimeInSeconds,
                     request.TeamMemberId.Value);

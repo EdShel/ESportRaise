@@ -47,14 +47,16 @@ namespace ESportRaise.BackEnd.API
             services.AddTransient<StateRecordRepository>();
             services.AddTransient<TeamMemberRepository>();
             services.AddTransient<TeamRepository>();
-            services.AddTransient<TrainingAsyncRepository>();
+            services.AddTransient<TrainingRepository>();
 
             services.AddSingleton<IAuthTokenFactory, JwtTokenGeneratorService>();
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
             services.AddSingleton<IPasswordHasher, IdentityPasswordHasherService>();
+            services.AddSingleton<StressRecognitionService>();
 
             services.AddTransient<AppUserService>();
             services.AddTransient<IAuthAsyncService, AuthService>();
+            services.AddTransient<CriticalMomentService>();
             services.AddTransient<YouTubeV3Service>();
             services.AddTransient<ITrainingService, TrainingService>();
             services.AddTransient<TeamService>();

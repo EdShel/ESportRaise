@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using ESportRaise.BackEnd.BLL.DTOs.Training;
+﻿using ESportRaise.BackEnd.BLL.DTOs.Training;
+using ESportRaise.BackEnd.BLL.Exceptions;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.BLL.Services;
-using ESportRaise.BackEnd.BLL.Constants;
-using Microsoft.AspNetCore.Mvc.Filters;
-using ESportRaise.BackEnd.BLL.Exceptions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.API.Controllers
 {
@@ -44,7 +42,7 @@ namespace ESportRaise.BackEnd.API.Controllers
         {
             await ValidateAccessToTeam(id);
 
-            TrainingDTO training = await trainingService.GetLastTrainingForTeamAsync(id);
+            TrainingDTO training = await trainingService.GetCurrentTrainingForTeamAsync(id);
             return new JsonResult(new
             {
                 training.Id,
