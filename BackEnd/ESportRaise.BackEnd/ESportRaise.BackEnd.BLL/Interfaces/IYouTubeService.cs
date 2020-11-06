@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Interfaces
 {
-    public interface IStreamingApiService
+    public interface IYouTubeService
     {
         Task<string> GetUserIdAsync(string channelUrl);
 

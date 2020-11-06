@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-    public sealed class YouTubeV3Service : IStreamingApiService
+    public sealed class YouTubeV3Service : IYouTubeService
     {
         private const string BASE_API_URL = "https://www.googleapis.com/youtube/v3";
 
