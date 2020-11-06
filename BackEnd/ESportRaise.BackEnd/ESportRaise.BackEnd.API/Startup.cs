@@ -39,7 +39,7 @@ namespace ESportRaise.BackEnd.API
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.RequireHttpsMetadata = false; // TODO: If dev, then disable
+                    options.RequireHttpsMetadata = false;
                     options.TokenValidationParameters = tokenFactoryService.TokenValidationParameters;
                 });
 

@@ -53,7 +53,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             }
             else
             {
-                bool isTrainingOver = await trainingService.IsTrainingOver(trainingId);
+                bool isTrainingOver = await trainingService.IsTrainingOverAsync(trainingId);
                 if (!isTrainingOver)
                 {
                     throw new BadRequestException("Training hasn't finished yet! Stop it or wait!");

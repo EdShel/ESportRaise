@@ -25,9 +25,9 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpPost("backupDb")]
-        public async Task<IActionResult> BackupDatabase([FromBody] BackupDatabaseRequest request)
+        public async Task<IActionResult> BackupDatabaseAsync([FromBody] BackupDatabaseRequest request)
         {
-            await databaseBackupService.BackupDatabase(request.BackupFile);
+            await databaseBackupService.BackupDatabaseAsync(request.BackupFile);
 
             return Ok();
         }

@@ -15,6 +15,11 @@ namespace ESportRaise.BackEnd.BLL.Services
             this.users = users;
         }
 
+        public async Task<bool> DoesAnyAdminExistAsync()
+        {
+            return await users.GetRegisteredAdminsCount() != 0;
+        }
+
         public async Task<AppUserDTO> GetUserAsync(string userNameOrEmail)
         {
             AppUser user = await users.GetUserOrDefaultByEmailOrUserNameAsync(userNameOrEmail);

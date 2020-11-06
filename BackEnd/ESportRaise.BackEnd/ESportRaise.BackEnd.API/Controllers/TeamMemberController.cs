@@ -31,8 +31,8 @@ namespace ESportRaise.BackEnd.API.Controllers
             {
                 throw new BadRequestException("You need to belong to a team first!");
             }
-            string channelId = await youTubeService.GetUserId(request.ChannelUrl);
-            await memberService.ChangeYouTubeChannelId(userId, channelId);
+            string channelId = await youTubeService.GetUserIdAsync(request.ChannelUrl);
+            await memberService.ChangeYouTubeChannelIdAsync(userId, channelId);
 
             return Ok();
         }

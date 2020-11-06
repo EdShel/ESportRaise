@@ -28,7 +28,7 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateTeam([FromBody] TeamCreateRequest request)
+        public async Task<IActionResult> CreateTeamAsync([FromBody] TeamCreateRequest request)
         {
             CreateTeamDTO serviceRequest = new CreateTeamDTO
             {
@@ -43,9 +43,9 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpPost("addMember")]
-        public async Task<IActionResult> AddTeamMember([FromBody] AddTeamMemberRequest request)
+        public async Task<IActionResult> AddTeamMemberAsync([FromBody] AddTeamMemberRequest request)
         {
-            await ValidateAccessToTeam(request.TeamId);
+            await ValidateAccessToTeamAsync(request.TeamId);
 
             AppUserDTO newTeamMember = await users.GetUserAsync(request.User);
             await teamService.AddTeamMemberAsync(request.TeamId, newTeamMember.Id);
@@ -53,9 +53,9 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpPost("removeMember")]
-        public async Task<IActionResult> RemoveTeamMember([FromBody] RemoveTeamMemberRequest request)
+        public async Task<IActionResult> RemoveTeamMemberAsync([FromBody] RemoveTeamMemberRequest request)
         {
-            await ValidateAccessToTeam(request.TeamId);
+            await ValidateAccessToTeamAsync(request.TeamId);
 
             AppUserDTO deletedMember = await users.GetUserAsync(request.User);
             await teamService.RemoveTeamMemberAsync(request.TeamId, deletedMember.Id);
@@ -63,9 +63,9 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpGet("full")]
-        public async Task<IActionResult> GetFullTeam(int id)
+        public async Task<IActionResult> GetFullTeamAsync(int id)
         {
-            await ValidateAccessToTeam(id);
+            await ValidateAccessToTeamAsync(id);
 
             TeamDTO team = await teamService.GetTeamAsync(id);
             return new JsonResult(new
@@ -80,7 +80,7 @@ namespace ESportRaise.BackEnd.API.Controllers
             });
         }
 
-        private async Task ValidateAccessToTeam(int teamId)
+        private async Task ValidateAccessToTeamAsync(int teamId)
         {
             if (!await User.IsAuthorizedToAccessTeamAsync(teamId, teamMemberService))
             {

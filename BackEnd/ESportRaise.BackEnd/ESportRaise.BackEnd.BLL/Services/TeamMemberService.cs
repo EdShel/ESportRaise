@@ -43,7 +43,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             return member.TeamId;
         }
 
-        public async Task ChangeYouTubeChannelId(int userId, string channelId)
+        public async Task ChangeYouTubeChannelIdAsync(int userId, string channelId)
         {
             TeamMember member = await teamMembers.GetAsync(userId);
             member.YouTubeId = string.IsNullOrEmpty(channelId) ? null : channelId;

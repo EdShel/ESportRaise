@@ -88,7 +88,7 @@ namespace ESportRaise.BackEnd.BLL.Services
                 throw new BadRequestException("Not valid user!");
             }
 
-            bool validRefreshToken = await usersRepository.HasRefreshToken(user, refreshRequest.RefreshToken);
+            bool validRefreshToken = await usersRepository.HasRefreshTokenAsync(user, refreshRequest.RefreshToken);
             if (!validRefreshToken)
             {
                 throw new BadRequestException("Not valid refresh token!");
@@ -115,7 +115,7 @@ namespace ESportRaise.BackEnd.BLL.Services
                 throw new BadRequestException("Not valid user!");
             }
 
-            bool validRefreshToken = await usersRepository.HasRefreshToken(user, revokeRequest.RefreshToken);
+            bool validRefreshToken = await usersRepository.HasRefreshTokenAsync(user, revokeRequest.RefreshToken);
             if (!validRefreshToken)
             {
                 throw new BadRequestException("Not valid refresh token!");

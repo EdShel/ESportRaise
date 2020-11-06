@@ -29,7 +29,7 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpPost("stateRecord")]
-        public async Task StateRecord([FromBody] SaveStateRecordRequest request)
+        public async Task StateRecordAsync([FromBody] SaveStateRecordRequest request)
         {
             await ValidateAccessToTraining(request.TrainingId);
 
@@ -45,7 +45,7 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpGet("list")]
-        public async Task<IActionResult> GetRecords([FromBody] StateRecordRequestDTO request)
+        public async Task<IActionResult> GetRecordsAsync([FromBody] StateRecordRequestDTO request)
         {
             await ValidateAccessToTraining(request.TrainingId);
 

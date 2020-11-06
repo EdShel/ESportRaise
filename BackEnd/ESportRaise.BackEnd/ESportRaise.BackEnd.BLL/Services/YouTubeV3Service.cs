@@ -23,7 +23,7 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         #region YouTube API interaction
 
-        private static async Task<JObject> SendApiRequestForUrl(string url)
+        private static async Task<JObject> SendApiRequestForUrlAsync(string url)
         {
             HttpWebRequest apiRequest = WebRequest.CreateHttp(url);
             apiRequest.Method = "GET";
@@ -48,12 +48,12 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         #region Finding out user id
 
-        public async Task<string> GetUserId(string channelUrl)
+        public async Task<string> GetUserIdAsync(string channelUrl)
         {
             bool isLikeUserId = TryParseUserIdFromUrl(channelUrl, out string parsedUserId);
             if (isLikeUserId)
             {
-                bool isVerifiedId = await IsUserRegistered(parsedUserId);
+                bool isVerifiedId = await IsUserRegisteredAsync(parsedUserId);
                 if (isVerifiedId)
                 {
                     return parsedUserId;
@@ -63,7 +63,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             bool isLikeUserName = TryParseUserNameFromUrl(channelUrl, out string parsedUserName);
             if (isLikeUserName)
             {
-                string userId = await GetUserIdByUserName(parsedUserName);
+                string userId = await GetUserIdByUserNameAsync(parsedUserName);
                 if (userId != null)
                 {
                     return userId;
@@ -94,11 +94,11 @@ namespace ESportRaise.BackEnd.BLL.Services
             return new Regex(@"^UC[a-zA-Z0-9\-]+$").IsMatch(possibleUserId);
         }
 
-        private async Task<bool> IsUserRegistered(string userId)
+        private async Task<bool> IsUserRegisteredAsync(string userId)
         {
             string idRequestUrl = $"{BASE_API_URL}/channels?part=id&id={userId}&key={apiKey}";
 
-            JObject responseObject = await SendApiRequestForUrl(idRequestUrl);
+            JObject responseObject = await SendApiRequestForUrlAsync(idRequestUrl);
             JArray usersArray = responseObject["items"] as JArray;
 
             if (usersArray == null || usersArray.Count == 0)
@@ -135,11 +135,11 @@ namespace ESportRaise.BackEnd.BLL.Services
             return new Regex(@"^[a-zA-Z0-9\-]+$").IsMatch(possibleUserName);
         }
 
-        private async Task<string> GetUserIdByUserName(string userName)
+        private async Task<string> GetUserIdByUserNameAsync(string userName)
         {
             string idRequestUrl = $"{BASE_API_URL}/channels?part=id&forUsername={userName}&key={apiKey}";
 
-            JObject responseObject = await SendApiRequestForUrl(idRequestUrl);
+            JObject responseObject = await SendApiRequestForUrlAsync(idRequestUrl);
             JArray usersArray = responseObject["items"] as JArray;
 
             if (usersArray == null || usersArray.Count == 0)
@@ -153,11 +153,11 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         #endregion
 
-        public async Task<LiveStreamResponseDTO> GetCurrentLiveStream(LiveStreamRequestDTO request)
+        public async Task<LiveStreamResponseDTO> GetCurrentLiveStreamAsync(LiveStreamRequestDTO request)
         {
             string userId = request.LiveStreamingServiceUserId;
             string liveStreamsUrl = $"{BASE_API_URL}/search?channelId={userId}&eventType=live&type=video&key={apiKey}";
-            JObject result = await SendApiRequestForUrl(liveStreamsUrl);
+            JObject result = await SendApiRequestForUrlAsync(liveStreamsUrl);
 
             JArray liveStreams = result["items"] as JArray;
             if (liveStreams == null || liveStreams.Count == 0)

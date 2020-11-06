@@ -41,13 +41,13 @@ namespace ESportRaise.BackEnd.BLL.Services
             this.videoStreams = videoStreams;
         }
 
-        public async Task<bool> IsTrainingOver(int trainingId)
+        public async Task<bool> IsTrainingOverAsync(int trainingId)
         {
             DateTime trainingEnd = await trainings.GetTrainingEndTimeAsync(trainingId);
             return (trainingEnd - DateTime.Now).Minutes >= idlenessMinutesForNewTraining;
         }
 
-        public async Task StopTraining(int trainingId)
+        public async Task StopTrainingAsync(int trainingId)
         {
             Training training = await trainings.GetAsync(trainingId);
             if (training == null)
@@ -93,7 +93,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             };
         }
 
-        public async Task<IEnumerable<TrainingDTO>> GetTrainingsBeforeDateTime(int teamId, DateTime dateTime, int hours)
+        public async Task<IEnumerable<TrainingDTO>> GetTrainingsBeforeDateTimeAsync(int teamId, DateTime dateTime, int hours)
         {
             IEnumerable<Training> foundTrainings = await trainings.GetBeforeDateTimeAsync(teamId, dateTime, hours);
             return foundTrainings.Select(training => new TrainingDTO
@@ -117,7 +117,7 @@ namespace ESportRaise.BackEnd.BLL.Services
                     throw new BadRequestException("User doesn't belong to a team!");
                 }
 
-                LiveStreamResponseDTO streamResponse = await youTubeService.GetCurrentLiveStream(new LiveStreamRequestDTO
+                LiveStreamResponseDTO streamResponse = await youTubeService.GetCurrentLiveStreamAsync(new LiveStreamRequestDTO
                 {
                     LiveStreamingServiceUserId = teamMember.YouTubeId
                 });

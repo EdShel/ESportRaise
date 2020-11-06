@@ -25,7 +25,7 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpPost("initiate")]
-        public async Task<IActionResult> Initiate()
+        public async Task<IActionResult> InitiateAsync()
         {
             int userId = User.GetUserId();
             int trainingId = await trainingService.InitiateTrainingAsync(userId);
@@ -54,9 +54,9 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpGet("last")]
-        public async Task<IActionResult> GetLastTrainingForTeam(int id)
+        public async Task<IActionResult> GetLastTrainingForTeamAsync(int id)
         {
-            await ValidateAccessToTeam(id);
+            await ValidateAccessToTeamAsync(id);
 
             TrainingDTO training = await trainingService.GetCurrentTrainingForTeamAsync(id);
             return new JsonResult(new
@@ -68,11 +68,11 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpGet("beforeDay")]
-        public async Task<IActionResult> GetTrainingAtDay(int id, DateTime dateTime, int hours)
+        public async Task<IActionResult> GetTrainingAtDayAsync(int id, DateTime dateTime, int hours)
         {
-            await ValidateAccessToTeam(id);
+            await ValidateAccessToTeamAsync(id);
 
-            IEnumerable<TrainingDTO> trainings = await trainingService.GetTrainingsBeforeDateTime(id, dateTime, hours);
+            IEnumerable<TrainingDTO> trainings = await trainingService.GetTrainingsBeforeDateTimeAsync(id, dateTime, hours);
             return new JsonResult(new
             {
                 TeamId = id,
@@ -92,10 +92,10 @@ namespace ESportRaise.BackEnd.API.Controllers
                 throw new BadRequestException("Invalid training id!");
             }
 
-            await ValidateAccessToTeam(training.TeamId);
+            await ValidateAccessToTeamAsync(training.TeamId);
         }
 
-        private async Task ValidateAccessToTeam(int teamId)
+        private async Task ValidateAccessToTeamAsync(int teamId)
         {
             if (!await User.IsAuthorizedToAccessTeamAsync(teamId, teamMemberService))
             {

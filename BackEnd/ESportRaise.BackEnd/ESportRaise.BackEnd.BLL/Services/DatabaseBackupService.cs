@@ -23,7 +23,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             configuration.Bind("BackupSettings", settings);
         }
 
-        public async Task BackupDatabase(string backupFile)
+        public async Task BackupDatabaseAsync(string backupFile)
         {
             string pathToBackup = Path.Combine(settings.BackupPath, backupFile);
             string backupDirectory = Path.GetDirectoryName(pathToBackup);

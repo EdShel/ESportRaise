@@ -105,7 +105,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             await insertCommand.ExecuteNonQueryAsync();
         }
 
-        public async Task<bool> HasRefreshToken(AppUser user, string refreshToken)
+        public async Task<bool> HasRefreshTokenAsync(AppUser user, string refreshToken)
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = "SELECT 1 FROM RefreshToken WHERE UserId = @userId AND Token = @token";
@@ -123,6 +123,13 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             deleteCommand.Parameters.AddWithValue("@userId", user.Id);
             deleteCommand.Parameters.AddWithValue("@token", refreshToken);
             await deleteCommand.ExecuteNonQueryAsync();
+        }
+
+        public async Task<int> GetRegisteredAdminsCount()
+        {
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText = "SELECT COUNT(*) FROM AppUser WHERE Role = 'Admin'";
+            return (int)await selectCommand.ExecuteScalarAsync();
         }
 
         #region Default mapping

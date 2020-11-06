@@ -31,14 +31,14 @@ namespace ESportRaise.BackEnd.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTrainingCriticalMoments(int id)
+        public async Task<IActionResult> GetTrainingCriticalMomentsAsync(int id)
         {
             TrainingDTO training = await trainingService.GetTrainingAsync(id);
             if (training == null)
             {
                 throw new NotFoundException("Training doesn't exist!");
             }
-            await ValidateAccessToTeam(training.TeamId);
+            await ValidateAccessToTeamAsync(training.TeamId);
 
             IEnumerable<CriticalMomentDTO> moments = await criticalMomentService
                 .GetCriticalMomentsForTrainingAsync(id);
@@ -55,7 +55,7 @@ namespace ESportRaise.BackEnd.API.Controllers
             });
         }
 
-        private async Task ValidateAccessToTeam(int teamId)
+        private async Task ValidateAccessToTeamAsync(int teamId)
         {
             if (!await User.IsAuthorizedToAccessTeamAsync(teamId, teamMemberService))
             {
