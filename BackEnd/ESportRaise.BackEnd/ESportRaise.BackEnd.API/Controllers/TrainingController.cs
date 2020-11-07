@@ -1,6 +1,6 @@
 ﻿using ESportRaise.BackEnd.BLL.DTOs.Training;
 using ESportRaise.BackEnd.BLL.Exceptions;
-using ESportRaise.BackEnd.BLL.Services;
+using ESportRaise.BackEnd.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,11 +14,11 @@ namespace ESportRaise.BackEnd.API.Controllers
     [Route("[controller]"), ApiController, Authorize]
     public class TrainingController : Controller
     {
-        private readonly TrainingService trainingService;
+        private readonly ITrainingService trainingService;
 
-        private readonly TeamMemberService teamMemberService;
+        private readonly ITeamMemberService teamMemberService;
 
-        public TrainingController(TrainingService trainingService, TeamMemberService teamMemberService)
+        public TrainingController(ITrainingService trainingService, ITeamMemberService teamMemberService)
         {
             this.trainingService = trainingService;
             this.teamMemberService = teamMemberService;

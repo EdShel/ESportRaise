@@ -1,4 +1,5 @@
 ﻿using ESportRaise.BackEnd.BLL.DTOs.CriticalMoment;
+using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.DAL.Entities;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-    public sealed class StressRecognitionService
+    public sealed class StressRecognitionService : IStressRecognitionService
     {
         private readonly IndicatorParameters heartRateParameters;
 

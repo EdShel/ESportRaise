@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using ESportRaise.BackEnd.BLL.Interfaces;
-using ESportRaise.BackEnd.API.Models.StateRecord;
+﻿using ESportRaise.BackEnd.API.Models.StateRecord;
 using ESportRaise.BackEnd.BLL.DTOs.StateRecord;
-using System.Linq;
-using ESportRaise.BackEnd.BLL.Services;
 using ESportRaise.BackEnd.BLL.DTOs.Training;
 using ESportRaise.BackEnd.BLL.Exceptions;
+using ESportRaise.BackEnd.BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.API.Controllers
 {
@@ -17,11 +16,11 @@ namespace ESportRaise.BackEnd.API.Controllers
     {
         private readonly IStateRecordService stateRecordService;
 
-        private readonly TrainingService trainingService;
+        private readonly ITrainingService trainingService;
 
-        private readonly TeamMemberService teamMemberService;
+        private readonly ITeamMemberService teamMemberService;
 
-        public StateRecordController(IStateRecordService stateRecordService, TrainingService trainingService, TeamMemberService teamMemberService)
+        public StateRecordController(IStateRecordService stateRecordService, ITrainingService trainingService, ITeamMemberService teamMemberService)
         {
             this.stateRecordService = stateRecordService;
             this.trainingService = trainingService;

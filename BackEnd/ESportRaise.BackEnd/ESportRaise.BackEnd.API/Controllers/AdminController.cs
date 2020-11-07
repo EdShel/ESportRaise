@@ -1,11 +1,9 @@
 ﻿using ESportRaise.BackEnd.API.Models.Admin;
 using ESportRaise.BackEnd.BLL.Constants;
 using ESportRaise.BackEnd.BLL.DTOs.ConfigChange;
-using ESportRaise.BackEnd.BLL.Services;
+using ESportRaise.BackEnd.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,11 +12,11 @@ namespace ESportRaise.BackEnd.API.Controllers
     [Route("[controller]"), ApiController, Authorize(Roles = AuthConstants.ADMIN_ROLE)]
     public class AdminController : ControllerBase
     {
-        private DatabaseBackupService databaseBackupService;
+        private IDatabaseBackupService databaseBackupService;
 
-        private ConfigChangeService configChangeService;
+        private IConfigChangeService configChangeService;
 
-        public AdminController(DatabaseBackupService databaseBackupService, ConfigChangeService configChangeService)
+        public AdminController(IDatabaseBackupService databaseBackupService, IConfigChangeService configChangeService)
         {
             this.databaseBackupService = databaseBackupService;
             this.configChangeService = configChangeService;

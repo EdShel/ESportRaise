@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace ESportRaise.BackEnd.BLL.Services
@@ -66,20 +65,6 @@ namespace ESportRaise.BackEnd.BLL.Services
             public bool ValidateLifetime { get; set; }
 
             public int TokenLifetimeMinutes { get; set; }
-        }
-    }
-
-    public class RefreshTokenFactory : IRefreshTokenFactory
-    {
-        public string GenerateToken()
-        {
-            const int tokenLengthInBytes = 32;
-            var randomNumber = new byte[tokenLengthInBytes];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
         }
     }
 }

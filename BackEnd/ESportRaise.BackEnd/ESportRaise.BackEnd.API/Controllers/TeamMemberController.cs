@@ -1,9 +1,7 @@
 ﻿using ESportRaise.BackEnd.API.Models.TeamMember;
-using ESportRaise.BackEnd.BLL.Constants;
-using ESportRaise.BackEnd.BLL.DTOs.LiveStreaming;
 using ESportRaise.BackEnd.BLL.DTOs.TeamMember;
 using ESportRaise.BackEnd.BLL.Exceptions;
-using ESportRaise.BackEnd.BLL.Services;
+using ESportRaise.BackEnd.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -14,11 +12,11 @@ namespace ESportRaise.BackEnd.API.Controllers
     [Route("[controller]"), ApiController, Authorize]
     public class TeamMemberController : ControllerBase
     {
-        private readonly TeamMemberService memberService;
+        private readonly ITeamMemberService memberService;
 
-        private readonly YouTubeV3Service youTubeService;
+        private readonly IYouTubeService youTubeService;
 
-        public TeamMemberController(TeamMemberService memberService, YouTubeV3Service youTubeService)
+        public TeamMemberController(ITeamMemberService memberService, IYouTubeService youTubeService)
         {
             this.memberService = memberService;
             this.youTubeService = youTubeService;

@@ -1,33 +1,33 @@
 ﻿using ESportRaise.BackEnd.BLL.DTOs.CriticalMoment;
 using ESportRaise.BackEnd.BLL.DTOs.Training;
 using ESportRaise.BackEnd.BLL.Exceptions;
+using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.DAL.Entities;
 using ESportRaise.BackEnd.DAL.Repositories;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-    public sealed class CriticalMomentService
+    public sealed class CriticalMomentService : ICriticalMomentService
     {
         private readonly CriticalMomentRepository criticalMoments;
 
-        private readonly TrainingService trainingService;
+        private readonly ITrainingService trainingService;
 
         private readonly StateRecordRepository stateRecors;
 
-        private readonly StressRecognitionService stressRecognitionService;
+        private readonly IStressRecognitionService stressRecognitionService;
 
         private readonly int idlenessMinutesForNewTraining;
 
         public CriticalMomentService(
             CriticalMomentRepository criticalMoments, 
-            TrainingService trainingService,
+            ITrainingService trainingService,
             StateRecordRepository stateRecors, 
-            StressRecognitionService stressRecognitionService,
+            IStressRecognitionService stressRecognitionService,
             IConfiguration configuration)
         {
             this.criticalMoments = criticalMoments;

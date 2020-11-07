@@ -1,15 +1,13 @@
 ﻿using ESportRaise.BackEnd.BLL.Exceptions;
+using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.DAL.Repositories;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-    public class DatabaseBackupService
+    public class DatabaseBackupService : IDatabaseBackupService
     {
         private readonly BackupSettings settings;
 

@@ -1,5 +1,5 @@
 ﻿using ESportRaise.BackEnd.BLL.Constants;
-using ESportRaise.BackEnd.BLL.Services;
+using ESportRaise.BackEnd.BLL.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,7 +16,7 @@ namespace System.Security.Claims
         public static async Task<bool> IsAuthorizedToAccessTeamAsync(
             this ClaimsPrincipal principal, 
             int teamId, 
-            TeamMemberService teamMemberService)
+            ITeamMemberService teamMemberService)
         {
             if (principal.IsInRole(AuthConstants.ADMIN_ROLE))
             {

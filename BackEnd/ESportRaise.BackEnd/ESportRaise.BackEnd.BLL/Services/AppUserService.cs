@@ -1,12 +1,13 @@
 ﻿using ESportRaise.BackEnd.BLL.DTOs.AppUser;
 using ESportRaise.BackEnd.BLL.Exceptions;
+using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.DAL.Entities;
 using ESportRaise.BackEnd.DAL.Repositories;
 using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-    public sealed class AppUserService
+    public sealed class AppUserService : IAppUserService
     {
         private readonly AppUserRepository users;
 

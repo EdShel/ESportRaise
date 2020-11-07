@@ -1,12 +1,13 @@
 ﻿using ESportRaise.BackEnd.BLL.DTOs.TeamMember;
 using ESportRaise.BackEnd.BLL.Exceptions;
+using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.DAL.Entities;
 using ESportRaise.BackEnd.DAL.Repositories;
 using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-    public sealed class TeamMemberService
+    public sealed class TeamMemberService : ITeamMemberService
     {
         private readonly TeamRepository teams;
 

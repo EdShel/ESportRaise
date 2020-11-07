@@ -4,7 +4,6 @@ using ESportRaise.BackEnd.BLL.DTOs.AppUser;
 using ESportRaise.BackEnd.BLL.DTOs.Auth;
 using ESportRaise.BackEnd.BLL.Exceptions;
 using ESportRaise.BackEnd.BLL.Interfaces;
-using ESportRaise.BackEnd.BLL.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -16,9 +15,9 @@ namespace ESportRaise.BackEnd.API.Controllers
     {
         private IAuthAsyncService authService;
 
-        private readonly AppUserService appUserService;
+        private readonly IAppUserService appUserService;
 
-        public AuthController(IAuthAsyncService authService, AppUserService appUserService)
+        public AuthController(IAuthAsyncService authService, IAppUserService appUserService)
         {
             this.authService = authService;
             this.appUserService = appUserService;

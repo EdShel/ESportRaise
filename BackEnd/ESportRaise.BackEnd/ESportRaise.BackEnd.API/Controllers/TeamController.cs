@@ -2,7 +2,7 @@
 using ESportRaise.BackEnd.BLL.DTOs.AppUser;
 using ESportRaise.BackEnd.BLL.DTOs.Team;
 using ESportRaise.BackEnd.BLL.Exceptions;
-using ESportRaise.BackEnd.BLL.Services;
+using ESportRaise.BackEnd.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -14,13 +14,13 @@ namespace ESportRaise.BackEnd.API.Controllers
     [Route("[controller]"), ApiController, Authorize]
     public class TeamController : ControllerBase
     {
-        private readonly TeamService teamService;
+        private readonly ITeamService teamService;
 
-        private readonly TeamMemberService teamMemberService;
+        private readonly ITeamMemberService teamMemberService;
 
-        private readonly AppUserService users;
+        private readonly IAppUserService users;
 
-        public TeamController(TeamService teamService, TeamMemberService teamMemberService, AppUserService users)
+        public TeamController(ITeamService teamService, ITeamMemberService teamMemberService, IAppUserService users)
         {
             this.teamService = teamService;
             this.teamMemberService = teamMemberService;

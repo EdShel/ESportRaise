@@ -1,7 +1,7 @@
 ﻿using ESportRaise.BackEnd.BLL.DTOs.CriticalMoment;
 using ESportRaise.BackEnd.BLL.DTOs.Training;
 using ESportRaise.BackEnd.BLL.Exceptions;
-using ESportRaise.BackEnd.BLL.Services;
+using ESportRaise.BackEnd.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -14,16 +14,16 @@ namespace ESportRaise.BackEnd.API.Controllers
     [Route("[controller]"), ApiController, Authorize]
     public class CriticalMomentController : Controller
     {
-        private readonly CriticalMomentService criticalMomentService;
+        private readonly ICriticalMomentService criticalMomentService;
 
-        private readonly TrainingService trainingService;
+        private readonly ITrainingService trainingService;
 
-        private readonly TeamMemberService teamMemberService;
+        private readonly ITeamMemberService teamMemberService;
 
         public CriticalMomentController(
-            CriticalMomentService criticalMomentService, 
-            TrainingService trainingService, 
-            TeamMemberService teamMemberService)
+            ICriticalMomentService criticalMomentService, 
+            ITrainingService trainingService, 
+            ITeamMemberService teamMemberService)
         {
             this.criticalMomentService = criticalMomentService;
             this.trainingService = trainingService;

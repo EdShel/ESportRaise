@@ -1,5 +1,4 @@
-﻿using ESportRaise.BackEnd.API.Filters;
-using ESportRaise.BackEnd.API.Middleware;
+﻿using ESportRaise.BackEnd.API.Middleware;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.BLL.Services;
 using ESportRaise.BackEnd.DAL.Interfaces;
@@ -31,10 +30,7 @@ namespace ESportRaise.BackEnd.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(Configuration);
-            services.AddMvc(options =>
-                {
-                    //options.Filters.Add<InputValidationActionFilter>();
-                })
+            services.AddMvc() 
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddTransient(_ => new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -59,20 +55,19 @@ namespace ESportRaise.BackEnd.API
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
             services.AddSingleton<IPasswordHasher, IdentityPasswordHasherService>();
 
-            services.AddTransient<AppUserService>();
+            services.AddTransient<IAppUserService, AppUserService>();
             services.AddTransient<IAuthAsyncService, AuthService>();
-            services.AddTransient<ConfigChangeService>();
-            services.AddTransient<CriticalMomentService>();
-            services.AddSingleton<IAuthTokenFactory, JwtTokenGeneratorService>();
+            services.AddTransient<IConfigChangeService, ConfigChangeService>();
+            services.AddTransient<ICriticalMomentService, CriticalMomentService>();
             services.AddTransient<IStateRecordService, StateRecordService>();
-            services.AddTransient<StressRecognitionService>();
-            services.AddTransient<TeamMemberService>();
-            services.AddTransient<TeamService>();
-            services.AddTransient<TrainingService>();
-            services.AddTransient<YouTubeV3Service>();
+            services.AddTransient<IStressRecognitionService, StressRecognitionService>();
+            services.AddTransient<ITeamMemberService, TeamMemberService>();
+            services.AddTransient<ITeamService, TeamService>();
+            services.AddTransient<ITrainingService, TrainingService>();
+            services.AddTransient<IYouTubeService, YouTubeV3Service>();
 
             services.AddTransient<DatabaseRepository>();
-            services.AddTransient<DatabaseBackupService>();
+            services.AddTransient<IDatabaseBackupService, DatabaseBackupService>();
 
             services.AddSwaggerGen(c =>
             {
@@ -84,7 +79,6 @@ namespace ESportRaise.BackEnd.API
         {
             if (env.IsDevelopment())
             {
-                //app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {

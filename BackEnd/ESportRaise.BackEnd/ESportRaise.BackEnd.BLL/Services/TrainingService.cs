@@ -22,7 +22,7 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         private readonly TeamMemberRepository members;
 
-        private readonly YouTubeV3Service youTubeService;
+        private readonly IYouTubeService youTubeService;
 
         private readonly VideoStreamRepository videoStreams;
 
@@ -30,7 +30,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             IConfiguration configuration,
             TrainingRepository trainings,
             TeamMemberRepository members,
-            YouTubeV3Service youTubeService,
+            IYouTubeService youTubeService,
             VideoStreamRepository videoStreams)
         {
             idlenessMinutesForNewTraining = configuration.GetValue<int>("IdlenessMinutesForNewTraining");

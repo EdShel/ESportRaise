@@ -1,16 +1,13 @@
 ﻿using ESportRaise.BackEnd.BLL.DTOs.ConfigChange;
+using ESportRaise.BackEnd.BLL.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Services
 {
-    public sealed class ConfigChangeService
+    public sealed class ConfigChangeService : IConfigChangeService
     {
         private readonly IConfiguration configuration;
 
