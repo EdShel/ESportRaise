@@ -1,6 +1,17 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
     ViewData["Title"] = "Home Page";
 }
+
+<h1>"@Localizer["Register"]"</h1>
+
+<form asp-action="SetLanguage" asp-controller="Home">
+    <input name="culture" value="uk"/>
+    <input type="submit" />
+</form>
 
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
     <ol class="carousel-indicators">
