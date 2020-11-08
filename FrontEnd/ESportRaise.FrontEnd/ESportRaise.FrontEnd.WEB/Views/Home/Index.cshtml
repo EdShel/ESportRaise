@@ -1,12 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 
 @inject IViewLocalizer Localizer
+@inject IHtmlLocalizer<SharedView> SharedLocalizer
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
 <h1>"@Localizer["Register"]"</h1>
+<h1>In your language dog is @SharedLocalizer["Dog"]</h1>
 
 <form asp-action="SetLanguage" asp-controller="Home">
     <input name="culture" value="uk"/>
