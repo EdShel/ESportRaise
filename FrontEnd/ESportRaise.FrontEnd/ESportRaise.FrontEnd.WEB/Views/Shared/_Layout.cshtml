@@ -48,7 +48,12 @@
                             <a class="nav-link" href="#" v-on:click.stop="openModal('loginModal')">@SharedLocalizer["LoginAction"]</a>
                         </li>
                         <li>
-                            <a class="nav-link" href="#" data-toggle="modal" v-on:click.prevent="openRegister">@SharedLocalizer["RegisterAction"]</a>
+                            <a class="nav-link" href="#" v-on:click.prevent="openModal('registerModal')">@SharedLocalizer["RegisterAction"]</a>
+                        </li>
+                    </template>
+                    <template v-else>
+                        <li>
+                            <a class="nav-link" href="#" v-on:click.prevent="logout">@SharedLocalizer["Logout"]</a>
                         </li>
                     </template>
                 </ul>
@@ -59,7 +64,7 @@
             </div>
         </nav>
 
-
+        <!-- Login modal -->
         <div class="modal" id="loginModal">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -77,19 +82,67 @@
                                 <label for="loginEmail">@SharedLocalizer["EmailOrUserName"]</label>
                                 <input type="text" id="loginEmail" v-model="loginData.user" />
                             </div>
+                            <div>
+                                <label for="loginPassword">@SharedLocalizer["Password"]</label>
+                                <input type="password" id="loginPassword" v-model="loginData.password" />
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" v-on:click="closeModal">
                             @SharedLocalizer["CloseAction"]
                         </button>
-                        <button type="button" class="btn btn-primary">
+                        <button type="button" class="btn btn-primary" v-on:click='login'>
                             @SharedLocalizer["LoginAction"]
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Register modal -->
+        <div class="modal" id="registerModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            @SharedLocalizer["RegisterModalTitle"]
+                        </h5>
+                        <button type="button" class="close" v-on:click="closeModal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="registerForm">
+                            <div>
+                                <label for="registerEmail">@SharedLocalizer["Email"]</label>
+                                <input type="text" id="registerEmail" v-model="registerData.email" />
+                            </div>
+                            <div>
+                                <label for="registerUserName">@SharedLocalizer["UserName"]</label>
+                                <input type="text" id="registerUserName" v-model="registerData.userName" />
+                            </div>
+                            <div>
+                                <label for="registerPassword">@SharedLocalizer["Password"]</label>
+                                <input type="password" id="registerPassword" v-model="registerData.password" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" v-on:click="closeModal">
+                            @SharedLocalizer["CloseAction"]
+                        </button>
+                        <button type="button" class="btn btn-primary" v-on:click='register'>
+                            @SharedLocalizer["RegisterAction"]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
     </div>
 
     <partial name="_CookieConsentPartial" />

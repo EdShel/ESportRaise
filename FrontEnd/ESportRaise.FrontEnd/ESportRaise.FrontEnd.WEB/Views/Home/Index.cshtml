@@ -27,6 +27,11 @@
 
 <div class="container body-content">
     <div id="f">
+
+        <button v-on:click="info">
+            get user info
+        </button>
+
         <div v-for="n in 100">
             Hello {{ n }}
         </div>
@@ -35,7 +40,12 @@
 
 <script>
     new Vue({
-        el: '#f'
+        el: '#f',
+        methods: {
+            info() {
+                sendGet('auth/me').then(r => console.log(r)).catch(e => console.log(e));
+            }
+        }
     })
 
     window.addEventListener("scroll", function () {

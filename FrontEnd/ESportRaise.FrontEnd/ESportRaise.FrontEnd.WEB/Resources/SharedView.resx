@@ -120,6 +120,9 @@
   <data name="CloseAction" xml:space="preserve">
     <value>Close</value>
   </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
   <data name="EmailOrUserName" xml:space="preserve">
     <value>Email or user name</value>
   </data>
@@ -129,10 +132,19 @@
   <data name="LoginModalTitle" xml:space="preserve">
     <value>Login</value>
   </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
   <data name="RegisterAction" xml:space="preserve">
     <value>Register</value>
   </data>
   <data name="RegisterModalTitle" xml:space="preserve">
     <value>Register</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>User name</value>
   </data>
 </root>

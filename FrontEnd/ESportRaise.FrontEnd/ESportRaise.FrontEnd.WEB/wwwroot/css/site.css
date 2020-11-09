@@ -36,7 +36,6 @@
         margin-right: auto;
         width: 50%;
         transition: top ease-out 0.2s;
-        filter: blur(3px);
     }
 
     .gamepad-logo .logo-text {

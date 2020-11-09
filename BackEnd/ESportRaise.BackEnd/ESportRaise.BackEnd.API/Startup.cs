@@ -96,6 +96,10 @@ namespace ESportRaise.BackEnd.API
             app.UseAuthentication();
 
             app.UseHttpsRedirection();
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
             app.UseMvc();
         }
     }
