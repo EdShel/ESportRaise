@@ -117,7 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Dog" xml:space="preserve">
-    <value>Dog</value>
+  <data name="CloseAction" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="EmailOrUserName" xml:space="preserve">
+    <value>Email or user name</value>
+  </data>
+  <data name="LoginAction" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="LoginModalTItle" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="RegisterAction" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="RegisterModalTitle" xml:space="preserve">
+    <value>Register</value>
   </data>
 </root>

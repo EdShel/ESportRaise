@@ -1,4 +1,39 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function getToken() {
+    localStorage.getItem("token");
+}
 
-// Write your JavaScript code.
+function authorize() {
+
+
+}
+let navVM = new Vue({
+    el: "#navSection",
+    data: {
+        whatIsOpened: "nothing",
+        loginData: {
+            user: "",
+            password: ""
+        },
+        registerData: {
+            user: "",
+            password: ""
+        }
+    },
+    computed: {
+        isAuthorized() {
+            let authToken = localStorage.getItem("token");
+            return authToken == true;
+        }
+    },
+    methods: {
+        openLogin() {
+            whatIsOpened = "login"
+        },
+        openRegister() {
+            whatIsOpened = "register"
+        },
+        close() {
+            wharIsOpened = "nothing"
+        }
+    }
+})
