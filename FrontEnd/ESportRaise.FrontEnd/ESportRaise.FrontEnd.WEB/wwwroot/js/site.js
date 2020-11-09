@@ -6,10 +6,11 @@ function authorize() {
 
 
 }
+
 let navVM = new Vue({
     el: "#navSection",
     data: {
-        whatIsOpened: "nothing",
+        openedModal: null,
         loginData: {
             user: "",
             password: ""
@@ -26,14 +27,22 @@ let navVM = new Vue({
         }
     },
     methods: {
-        openLogin() {
-            whatIsOpened = "login"
+        openModal(modalId) {
+            let el = document.getElementById(modalId);
+            this.openedModal = el;
+            el.classList.add("visible");
+            console.log(el);
         },
-        openRegister() {
-            whatIsOpened = "register"
-        },
-        close() {
-            wharIsOpened = "nothing"
+        closeModal() {
+            this.openedModal.classList.remove("visible");
+            this.openedModal = null;
         }
     }
 })
+
+document.addEventListener("click", function (e) {
+    if (e.target === navVM.openedModal) {
+        navVM.closeModal();
+    }
+})
+

@@ -52,6 +52,10 @@
         text-shadow: 0 0 10px #000;
     }
 
+.modal.visible {
+    display: block;
+    background: rgba(0, 0, 0, 0.8);
+}
 
 @keyframes vibrate {
     0% {
