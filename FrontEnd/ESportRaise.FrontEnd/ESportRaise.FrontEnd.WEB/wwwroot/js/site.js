@@ -91,9 +91,10 @@ document.addEventListener("click", function (e) {
     }
 })
 
-function sendGet(url) {
+function sendGet(url, params) {
     if (auth.isAuthorized) {
         return axios.get(backendServer + url, {
+            params: params,
             headers: {
                 Authorization: 'Bearer ' + auth.user.token
             }
@@ -102,13 +103,22 @@ function sendGet(url) {
     return axios.get(backendServer + url);
 }
 
-function sendPost(url, data) {
+function sendPost(url, params, data) {
     if (auth.isAuthorized) {
         return axios.post(backendServer + url, data, {
+            params: params,
             headers: {
                 Authorization: 'Bearer ' + auth.user.token
             }
         });
     }
-    return axios.post(backendServer + url, data);
+    return axios.post(backendServer + url, data, {
+        params: params
+    });
+}
+
+function handle(e) {
+    console.log(e);
+    console.log(e.request);
+    console.log(e.response);
 }

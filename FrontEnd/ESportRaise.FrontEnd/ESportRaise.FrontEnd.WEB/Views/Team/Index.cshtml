@@ -1,0 +1,30 @@
+﻿@model int
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+<script>
+    let teamId = @Model;
+</script>
+
+<div id="team">
+    <template v-if="team.name !== null">
+        <div class="container">
+            <h1>{{ team.name }}</h1>
+        </div>
+        <div v-for="member in team.members">
+            {{ member.name }}
+        </div>
+    </template>
+    <template v-else>
+        <input type="text" v-model="newTeam.name" />
+        <button v-on:click="registerTeam">Create new team</button>
+    </template>
+</div>
+
+@section Scripts {
+    <script src="~/js/team.js"></script>
+}

@@ -1,0 +1,40 @@
+﻿@model int
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["AccountPageTitle"];
+}
+
+<script>
+    let userId = @Model;
+</script>
+
+<div id="user">
+    <div class="container">
+        <h1>{{ user.userName }}</h1>
+        <div>
+            <b>Email:</b>
+            <span>{{ user.email }}</span>
+        </div>
+        <template v-if="team.exists">
+            <div>
+                <b>Team name:</b>
+                <span>{{ team.name }}</span>
+            </div>
+            <div>
+                <b>YouTube id:</b>
+                <span>{{ teamMember.youTubeId }}</span>
+            </div>
+        </template>
+        <template v-else>
+            <div>
+                Does not have any team yet!
+            </div>
+        </template>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/user.js"></script>
+}
