@@ -51,6 +51,30 @@
         text-shadow: 0 0 10px #000;
     }
 
+.info {
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 1.5em;
+}
+
+.info h1 {
+    margin-top: 1em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Background */
+div.background-box {
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+    background: linear-gradient(45deg, #9f15a5 10%, white 10%, white 50%, #9f15a5 50%, #9f15a5 60%, white 60%);
+    background-attachment: fixed;
+}
+
+div.nopadding {
+    padding: 0;
+}
+
 .modal.visible {
     display: block;
     background: rgba(0, 0, 0, 0.8);

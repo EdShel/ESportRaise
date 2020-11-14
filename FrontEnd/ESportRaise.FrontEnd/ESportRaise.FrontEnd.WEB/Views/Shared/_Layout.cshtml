@@ -53,6 +53,9 @@
                     </template>
                     <template v-else>
                         <li>
+                            <a class="nav-link" asp-controller="User" asp-action="Index">{{ user.userName }}</a>
+                        </li>
+                        <li>
                             <a class="nav-link" href="#" v-on:click.prevent="logout">@SharedLocalizer["Logout"]</a>
                         </li>
                     </template>
