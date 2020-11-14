@@ -45,8 +45,7 @@ namespace ESportRaise.BackEnd.API.Controllers
 
             return new JsonResult(new
             {
-                TeamId = id,
-                TrainingId = moments.FirstOrDefault()?.TrainingId ?? -1,
+                TrainingId = id,
                 Moments = moments.Select(moment => new
                 {
                     Begin = moment.BeginTime,
