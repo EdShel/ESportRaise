@@ -15,6 +15,11 @@
         newTeamMember: {
             emailOrUserName: "",
             errorMessage: null
+        },
+        trainings: {
+            spanType: 1,
+            date: getDateYYYY_MM_DD(new Date()),
+            list: []
         }
     },
     mounted: function () {
@@ -37,6 +42,8 @@
                 this.team.id = data.id;
                 this.team.name = data.name;
                 this.team.members = data.members;
+
+                this.updateTrainings();
             }).catch(error => {
                 console.log(error);
                 alert(error);
@@ -110,6 +117,36 @@
         },
         goToUserPage(memberIndex) {
             location.assign('/user?id=' + this.team.members[memberIndex].id);
+        },
+        updateTrainings() {
+            console.log("updating")
+            let date;
+            let hours;
+            if (this.trainings.spanType == 0) {
+                date = new Date().toISOString();
+                hours = 24 * 7;
+            } else if (this.trainings.spanType == 1) {
+                date = new Date().toISOString();
+                hours = 24 * 30;
+            }
+            else if (this.trainings.spanType == 2) {
+                let chosenDate = new Date(this.trainings.date);
+                chosenDate.setDate(chosenDate.getDate() + 1);
+                date = chosenDate.toISOString();
+                hours = 24;
+            }
+            sendGet('training/beforeDay', {
+                id: this.team.id,
+                dateTime: date,
+                hours: hours
+            }).then(r => {
+                let data = r.data;
+                this.trainings.list = data.trainings;
+                }).catch(e => {
+            });
+        },
+        goToTrainingPage(trainingId) {
+            location.assign('/Training?id' = trainingId);
         }
     }
 })

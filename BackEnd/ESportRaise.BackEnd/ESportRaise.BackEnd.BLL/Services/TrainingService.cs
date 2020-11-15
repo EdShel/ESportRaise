@@ -105,16 +105,28 @@ namespace ESportRaise.BackEnd.BLL.Services
         public async Task<int> InitiateTrainingAsync(int userId)
         {
             int trainingId;
+            TeamMember teamMember;
             try
             {
                 trainingId = await trainings.GiveNewTrainingIdAsync(userId, idlenessMinutesForNewTraining);
-
-                TeamMember teamMember = await members.GetAsync(userId);
+                teamMember = await members.GetAsync(userId);
                 if (teamMember == null)
                 {
                     throw new BadRequestException("User doesn't belong to a team!");
                 }
 
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == SqlErrorCodes.USER_DOES_NOT_EXIST)
+                {
+                    throw new BadRequestException("Invalid user!");
+                }
+                throw ex;
+            }
+
+            if (!string.IsNullOrEmpty(teamMember.YouTubeId))
+            {
                 LiveStreamResponseDTO streamResponse = await youTubeService.GetCurrentLiveStreamAsync(new LiveStreamRequestDTO
                 {
                     LiveStreamingServiceUserId = teamMember.YouTubeId
@@ -128,14 +140,6 @@ namespace ESportRaise.BackEnd.BLL.Services
                         YouTubeId = streamResponse.LiveStreamId
                     });
                 }
-            }
-            catch (SqlException ex)
-            {
-                if (ex.Number == SqlErrorCodes.USER_DOES_NOT_EXIST)
-                {
-                    throw new BadRequestException("Invalid user!");
-                }
-                throw ex;
             }
 
             return trainingId;

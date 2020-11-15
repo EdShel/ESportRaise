@@ -68,10 +68,30 @@
     <template v-if="team.name !== null">
         <div class="container">
             <h1>Trainings</h1>
-
+            <div>
+                <label>Select period of time</label>
+                <select v-model="trainings.spanType" v-on:change="updateTrainings">
+                    <option value="0">Last 7 days</option>
+                    <option value="1">Last 30 days</option>
+                    <option value="2">Date</option>
+                </select>
+            </div>
+            <div v-if="trainings.spanType == 2">
+                <label>Select date</label>
+                <input type="date" v-model="trainings.date" v-on:change="updateTrainings"/>
+            </div>
+            <div class="row mt-3">
+                <div v-for="training in trainings.list" 
+                     class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <div class="training-card text-center" v-on:click="">
+                        {{ new Date(training.beginTime).toLocaleString() }}
+                    </div>
+                </div>
+            </div>
         </div>
     </template>
+</div>
 
-    @section Scripts {
-        <script src="~/js/team.js"></script>
-    }
+@section Scripts {
+    <script src="~/js/team.js"></script>
+}

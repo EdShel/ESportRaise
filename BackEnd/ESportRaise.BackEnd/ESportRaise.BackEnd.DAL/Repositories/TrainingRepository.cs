@@ -90,7 +90,8 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = "SELECT * FROM Training " +
                                         "WHERE TeamId = @teamId AND " +
-                                        "DATEDIFF(HOUR, BeginTime, @time) BETWEEN 0 AND @hours";
+                                        "DATEDIFF(HOUR, BeginTime, @time) BETWEEN 0 AND @hours " +
+                                        "ORDER BY BeginTime DESC";
             selectCommand.Parameters.AddWithValue("@teamId", teamId);
             selectCommand.Parameters.AddWithValue("@time", dateTime);
             selectCommand.Parameters.AddWithValue("@hours", hours);

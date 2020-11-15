@@ -169,3 +169,17 @@ div.nopadding {
         transform: rotate(360deg);
     }
 }
+
+.training-card {
+    background: rgb(255 255 255 / 97%);
+    border-radius: 10px;
+    padding: 4px;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 1.5em;
+    border-top: 1px solid #df22e7;
+    margin-bottom: 12px;
+    height: 100%;
+    border: 1px solid #df22e7;
+    border-bottom-width: 4px;
+    cursor: pointer;
+}
