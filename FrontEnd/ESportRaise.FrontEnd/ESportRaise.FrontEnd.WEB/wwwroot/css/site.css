@@ -105,3 +105,8 @@ div.nopadding {
         transform: translate(0px, 0px);
     }
 }
+
+.team-member-card {
+    background: #eeeeee;
+    border-radius: 10px;
+}

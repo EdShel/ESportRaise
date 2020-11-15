@@ -4,7 +4,6 @@ const backendServer = "http://localhost:5002/";
 let auth = new Vue({
     el: "#navSection",
     data: {
-        openedModal: null,
         loginData: {
             user: "",
             password: ""
@@ -42,14 +41,11 @@ let auth = new Vue({
             localStorage.removeItem("token");
             localStorage.removeItem("refreshToken");
         },
-        openModal(modalId) {
-            let el = document.getElementById(modalId);
-            this.openedModal = el;
-            el.classList.add("visible");
+        openLoginModal() {
+            this.$refs.loginModal.openModal();
         },
-        closeModal() {
-            this.openedModal.classList.remove("visible");
-            this.openedModal = null;
+        openRegisterModal() {
+            this.$refs.registerModal.openModal();
         },
         login() {
             axios.post(backendServer + "auth/login", {
@@ -69,9 +65,9 @@ let auth = new Vue({
                 password: this.registerData.password,
                 role: "Member"
             }).then(reponse => {
-                loginData.user = registerData.userName;
-                loginData.password = registerData.password;
-                login();
+                this.loginData.user = this.registerData.userName;
+                this.loginData.password = this.registerData.password;
+                this.login();
             }).catch(error => {
                 console.log(error.request);
                 console.log(error.response);
@@ -85,11 +81,11 @@ let auth = new Vue({
     }
 })
 
-document.addEventListener("click", function (e) {
-    if (e.target === auth.openedModal) {
-        auth.closeModal();
-    }
-})
+//document.addEventListener("click", function (e) {
+//    if (e.target === auth.openedModal) {
+//        auth.closeModal();
+//    }
+//})
 
 function sendGet(url, params) {
     if (auth.isAuthorized) {

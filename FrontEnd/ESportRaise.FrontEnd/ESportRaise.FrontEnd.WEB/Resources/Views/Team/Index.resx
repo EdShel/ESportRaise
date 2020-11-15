@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ConfirmMemberRemovalBegin" xml:space="preserve">
+    <value>Do you really want to remove </value>
+  </data>
+  <data name="ConfirmMemberRemovalEnd" xml:space="preserve">
+    <value>?</value>
+  </data>
   <data name="PageTitle" xml:space="preserve">
     <value>Team</value>
   </data>

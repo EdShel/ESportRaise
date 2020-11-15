@@ -34,24 +34,18 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#">Disabled</a>
-                    </li>
                     <template v-if="!isAuthorized">
                         <li>
-                            <a class="nav-link" href="#" v-on:click.stop="openModal('loginModal')">@SharedLocalizer["LoginAction"]</a>
+                            <a class="nav-link" href="#" v-on:click.stop="openLoginModal">@SharedLocalizer["LoginAction"]</a>
                         </li>
                         <li>
-                            <a class="nav-link" href="#" v-on:click.prevent="openModal('registerModal')">@SharedLocalizer["RegisterAction"]</a>
+                            <a class="nav-link" href="#" v-on:click.prevent="openRegisterModal">@SharedLocalizer["RegisterAction"]</a>
                         </li>
                     </template>
                     <template v-else>
+                        <li>
+                            <a class="nav-link" asp-controller="Team" asp-action="Index">My team</a>
+                        </li>
                         <li>
                             <a class="nav-link" asp-controller="User" asp-action="Index">{{ user.userName }}</a>
                         </li>
@@ -68,84 +62,40 @@
         </nav>
 
         <!-- Login modal -->
-        <div class="modal" id="loginModal">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">
-                            @SharedLocalizer["LoginModalTitle"]
-                        </h5>
-                        <button type="button" class="close" v-on:click="closeModal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="loginForm">
-                            <div>
-                                <label for="loginEmail">@SharedLocalizer["EmailOrUserName"]</label>
-                                <input type="text" id="loginEmail" v-model="loginData.user" />
-                            </div>
-                            <div>
-                                <label for="loginPassword">@SharedLocalizer["Password"]</label>
-                                <input type="password" id="loginPassword" v-model="loginData.password" />
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" v-on:click="closeModal">
-                            @SharedLocalizer["CloseAction"]
-                        </button>
-                        <button type="button" class="btn btn-primary" v-on:click='login'>
-                            @SharedLocalizer["LoginAction"]
-                        </button>
-                    </div>
+        <modal ref="loginModal" header="@SharedLocalizer["LoginModalTitle"]"
+               closeText="@SharedLocalizer["CloseAction"]"
+               okText="@SharedLocalizer["LoginAction"]" v-on:ok="login">
+            <form id="loginForm">
+                <div>
+                    <label for="loginEmail">@SharedLocalizer["EmailOrUserName"]</label>
+                    <input type="text" id="loginEmail" v-model="loginData.user" />
                 </div>
-            </div>
-        </div>
+                <div>
+                    <label for="loginPassword">@SharedLocalizer["Password"]</label>
+                    <input type="password" id="loginPassword" v-model="loginData.password" />
+                </div>
+            </form>
+        </modal>
 
         <!-- Register modal -->
-        <div class="modal" id="registerModal">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">
-                            @SharedLocalizer["RegisterModalTitle"]
-                        </h5>
-                        <button type="button" class="close" v-on:click="closeModal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="registerForm">
-                            <div>
-                                <label for="registerEmail">@SharedLocalizer["Email"]</label>
-                                <input type="text" id="registerEmail" v-model="registerData.email" />
-                            </div>
-                            <div>
-                                <label for="registerUserName">@SharedLocalizer["UserName"]</label>
-                                <input type="text" id="registerUserName" v-model="registerData.userName" />
-                            </div>
-                            <div>
-                                <label for="registerPassword">@SharedLocalizer["Password"]</label>
-                                <input type="password" id="registerPassword" v-model="registerData.password" />
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" v-on:click="closeModal">
-                            @SharedLocalizer["CloseAction"]
-                        </button>
-                        <button type="button" class="btn btn-primary" v-on:click='register'>
-                            @SharedLocalizer["RegisterAction"]
-                        </button>
-                    </div>
+        <modal ref="registerModal" header="@SharedLocalizer["LoginModalTitle"]"
+               closeText="@SharedLocalizer["CloseAction"]"
+               okText="@SharedLocalizer["RegisterAction"]" v-on:ok='register'>
+            <form id="registerForm">
+                <div>
+                    <label for="registerEmail">@SharedLocalizer["Email"]</label>
+                    <input type="text" id="registerEmail" v-model="registerData.email" />
                 </div>
-            </div>
-        </div>
-
-
-
-
+                <div>
+                    <label for="registerUserName">@SharedLocalizer["UserName"]</label>
+                    <input type="text" id="registerUserName" v-model="registerData.userName" />
+                </div>
+                <div>
+                    <label for="registerPassword">@SharedLocalizer["Password"]</label>
+                    <input type="password" id="registerPassword" v-model="registerData.password" />
+                </div>
+            </form>
+        </modal>
     </div>
 
     <partial name="_CookieConsentPartial" />
@@ -156,6 +106,7 @@
         <p>&copy; 2020 - ESportRaise</p>
     </footer>
 
+    <script src="~/js/components/modal.js"></script>
     <script src="~/js/site.js"></script>
     @RenderSection("Scripts", required: false)
 </body>

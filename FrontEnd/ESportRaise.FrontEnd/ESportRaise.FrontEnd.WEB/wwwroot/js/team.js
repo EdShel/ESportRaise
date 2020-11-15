@@ -1,6 +1,9 @@
 ﻿let teamVM = new Vue({
     el: "#team",
     data: {
+        edit: {
+            turnedOn: false
+        },
         team: {
             id: teamId,
             name: null,
@@ -18,6 +21,9 @@
             if (this.team.id === -1) {
                 this.team.id = await this.getCurrentUserTeamId();
                 console.log(this.team.id);
+                if (this.team.id === -1) {
+                    return;
+                }
             }
 
             sendGet('team/full', {
@@ -38,7 +44,14 @@
                     let data = r.data;
                     return data.teamId;
                 }).catch(e => {
-                    // TODO: don't have an access, redirect
+                    console.log(e.response);
+                    // Doesn't have a team
+                    if (e.response.status === 400) {
+                        return -1;
+                    }
+                    else {
+                        // TODO: redirect
+                    }
                 });
         },
         registerTeam() {
@@ -50,6 +63,27 @@
                 }).catch(e => {
                     handle(e);
                 });
+        },
+        switchEditingMode() {
+            this.edit.turnedOn = !this.edit.turnedOn;
+        },
+        removeMember(memberIndex) {
+            let memberName = this.team.members[memberIndex].name;
+            if (!confirm(removeMemberConfirmBegin + memberName + removeMemberConfirmEnd)) {
+                return;
+            }
+
+            sendPost('team/removeMember', null, {
+                teamId: this.team.id,
+                user: memberName
+            }).then(r => {
+                this.team.members.splice(memberIndex, 1);
+                if (this.team.members.length === 0) {
+                    location.reload();
+                }
+            }).catch(e => {
+                handle(e);
+            });
         }
     }
 })
