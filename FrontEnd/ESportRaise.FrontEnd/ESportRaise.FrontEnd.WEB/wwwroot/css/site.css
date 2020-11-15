@@ -51,34 +51,6 @@
         text-shadow: 0 0 10px #000;
     }
 
-.info {
-    font-family: Verdana, Geneva, sans-serif;
-    font-size: 1.5em;
-}
-
-.info h1 {
-    margin-top: 1em;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-/* Background */
-div.background-box {
-    padding: 0;
-    overflow: hidden;
-    height: 100%;
-    background: linear-gradient(45deg, #9f15a5 10%, white 10%, white 50%, #9f15a5 50%, #9f15a5 60%, white 60%);
-    background-attachment: fixed;
-}
-
-div.nopadding {
-    padding: 0;
-}
-
-.modal.visible {
-    display: block;
-    background: rgba(0, 0, 0, 0.8);
-}
 
 @keyframes vibrate {
     0% {
@@ -106,7 +78,94 @@ div.nopadding {
     }
 }
 
+
+.info {
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 1.5em;
+}
+
+    .info h1 {
+        margin-top: 1em;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+/* Background */
+div.background-box {
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+    background: linear-gradient(45deg, #9f15a5 10%, white 10%, white 50%, #9f15a5 50%, #9f15a5 60%, white 60%);
+    background-attachment: fixed;
+}
+
+div.nopadding {
+    padding: 0;
+}
+
+.modal.visible {
+    display: block;
+    background: rgba(0, 0, 0, 0.8);
+}
+
 .team-member-card {
-    background: #eeeeee;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: rgb(255 255 255 / 97%);
     border-radius: 10px;
+    padding: 4px;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 1.5em;
+    border-top: 1px solid #df22e7;
+    margin-bottom: 12px;
+    height: 100%;
+    border: 1px solid #df22e7;
+    border-bottom-width: 4px;
+}
+
+    .team-member-card > *:hover {
+        cursor: pointer;
+    }
+
+    .team-member-card img {
+        border-radius: 9999px;
+        border: 2px solid #000;
+    }
+
+    .team-member-card .name {
+        margin-left: 10px;
+        margin-right: 40px;
+    }
+
+    .team-member-card .delete-button {
+        position: absolute;
+        right: 10px;
+    }
+
+
+[v-cloak] > * {
+    display: none;
+    padding: 50px 0;
+}
+
+[v-cloak]::before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    border-top-color: #9f15a5;
+    animation: spinner .2s linear infinite;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
 }

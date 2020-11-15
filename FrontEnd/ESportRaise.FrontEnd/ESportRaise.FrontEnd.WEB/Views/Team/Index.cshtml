@@ -10,40 +10,68 @@
     let teamId = @Model;
     let removeMemberConfirmBegin = "@Localizer["ConfirmMemberRemovalBegin"]";
     let removeMemberConfirmEnd = "@Localizer["ConfirmMemberRemovalEnd"]";
+    let userNotFound = "User does not exist!";
+    let userIsAlreadyInTeam = "User already belongs to a team!";
 </script>
 
 <div id="team">
+    <template v-if="team.id === -2">
+        <input type="text" v-model="newTeam.name" />
+        <button v-on:click="registerTeam">Create new team</button>
+    </template>
     <template v-if="team.name !== null">
         <div class="container">
             <h1>{{ team.name }}</h1>
             <button v-on:click="switchEditingMode">Turn on edit mode</button>
-            <div class="row background-box">
-                <div v-for="(member, i) in team.members" class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+            <div class="row row-eq-height">
+                <div v-for="(member, i) in team.members"
+                     class="col-lg-4 col-md-6 col-sm-12 col-xs-12 mt-3">
                     <div class="team-member-card">
-                        <img v-bind:src="`https://eu.ui-avatars.com/api/?name=${member.name}&background=random`" />
-                        {{ member.name }}
-                        <div v-if="edit.turnedOn" class="pull-right">
-                            <button v-on:click="removeMember(i)">X</button>
+                        <img v-on:click="goToUserPage(i)"
+                             v-bind:src="`https://eu.ui-avatars.com/api/?name=${member.name}&background=random`" />
+                        <div v-on:click="goToUserPage(i)"
+                             class="name">
+                            {{ member.name }}
+                        </div>
+                        <div v-if="edit.turnedOn" class="delete-button">
+                            <i v-on:click="removeMember(i)" class="fas fa-user-minus"></i>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <div v-if="edit.turnedOn"
+                     class="col-lg-4 col-md-12 col-sm-12 col-xs-12 mt-3">
                     <div class="team-member-card">
-                        <img src="https://eu.ui-avatars.com/api/?name=Add&background=random&length=3" />
-                        <div>
-                            Add a user to the team
+                        <div v-on:click="$refs.newTeamMemberModal.openModal()" class="name">
+                            <i class="fas fa-user-plus"></i>
+                            Add member
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </template>
-    <template v-else>
-        <input type="text" v-model="newTeam.name" />
-        <button v-on:click="registerTeam">Create new team</button>
-    </template>
-</div>
 
-@section Scripts {
-    <script src="~/js/team.js"></script>
-}
+    <modal v-cloak ref="newTeamMemberModal" header="Add team member"
+           closeText="Close"
+           okText="Add" v-on:ok="addMember">
+        <div v-if="newTeamMember.errorMessage !== null" style="color: red">
+            {{ newTeamMember.errorMessage }}
+        </div>
+        <form id="addTeamMemberForm">
+            <div>
+                <label>User name or email</label>
+                <input type="text" v-model="newTeamMember.emailOrUserName" />
+            </div>
+        </form>
+    </modal>
+
+    <template v-if="team.name !== null">
+        <div class="container">
+            <h1>Trainings</h1>
+
+        </div>
+    </template>
+
+    @section Scripts {
+        <script src="~/js/team.js"></script>
+    }

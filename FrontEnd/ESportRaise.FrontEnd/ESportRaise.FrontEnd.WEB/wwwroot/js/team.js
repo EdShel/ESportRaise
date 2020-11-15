@@ -11,6 +11,10 @@
         },
         newTeam: {
             name: null
+        },
+        newTeamMember: {
+            emailOrUserName: "",
+            errorMessage: null
         }
     },
     mounted: function () {
@@ -20,8 +24,8 @@
         async getTeamInfo() {
             if (this.team.id === -1) {
                 this.team.id = await this.getCurrentUserTeamId();
-                console.log(this.team.id);
                 if (this.team.id === -1) {
+                    this.team.id = -2;
                     return;
                 }
             }
@@ -67,6 +71,25 @@
         switchEditingMode() {
             this.edit.turnedOn = !this.edit.turnedOn;
         },
+        addMember() {
+            sendPost('team/addMember', null, {
+                teamId: this.team.id,
+                user: this.newTeamMember.emailOrUserName
+            }).then(r => {
+                this.getTeamInfo();
+                this.$refs.newTeamMemberModal.closeModal();
+            }).catch(e => {
+                if (e.response.status === 400 || e.response.status === 500) {
+                    this.newTeamMember.errorMessage = userIsAlreadyInTeam;
+                }
+                else if (e.response.status === 404) {
+                    this.newTeamMember.errorMessage = userNotFound;
+                }
+                else {
+                    console.log(e.response);
+                }
+            });
+        },
         removeMember(memberIndex) {
             let memberName = this.team.members[memberIndex].name;
             if (!confirm(removeMemberConfirmBegin + memberName + removeMemberConfirmEnd)) {
@@ -84,6 +107,9 @@
             }).catch(e => {
                 handle(e);
             });
+        },
+        goToUserPage(memberIndex) {
+            location.assign('/user?id=' + this.team.members[memberIndex].id);
         }
     }
 })
