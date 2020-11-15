@@ -113,6 +113,20 @@ function sendPost(url, params, data) {
     });
 }
 
+function sendPut(url, params, data) {
+    if (auth.isAuthorized) {
+        return axios.put(backendServer + url, data, {
+            params: params,
+            headers: {
+                Authorization: 'Bearer ' + auth.user.token
+            }
+        });
+    }
+    return axios.post(backendServer + url, data, {
+        params: params
+    });
+}
+
 function handle(e) {
     console.log(e);
     console.log(e.request);

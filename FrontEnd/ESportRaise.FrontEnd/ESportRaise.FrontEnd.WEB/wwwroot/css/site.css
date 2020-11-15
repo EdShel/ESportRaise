@@ -183,3 +183,14 @@ div.nopadding {
     border-bottom-width: 4px;
     cursor: pointer;
 }
+
+#user {
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 2em;
+}
+
+#user h1 {
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+}

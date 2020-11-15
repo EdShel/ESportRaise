@@ -13,6 +13,10 @@
             exists: false,
             id: null,
             name: null
+        },
+        editYT: {
+            youTubeUrl: "",
+            error: null
         }
     },
     mounted: function () {
@@ -43,6 +47,7 @@
             sendGet('teamMember/user', {
                 id: this.user.id
             }).then(r => {
+                console.log(r);
                 let data = r.data;
                 this.team.id = data.teamId;
                 this.teamMember.youTubeId = data.youTubeId;
@@ -60,6 +65,19 @@
                 this.team.name = data.name;
                 this.team.exists = true;
             }).catch(handle);
+        },
+        changeYouTubeId() {
+            sendPut('teamMember/youTube', null, {
+                channelUrl: this.editYT.youTubeUrl
+            }).then(r => {
+                console.log(r);
+                this.$refs.changeYouTubeIdModal.closeModal();
+                this.teamMember.youTubeId = "TODO: change me";
+            }).catch(e => {
+                if (e.response.status === 400) {
+                    this.editYT.error = wrongYouTubeUrl;
+                }
+            });
         }
     }
 });

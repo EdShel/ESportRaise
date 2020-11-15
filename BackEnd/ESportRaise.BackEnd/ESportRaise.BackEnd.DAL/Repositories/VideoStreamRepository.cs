@@ -1,8 +1,6 @@
 ﻿using ESportRaise.BackEnd.DAL.Entities;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.DAL.Repositories
@@ -35,7 +33,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         {
             return new object[]
             {
-                item.Id, item.TrainingId, item.TeamMemberId, item.YouTubeId
+                item.TrainingId, item.TeamMemberId, item.YouTubeId
             };
         }
 

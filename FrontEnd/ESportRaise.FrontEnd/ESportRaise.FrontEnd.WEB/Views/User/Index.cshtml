@@ -8,11 +8,14 @@
 
 <script>
     let userId = @Model;
+    let wrongYouTubeUrl = "Invalid or outdated channel url!";
 </script>
 
 <div id="user">
     <div v-cloak class="container">
-        <h1>{{ user.userName }}</h1>
+        <div class="background-box">
+            <h1>{{ user.userName }}</h1>
+        </div>
         <div>
             <b>Email:</b>
             <span>{{ user.email }}</span>
@@ -20,11 +23,19 @@
         <template v-if="team.exists">
             <div>
                 <b>Team name:</b>
-                <span>{{ team.name }}</span>
+                <a v-bind:href="'/team?id=' + team.id">{{ team.name }}</a>
             </div>
             <div>
-                <b>YouTube id:</b>
-                <span>{{ teamMember.youTubeId }}</span>
+                <b>YouTube channel:</b>
+                <a v-if="teamMember.youTubeId !== null"
+                   v-bind:href="'https://www.youtube.com/channel/' + teamMember.youTubeId"
+                   title="Go to YouTube channel">
+                    connected
+                </a>
+                <span v-else>
+                    not assigned
+                </span>
+                <button v-on:click="$refs.changeYouTubeIdModal.openModal">Edit</button>
             </div>
         </template>
         <template v-else>
@@ -33,6 +44,21 @@
             </div>
         </template>
     </div>
+
+    <modal v-cloak ref="changeYouTubeIdModal" header="Set YouTube account"
+           closeText="Cancel"
+           okText="Change" v-on:ok="changeYouTubeId">
+        <div style="color: red">
+            {{ editYT.error }}
+        </div>
+        <div>
+            <div>
+                <label>Enter YouTube channel link</label>
+                <input type="text" v-model="editYT.youTubeUrl" />
+            </div>
+        </div>
+
+    </modal>
 </div>
 
 @section Scripts {

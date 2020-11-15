@@ -146,7 +146,7 @@
             });
         },
         goToTrainingPage(trainingId) {
-            location.assign('/Training?id' = trainingId);
+            location.assign('/Training?id' + trainingId);
         }
     }
 })
