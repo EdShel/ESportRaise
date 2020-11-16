@@ -5,6 +5,8 @@
         public bool HasLivestream => !string.IsNullOrEmpty(LiveStreamId);
 
         public string LiveStreamId { get; set; }
+
+        public string StartTime { get; set; }
     }
 
 }

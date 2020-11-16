@@ -33,7 +33,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         {
             return new object[]
             {
-                item.TrainingId, item.TeamMemberId, item.YouTubeId
+                item.TrainingId, item.TeamMemberId, item.YouTubeId, item.StartTime
             };
         }
 
@@ -57,7 +57,8 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 Id = r.GetInt32(0),
                 TrainingId = r.GetInt32(1),
                 TeamMemberId = r.IsDBNull(2) ? -1 : r.GetInt32(2),
-                YouTubeId = r.GetString(3)
+                YouTubeId = r.GetString(3),
+                StartTime = r.IsDBNull(4) ? null : r.GetString(4)
             };
         }
 

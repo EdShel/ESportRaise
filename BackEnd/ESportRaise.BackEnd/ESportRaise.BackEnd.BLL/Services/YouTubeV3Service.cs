@@ -168,8 +168,24 @@ namespace ESportRaise.BackEnd.BLL.Services
             string liveStreamId = liveStreams[0]["id"]["videoId"].Value<string>();
             return new LiveStreamResponseDTO
             {
-                LiveStreamId = liveStreamId
+                LiveStreamId = liveStreamId,
+                StartTime = await GetLiveStreamStartTimeAsync(liveStreamId)
             };
+        }
+
+        private async Task<string> GetLiveStreamStartTimeAsync(string id)
+        {
+            string liveStreamUrl = $"{BASE_API_URL}/videos?part=snippet&id={id}&key={apiKey}";
+            JObject result = await SendApiRequestForUrlAsync(liveStreamUrl);
+
+            JArray videosInfo = result["items"] as JArray;
+            if (videosInfo == null || videosInfo.Count == 0)
+            {
+                return null;
+            }
+
+            string videoBegin = videosInfo[0]["snippet"]["publishedAt"].Value<string>();
+            return videoBegin;
         }
     }
 }

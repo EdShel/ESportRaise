@@ -4,5 +4,4 @@
     {
         public string LiveStreamingServiceUserId { get; set; }
     }
-
 }

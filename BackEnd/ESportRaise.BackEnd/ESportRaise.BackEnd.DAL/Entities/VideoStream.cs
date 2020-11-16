@@ -9,5 +9,7 @@
         public int TeamMemberId { get; set; }
 
         public string YouTubeId { get; set; }
+
+        public string StartTime { get; set; }
     }
 }

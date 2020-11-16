@@ -157,7 +157,8 @@ namespace ESportRaise.BackEnd.BLL.Services
             {
                 Id = stream.Id,
                 TeamMemberId = stream.TeamMemberId,
-                StreamId = stream.YouTubeId
+                StreamId = stream.YouTubeId,
+                StartTime = stream.StartTime
             });
         }
     }

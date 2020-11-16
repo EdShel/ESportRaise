@@ -63,7 +63,8 @@ namespace ESportRaise.BackEnd.API.Controllers
                 {
                     stream.Id,
                     stream.TeamMemberId,
-                    stream.StreamId
+                    stream.StreamId,
+                    stream.StartTime
                 })
             });
         }

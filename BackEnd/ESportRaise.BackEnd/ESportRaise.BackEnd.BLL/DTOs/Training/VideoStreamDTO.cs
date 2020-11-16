@@ -6,6 +6,8 @@
 
         public int TeamMemberId { get; set; }
 
-        public string StreamId{ get; set; }
+        public string StreamId { get; set; }
+
+        public string StartTime { get; set; }
     }
 }
