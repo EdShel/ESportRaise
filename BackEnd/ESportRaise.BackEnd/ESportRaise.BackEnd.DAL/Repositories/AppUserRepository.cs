@@ -94,7 +94,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         public async Task CreateRefreshTokenAsync(AppUser user, string refreshToken)
         {
-            var tokenExpirationDate = DateTime.Now.AddDays(7);
+            var tokenExpirationDate = DateTime.UtcNow.AddDays(7);
             var insertCommand = db.CreateCommand();
             insertCommand.CommandText =
                 "INSERT INTO RefreshToken(UserId, Token, ExpirationDate) " +

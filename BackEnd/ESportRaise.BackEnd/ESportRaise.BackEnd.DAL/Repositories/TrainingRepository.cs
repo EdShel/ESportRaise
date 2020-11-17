@@ -31,7 +31,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 return true;
             }
 
-            return (DateTime.Now - await GetTrainingEndTimeAsync(trainingId)).Minutes >= idlenessMinutesForNewTraining;
+            return (DateTime.UtcNow - await GetTrainingEndTimeAsync(trainingId)).Minutes >= idlenessMinutesForNewTraining;
         }
 
         public async Task<DateTime> GetTrainingEndTimeAsync(int trainingId)

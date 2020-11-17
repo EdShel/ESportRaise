@@ -78,7 +78,7 @@ namespace ESportRaise.BackEnd.BLL.Services
                 throw new NotFoundException("Team doesn't have any trainings!");
             }
             DateTime trainingEnd = await trainings.GetTrainingEndTimeAsync(training.Id);
-            if ((DateTime.Now - trainingEnd).Minutes >= idlenessMinutesForNewTraining)
+            if ((DateTime.UtcNow - trainingEnd).Minutes >= idlenessMinutesForNewTraining)
             {
                 await trainings.StopCurrentTrainingForTeamAsync(teamId);
                 throw new NotFoundException("The training is over");

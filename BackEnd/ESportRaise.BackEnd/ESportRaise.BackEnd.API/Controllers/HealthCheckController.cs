@@ -9,7 +9,7 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpGet]
         public IActionResult Check()
         {
-            return Ok(DateTime.Now);
+            return Ok(DateTime.UtcNow);
         }
     }
 }
