@@ -20,6 +20,21 @@
                 {{ new Date(m.end).toLocaleTimeString() }}
             </div>
         </div>
+        <div class="col-lg-10 col-md-6 col-sm-12 col-xs-12">
+            <h1>Video record</h1>
+            <div>
+                <iframe id="mainVideo" width="420" height="315"
+                        v-bind:src="'//www.youtube.com/embed/' + currentVideo.streamId" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+
+            <div v-for="l in currentVideoSpans">
+                <a v-bind:href="'//www.youtube.com/embed/' + currentVideo.streamId + '?rel=0&autoplay=1&start=' + l.begin + '&end=' + l.end" target="mainVideo">
+                    {{ l.begin }} - {{ l.end }}
+                </a>
+            </div>
+        </div>
+
     </div>
     <iframe width="420" height="315" src="//www.youtube.com/embed/2aWU4KzvBsU?start=115" frameborder="0" allowfullscreen></iframe>
 
