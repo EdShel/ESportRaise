@@ -105,8 +105,8 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             {
                 Id = r.GetInt64(0),
                 TrainingId = r.GetInt32(1),
-                BeginTime = r.GetDateTime(2),
-                EndTime = r.GetDateTime(3)
+                BeginTime = DateTime.SpecifyKind(r.GetDateTime(2), DateTimeKind.Utc),
+                EndTime = DateTime.SpecifyKind(r.GetDateTime(3), DateTimeKind.Utc)
             };
         }
 

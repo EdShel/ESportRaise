@@ -98,7 +98,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
                 Id = r.GetInt64(0),
                 TeamMemberId = r.GetInt32(1),
                 TrainingId = r.GetInt32(2),
-                CreateTime = r.GetDateTime(3),
+                CreateTime = DateTime.SpecifyKind(r.GetDateTime(3), DateTimeKind.Utc),
                 HeartRate = r.GetInt32(4),
                 Temperature = (float)r.GetDouble(5)
             };

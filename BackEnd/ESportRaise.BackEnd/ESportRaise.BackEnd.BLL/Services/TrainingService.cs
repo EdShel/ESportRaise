@@ -137,7 +137,9 @@ namespace ESportRaise.BackEnd.BLL.Services
                     {
                         TeamMemberId = userId,
                         TrainingId = trainingId,
-                        YouTubeId = streamResponse.LiveStreamId
+                        YouTubeId = streamResponse.LiveStreamId,
+                        StartTime = streamResponse.StartTime,
+                        EndTime = streamResponse.EndTime
                     });
                 }
             }
@@ -153,13 +155,32 @@ namespace ESportRaise.BackEnd.BLL.Services
                 throw new NotFoundException("Training doesn't exist");
             }
             var streams = await videoStreams.GetForTrainingAsync(trainingId);
+
+            await UpdateVideoStreamsSavedInfo(streams.Where(s => s.EndTime == null || s.StartTime == null));
+
             return streams.Select(stream => new VideoStreamDTO
             {
                 Id = stream.Id,
                 TeamMemberId = stream.TeamMemberId,
                 StreamId = stream.YouTubeId,
-                StartTime = stream.StartTime
+                StartTime = stream.StartTime,
+                EndTime = stream.EndTime
             });
+        }
+
+        private async Task UpdateVideoStreamsSavedInfo(IEnumerable<VideoStream> streams)
+        {
+            foreach(var stream in streams)
+            {
+                DTOs.YouTube.StreamInfo newInfo = await youTubeService.GetVideoStreamInfo(stream.YouTubeId);
+                if (newInfo.StartTime != stream.StartTime || newInfo.EndTime != stream.EndTime)
+                {
+                    stream.StartTime = newInfo.StartTime;
+                    stream.EndTime = newInfo.EndTime;
+
+                    await videoStreams.UpdateAsync(stream);
+                }
+            }
         }
     }
 }

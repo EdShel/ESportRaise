@@ -115,7 +115,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             {
                 Id = r.GetInt32(0),
                 TeamId = r.GetInt32(1),
-                BeginTime = r.GetDateTime(2)
+                BeginTime = DateTime.SpecifyKind(r.GetDateTime(2), DateTimeKind.Utc)
             };
         }
 

@@ -64,7 +64,8 @@ namespace ESportRaise.BackEnd.API.Controllers
                     stream.Id,
                     stream.TeamMemberId,
                     stream.StreamId,
-                    stream.StartTime
+                    stream.StartTime,
+                    stream.EndTime
                 })
             });
         }
@@ -79,7 +80,7 @@ namespace ESportRaise.BackEnd.API.Controllers
             {
                 training.Id,
                 training.TeamId,
-                training.BeginTime
+                training.BeginTime,
             });
         }
 

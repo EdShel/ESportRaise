@@ -1,7 +1,9 @@
 ﻿using ESportRaise.BackEnd.BLL.DTOs.LiveStreaming;
+using ESportRaise.BackEnd.BLL.DTOs.YouTube;
 using ESportRaise.BackEnd.BLL.Exceptions;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Net;
@@ -37,7 +39,9 @@ namespace ESportRaise.BackEnd.BLL.Services
                 using (var responseReader = new StreamReader(apiResponse.GetResponseStream()))
                 {
                     string responseBody = await responseReader.ReadToEndAsync();
-                    return JObject.Parse(responseBody);
+                    JsonReader reader = new JsonTextReader(new StringReader(responseBody));
+                    reader.DateParseHandling = DateParseHandling.None;
+                    return JObject.Load(reader);
                 }
             }
 
@@ -166,16 +170,18 @@ namespace ESportRaise.BackEnd.BLL.Services
             }
 
             string liveStreamId = liveStreams[0]["id"]["videoId"].Value<string>();
+            StreamInfo liveStreamInfo = await GetVideoStreamInfo(liveStreamId);
             return new LiveStreamResponseDTO
             {
                 LiveStreamId = liveStreamId,
-                StartTime = await GetLiveStreamStartTimeAsync(liveStreamId)
+                StartTime = liveStreamInfo.StartTime,
+                EndTime = liveStreamInfo.EndTime
             };
         }
 
-        private async Task<string> GetLiveStreamStartTimeAsync(string id)
+        public async Task<StreamInfo> GetVideoStreamInfo(string videoId)
         {
-            string liveStreamUrl = $"{BASE_API_URL}/videos?part=snippet&id={id}&key={apiKey}";
+            string liveStreamUrl = $"{BASE_API_URL}/videos?part=liveStreamingDetails&id={videoId}&key={apiKey}";
             JObject result = await SendApiRequestForUrlAsync(liveStreamUrl);
 
             JArray videosInfo = result["items"] as JArray;
@@ -184,8 +190,35 @@ namespace ESportRaise.BackEnd.BLL.Services
                 return null;
             }
 
-            string videoBegin = videosInfo[0]["snippet"]["publishedAt"].Value<string>();
-            return videoBegin;
+            var liveStreamInfo = videosInfo[0]["liveStreamingDetails"];
+
+            var startTimeKey = liveStreamInfo["actualStartTime"];
+            if (startTimeKey == null)
+            {
+                return new StreamInfo
+                {
+                    Id = videoId
+                };
+            }
+            string startTimeUtc = startTimeKey.Value<string>();
+
+            var endTimeKey = liveStreamInfo["actualEndTime"];
+            if (endTimeKey == null)
+            {
+                return new StreamInfo
+                {
+                    Id = videoId,
+                    StartTime = startTimeUtc
+                };
+            }
+            string endTimeUtc = endTimeKey.Value<string>();
+
+            return new StreamInfo
+            {
+                Id = videoId,
+                StartTime = startTimeUtc,
+                EndTime = endTimeUtc
+            };
         }
     }
 }
