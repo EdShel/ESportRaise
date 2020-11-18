@@ -209,3 +209,17 @@ div.nopadding {
         width: 100%;
         height: 100%;
     }
+
+.inline-input {
+    display: flex;
+    align-items: center;
+}
+
+    .inline-input label {
+        margin-right: 5px;
+        margin-bottom: 0;
+    }
+
+    .inline-input select {
+        flex: 2;
+    }

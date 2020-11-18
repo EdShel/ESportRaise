@@ -13,8 +13,8 @@
 
 <div id="training" class="container">
 
-    <div class="background-box">
-        <h1 class="text-center">Training YYYY.MM.DD</h1>
+    <div v-if="beginTime" class="background-box">
+        <h1 class="text-center">Training {{ beginTime.toLocaleDateString() }}</h1>
     </div>
 
     <div v-cloak class="row">
@@ -37,34 +37,41 @@
                             allowfullscreen></iframe>
                 </div>
 
-                <div>
-                    <div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 mt-3">
                         <a v-bind:href="restartVideoUrl"
                            target="mainVideo">
                             <div class="btn btn-primary">
-                                Restart
+                                Move to beginning
                                 {{ secondsToHHMMSS(momentVideoInterval.begin) }} -
                                 {{ secondsToHHMMSS(momentVideoInterval.end) }}
                             </div>
                         </a>
                     </div>
-                    <div>
+                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 mt-3">
                         <button class="btn btn-secondary">
                             Share
                         </button>
                     </div>
-                    <div>
-                        <select>
-                            <option v-for="video in videosForMoment"></option>
+                    <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12 mt-2 inline-input">
+                        <label>View record of </label>
+                        <select v-model="currentVideoIndex">
+                            <option v-for="(video, i) in videosForMoment"
+                                    v-bind:value="i">
+                                {{ teamMembers[video.teamMemberId].name }}
+                            </option>
                         </select>
                     </div>
                 </div>
+                <stateplot v-bind:stateRecords="currentMemberState"></stateplot>
             </div>
         </div>
-
     </div>
 </div>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
+    <script src="~/js/components/statePlot.js"></script>
     <script src="~/js/training.js"></script>
 }

@@ -2,11 +2,16 @@
     el: "#training",
     data: {
         trainingId: trainingId,
+        teamId: null,
+        beginTime: null,
         criticalMoments: [],
         videoStreams: [],
+        teamMembers: {},
 
         currentCriticalMomentIndex: criticalMomentIndex,
         currentVideoIndex: -1,
+
+        stateRecordsOfMember: {}
     },
     computed: {
         currentCriticalMoment() {
@@ -58,17 +63,55 @@
             let interval = this.momentVideoInterval;
 
             let videoUrl = '//www.youtube.com/embed/' + this.currentVideo.streamId;
-            let playerParams = '?rel=0&autoplay=1';
+            let playerParams = '?rel=0';//'?rel=0&autoplay=1';
             let spanParams = '&start=' + interval.begin + '&end=' + interval.end;
             let langParam = '&hl=en';
 
             return videoUrl + playerParams + spanParams + langParam;
+        },
+        currentMemberState() {
+            if (this.teamMembers.length == 0) {
+                return [];
+            }
+            return this.stateRecordsOfMember[4];
         }
     },
-    mounted: function () {
-        this.getCriticalMoments();
+    created: function () {
+        this.getTrainingInfo();
     },
     methods: {
+        getTrainingInfo() {
+            sendGet('training', {
+                id: this.trainingId
+            }).then(r => {
+                let data = r.data;
+                this.teamId = data.teamId;
+                this.beginTime = new Date(data.beginTime);
+
+                this.getTeamMembersInfo();
+            }).catch(e => {
+
+            });
+        },
+        getTeamMembersInfo() {
+
+            sendGet('team/full', {
+                id: this.teamId
+            }).then(r => {
+                let data = r.data;
+                console.log(data);
+                this.teamMembers = {};
+                for (let member of data.members) {
+                    this.teamMembers[member.id] = {
+                        name: member.name
+                    };
+                }
+
+                this.getCriticalMoments();
+            }).catch(e => {
+
+            });
+        },
         getCriticalMoments() {
             sendGet('criticalMoment/all', {
                 id: this.trainingId
@@ -93,6 +136,26 @@
 
                 if (this.videoStreams.length > 0) {
                     this.currentVideoIndex = 0;
+                }
+
+                this.getStateRecords();
+            }).catch(e => {
+
+            });
+        },
+        getStateRecords() {
+            sendGet('stateRecord/all', {
+                trainingId: this.trainingId
+            }).then(r => {
+                let data = r.data;
+                for (let record of data.records) {
+                    console.log(record);
+                    let member = record.teamMemberId;
+                    if (this.stateRecordsOfMember[member]) {
+                        this.stateRecordsOfMember[member].push(record);
+                    } else {
+                        this.stateRecordsOfMember[member] = [record];
+                    }
                 }
             }).catch(e => {
 

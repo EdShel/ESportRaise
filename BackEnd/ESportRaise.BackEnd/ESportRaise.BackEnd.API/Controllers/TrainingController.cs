@@ -104,9 +104,10 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTrainingInfoAsync(int id)
         {
-            await ValidateAccessToTeamAsync(id);
-
             TrainingDTO training = await trainingService.GetTrainingAsync(id);
+
+            await ValidateAccessToTeamAsync(training.TeamId);
+
             return Ok(new
             {
                 training.Id,
