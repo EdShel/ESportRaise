@@ -21,11 +21,13 @@
         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
             <h1>Critical moments</h1>
             <div class="list-group">
-                <div v-for="m in criticalMoments"
-                     class="list-group-item list-group-item-action active">
+                <button v-for="m in criticalMoments"
+                        class="list-group-item list-group-item-action"
+                        v-bind:class="{active: currentCriticalMoment === m}"
+                        v-on:click="currentCriticalMoment = m">
                     {{ new Date(m.begin).toLocaleTimeString() }} -
                     {{ new Date(m.end).toLocaleTimeString() }}
-                </div>
+                </button>
             </div>
         </div>
         <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
@@ -58,12 +60,15 @@
                         <select v-model="currentVideoIndex">
                             <option v-for="(video, i) in videosForMoment"
                                     v-bind:value="i">
-                                {{ teamMembers[video.teamMemberId].name }}
+                                {{ getTeamMemberNameById(video.teamMemberId) }}
                             </option>
                         </select>
                     </div>
                 </div>
-                <stateplot v-bind:stateRecords="currentMemberState"></stateplot>
+                <state-displayer v-bind:training-id="trainingId"
+                                 v-bind:users-list="teamMembers">
+                    <p>;)</p>
+                </state-displayer>
             </div>
         </div>
     </div>
@@ -73,5 +78,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
     <script src="~/js/components/statePlot.js"></script>
+    <script src="~/js/components/stateDisplayer.js"></script>
     <script src="~/js/training.js"></script>
 }

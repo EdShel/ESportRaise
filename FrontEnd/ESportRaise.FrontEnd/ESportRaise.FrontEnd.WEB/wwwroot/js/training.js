@@ -9,17 +9,25 @@
         teamMembers: {},
 
         currentCriticalMomentIndex: criticalMomentIndex,
-        currentVideoIndex: -1,
-
-        stateRecordsOfMember: {}
+        currentVideoIndex: -1
     },
     computed: {
-        currentCriticalMoment() {
-            if (this.currentCriticalMomentIndex === -1) {
-                return null;
-            }
+        currentCriticalMoment: {
+            get() {
+                if (this.currentCriticalMomentIndex === -1) {
+                    return null;
+                }
 
-            return this.criticalMoments[this.currentCriticalMomentIndex]
+                return this.criticalMoments[this.currentCriticalMomentIndex]
+            },
+            set(value) {
+                for (let i = 0; i < this.criticalMoments.length; i++) {
+                    if (value === this.criticalMoments[i]) {
+                        this.currentCriticalMomentIndex = i;
+                        return;
+                    }
+                }
+            }
         },
         videosForMoment() {
             if (this.currentCriticalMomentIndex === -1) {
@@ -68,12 +76,6 @@
             let langParam = '&hl=en';
 
             return videoUrl + playerParams + spanParams + langParam;
-        },
-        currentMemberState() {
-            if (this.teamMembers.length == 0) {
-                return [];
-            }
-            return this.stateRecordsOfMember[4];
         }
     },
     created: function () {
@@ -99,13 +101,7 @@
                 id: this.teamId
             }).then(r => {
                 let data = r.data;
-                console.log(data);
-                this.teamMembers = {};
-                for (let member of data.members) {
-                    this.teamMembers[member.id] = {
-                        name: member.name
-                    };
-                }
+                this.teamMembers = data.members;
 
                 this.getCriticalMoments();
             }).catch(e => {
@@ -137,32 +133,20 @@
                 if (this.videoStreams.length > 0) {
                     this.currentVideoIndex = 0;
                 }
-
-                this.getStateRecords();
-            }).catch(e => {
-
-            });
-        },
-        getStateRecords() {
-            sendGet('stateRecord/all', {
-                trainingId: this.trainingId
-            }).then(r => {
-                let data = r.data;
-                for (let record of data.records) {
-                    console.log(record);
-                    let member = record.teamMemberId;
-                    if (this.stateRecordsOfMember[member]) {
-                        this.stateRecordsOfMember[member].push(record);
-                    } else {
-                        this.stateRecordsOfMember[member] = [record];
-                    }
-                }
             }).catch(e => {
 
             });
         },
         secondsToHHMMSS(secs) {
             return new Date(secs * 1000).toISOString().substr(11, 8);
+        },
+        getTeamMemberNameById(memberId) {
+            for (let member of this.teamMembers) {
+                if (member.id === memberId) {
+                    return member.name;
+                }
+            }
+            return null;
         }
     }
 });

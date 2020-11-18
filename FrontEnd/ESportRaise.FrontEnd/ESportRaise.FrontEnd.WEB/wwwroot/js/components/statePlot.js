@@ -1,6 +1,6 @@
 ﻿Vue.component('stateplot', {
     extends: VueChartJs.Line,
-    params: ["stateRecords"],
+    props: ["stateRecords"],
     data: function () {
         return {
             options: {
@@ -19,21 +19,33 @@
             for (let state of this.stateRecords) {
                 points.push({
                     x: new Date(state.createTime),
-                    y: stateRecords.temperature
+                    y: state.temperature
                 });
             }
             return points;
+        },
+        chartDatasets() {
+            return {
+                datasets: [
+                    {
+                        label: 'Коммиты на GitHub',
+                        backgroundColor: '#f87979',
+                        data: this.temperatureAsCartesianPoints
+                    }
+                ]
+            };
         }
     },
     mounted() {
-        this.renderChart({
-            datasets: [
-                {
-                    label: 'Коммиты на GitHub',
-                    backgroundColor: '#f87979',
-                    data: this.temperatureAsCartesianPoints
-                }
-            ]
-        }, this.options)
+        this.renderChart(this.chartDatasets, this.options)
+    },
+    methods: {
+        update() {
+            console.log("updating");
+            if (this._chart) {
+                this._chart.destroy();
+            }
+            this.renderChart(this.chartDatasets, this.options);
+        }
     }
 })
