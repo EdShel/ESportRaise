@@ -10,5 +10,7 @@ namespace ESportRaise.BackEnd.BLL.Interfaces
         Task<StateRecordSlimDTO> GetRecentAsync(StateRecordRequestDTO request);
 
         Task<StateRecordSlimDTO> GetForTrainingAsync(int trainingId);
+
+        Task<StateRecordSlimDTO> GetForTrainingAsync(int trainingId, int teamMemberId);
     }
 }

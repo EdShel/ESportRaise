@@ -87,6 +87,25 @@ namespace ESportRaise.BackEnd.API.Controllers
             });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetRecordsForTrainingAndMemberAsync(int trainingId, int memberId)
+        {
+            await ValidateAccessToTraining(trainingId);
+
+            var serviceResponse = await stateRecordService.GetForTrainingAsync(trainingId, memberId);
+            return new JsonResult(new
+            {
+                TrainingId = serviceResponse.TrainingId,
+                TeamMemberId = memberId,
+                Records = serviceResponse.StateRecords.Select(rec => new
+                {
+                    rec.CreateTime,
+                    rec.HeartRate,
+                    rec.Temperature
+                })
+            });
+        }
+
         private async Task ValidateAccessToTraining(int trainingId)
         {
             TrainingDTO training = await trainingService.GetTrainingAsync(trainingId);

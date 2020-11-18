@@ -75,13 +75,32 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         public async Task<IEnumerable<StateRecord>> GetForTrainingAsync(int trainingId)
         {
             var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = 
+            selectCommand.CommandText =
                 "SELECT * FROM StateRecord WHERE TrainingId = @trainingId ORDER BY CreateTime";
             selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
             using (var r = await selectCommand.ExecuteReaderAsync())
             {
                 var states = new List<StateRecord>();
-                while(await r.ReadAsync())
+                while (await r.ReadAsync())
+                {
+                    states.Add(MapFromReader(r));
+                }
+                return states;
+            }
+        }
+
+        public async Task<IEnumerable<StateRecord>> GetForTrainingAsync(int trainingId, int teamMemberId)
+        {
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText =
+                "SELECT * FROM StateRecord WHERE TrainingId = @trainingId " +
+                "AND TeamMemberId = @teamMemberId ORDER BY CreateTime";
+            selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
+            selectCommand.Parameters.AddWithValue("@teamMemberId", teamMemberId);
+            using (var r = await selectCommand.ExecuteReaderAsync())
+            {
+                var states = new List<StateRecord>();
+                while (await r.ReadAsync())
                 {
                     states.Add(MapFromReader(r));
                 }
