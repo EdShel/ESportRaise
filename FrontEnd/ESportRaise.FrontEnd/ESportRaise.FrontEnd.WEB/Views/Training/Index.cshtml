@@ -8,36 +8,61 @@
 
 <script>
     let trainingId = @Model;
+    let criticalMomentIndex = -1;
 </script>
 
 <div id="training" class="container">
 
-    <div class="row">
-        <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+    <div class="background-box">
+        <h1 class="text-center">Training YYYY.MM.DD</h1>
+    </div>
+
+    <div v-cloak class="row">
+        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
             <h1>Critical moments</h1>
-            <div v-for="m in criticalMoments">
-                {{ new Date(m.begin).toLocaleTimeString() }} -
-                {{ new Date(m.end).toLocaleTimeString() }}
+            <div class="list-group">
+                <div v-for="m in criticalMoments"
+                     class="list-group-item list-group-item-action active">
+                    {{ new Date(m.begin).toLocaleTimeString() }} -
+                    {{ new Date(m.end).toLocaleTimeString() }}
+                </div>
             </div>
         </div>
-        <div class="col-lg-10 col-md-6 col-sm-12 col-xs-12">
-            <h1>Video record</h1>
-            <div>
-                <iframe id="mainVideo" width="420" height="315"
-                        v-bind:src="'//www.youtube.com/embed/' + currentVideo.streamId" frameborder="0" allowfullscreen></iframe>
-            </div>
+        <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
+            <div v-if="currentVideo">
+                <h1>Video record</h1>
+                <div class="videoContainer">
+                    <iframe v-if="currentVideo" name="mainVideo"
+                            v-bind:src="restartVideoUrl" frameborder="0"
+                            allowfullscreen></iframe>
+                </div>
 
-
-            <div v-for="l in currentVideoSpans">
-                <a v-bind:href="'//www.youtube.com/embed/' + currentVideo.streamId + '?rel=0&autoplay=1&start=' + l.begin + '&end=' + l.end" target="mainVideo">
-                    {{ l.begin }} - {{ l.end }}
-                </a>
+                <div>
+                    <div>
+                        <a v-bind:href="restartVideoUrl"
+                           target="mainVideo">
+                            <div class="btn btn-primary">
+                                Restart
+                                {{ secondsToHHMMSS(momentVideoInterval.begin) }} -
+                                {{ secondsToHHMMSS(momentVideoInterval.end) }}
+                            </div>
+                        </a>
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary">
+                            Share
+                        </button>
+                    </div>
+                    <div>
+                        <select>
+                            <option v-for="video in videosForMoment"></option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 
     </div>
-    <iframe width="420" height="315" src="//www.youtube.com/embed/2aWU4KzvBsU?start=115" frameborder="0" allowfullscreen></iframe>
-
 </div>
 
 @section Scripts {
