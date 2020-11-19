@@ -2,6 +2,7 @@
 using ESportRaise.BackEnd.BLL.Constants;
 using ESportRaise.BackEnd.BLL.DTOs.AppUser;
 using ESportRaise.BackEnd.BLL.DTOs.ConfigChange;
+using ESportRaise.BackEnd.BLL.Exceptions;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace ESportRaise.BackEnd.API.Controllers
         private readonly IAppUserService userService;
 
         public AdminController(
-            IDatabaseBackupService databaseBackupService, 
+            IDatabaseBackupService databaseBackupService,
             IConfigChangeService configChangeService,
             IAppUserService appUserService)
         {
@@ -32,6 +33,10 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpPost("backupDb")]
         public async Task<IActionResult> BackupDatabaseAsync([FromBody] BackupDatabaseRequest request)
         {
+            if (request.BackupFile == null)
+            {
+                throw new BadRequestException("Backup file isn't specified!");
+            }
             await databaseBackupService.BackupDatabaseAsync(request.BackupFile);
 
             return Ok();
@@ -40,6 +45,10 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpGet("getBackup")]
         public IActionResult SendBackup(string file)
         {
+            if (file == null)
+            {
+                throw new BadRequestException("Backup file isn't specified!");
+            }
             System.IO.Stream backupFileStream = databaseBackupService.GetBackupAsStream(file);
             return File(backupFileStream, "application/octet-stream");
         }

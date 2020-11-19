@@ -5,8 +5,28 @@
     ViewData["Title"] = Localizer["PageTitle"];
 }
 
-<div id="configTable" class="container">
+<div class="container">
+    <div id="backups">
+        <h1>Backup database</h1>
+        <div>
+            <label>Backup file name</label>
+            <input type="text" v-model="file" />
+        </div>
+        <div v-if="successMessageSeen">
+            Backup is successfully made!
+        </div>
+        <button class="btn btn-primary" v-on:click="make">Make backup</button>
+        <button class="btn btn-primary" v-on:click="download">Download backup</button>
+    </div>
+    <div id="certExpiration">
+        <div>
+            SSL certificate expires at {{ expiration.toLocaleString() }}
+        </div>
+    </div>
+</div>
 
+<div id="configTable" class="container">
+    <h1>System configuration</h1>
     <table class="table table-hover">
         <thead>
             <tr>
@@ -29,5 +49,7 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/backups.js"></script>
+    <script src="~/js/certExpiration.js"></script>
     <script src="~/js/configTable.js"></script>
 }

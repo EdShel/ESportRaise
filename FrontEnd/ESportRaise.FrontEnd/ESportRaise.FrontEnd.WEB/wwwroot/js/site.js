@@ -127,6 +127,25 @@ function sendPut(url, params, data) {
     });
 }
 
+function downloadFile(url, params, fileName) {
+    return axios({
+        url: backendServer + url,
+        headers: {
+            Authorization: 'Bearer ' + auth.user.token
+        },
+        params: params,
+        method: 'GET',
+        responseType: 'blob',
+    }).then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+    });
+}
+
 function handle(e) {
     console.log(e);
     console.log(e.request);
