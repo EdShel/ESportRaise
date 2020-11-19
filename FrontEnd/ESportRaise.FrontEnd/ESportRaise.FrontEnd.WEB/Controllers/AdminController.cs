@@ -17,29 +17,5 @@ namespace ESportRaise.FrontEnd.WEB.Controllers
         {
             return View();
         }
-
-        public IActionResult Cert()
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://google.com");
-            X509Certificate cert2 = null;
-            HttpWebResponse response = null;
-
-            request.ServerCertificateValidationCallback += CertCheck;
-            using(var x = request.GetResponse())
-            {
-
-            }
-
-            return Ok();
-        }
-
-        private bool CertCheck(
-            object sender, X509Certificate certificate, X509Chain chain, 
-            SslPolicyErrors sslPolicyErrors)
-        {
-            Console.WriteLine(certificate);
-            certificate.GetExpirationDateString();
-            return true;
-        }
     }
 }

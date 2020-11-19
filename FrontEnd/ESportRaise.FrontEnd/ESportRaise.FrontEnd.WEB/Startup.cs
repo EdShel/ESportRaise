@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using ESportRaise.FrontEnd.WEB.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,10 +18,14 @@ namespace ESportRaise.FrontEnd.WEB
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
-            SupportedCultures = configuration.GetSection("SupportedCultures").Get<string[]>();
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile("credentials.json", false)
+                .Build();
+            SupportedCultures = Configuration.GetSection("SupportedCultures").Get<string[]>();
         }
 
         public IConfiguration Configuration { get; }
@@ -29,6 +34,7 @@ namespace ESportRaise.FrontEnd.WEB
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IConfiguration>(Configuration);
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
@@ -39,6 +45,10 @@ namespace ESportRaise.FrontEnd.WEB
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                  .AddViewLocalization(LanguageViewLocationExpanderFormat.SubFolder);
+
+            services.AddSingleton<CertExpirationChecker>();
+            services.AddSingleton<EmailService>();
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, CertExpirationNotifyService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
