@@ -1,0 +1,8 @@
+﻿@inject IViewLocalizer Localizer
+@inject IHtmlLocalizer<SharedView> SharedLocalizer
+
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+<a asp-action="Users" asp-controller="Admin">Go to users</a>

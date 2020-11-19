@@ -1,0 +1,53 @@
+﻿@inject IViewLocalizer Localizer
+@inject IHtmlLocalizer<SharedView> SharedLocalizer
+
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+
+<div id="usersTable" class="container">
+
+    <div>
+        <label for="userNameText">Тема роботи:</label>
+        <input id="userNameText" type="text" v-model="userName" />
+        <button v-on:click="updateTablePage(pageIndex)">Search</button>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Role</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Team</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="u in users">
+                <th>{{ u.userRole}}</th>
+                <td><a v-bind:href="'/User?id=' + u.id">{{ u.userName }}</a></td>
+                <td>{{ u.email }}</td>
+                <td><a v-bind:href="'/Team?id=' + u.teamId">{{ u.teamName }}</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="row">
+        <div class="col col-xs-4">
+            <button v-on:click="prevPage">Back</button>
+        </div>
+        <div class="col col-xs-4 text-center">
+            <span>{{ pageIndex + 1 }} / {{ pagesCount + 1 }}</span>
+        </div>
+        <div class="col col-xs-3">
+            <button class="pull-right" v-on:click="nextPage">Next</button>
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts {
+    <script src="~/js/usersTable.js"></script>
+}

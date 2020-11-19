@@ -1,5 +1,5 @@
 ﻿
-const backendServer = "http://localhost:5002/";
+const backendServer = "https://localhost:5003/";
 
 let auth = new Vue({
     el: "#navSection",
@@ -18,6 +18,12 @@ let auth = new Vue({
         isAuthorized() {
             let authToken = localStorage.getItem("token");
             return authToken !== null;
+        },
+        isAdmin() {
+            let authToken = localStorage.getItem("token");
+            let tokenPayload = parseJwt(authToken);
+            const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+            return tokenPayload[roleClaim] === "Admin";
         },
         user() {
             return {
@@ -81,12 +87,6 @@ let auth = new Vue({
     }
 })
 
-//document.addEventListener("click", function (e) {
-//    if (e.target === auth.openedModal) {
-//        auth.closeModal();
-//    }
-//})
-
 function sendGet(url, params) {
     if (auth.isAuthorized) {
         return axios.get(backendServer + url, {
@@ -138,3 +138,13 @@ function getDateYYYY_MM_DD(date) {
         + (date.getMonth() + 1).toString().padStart(2, 0) + '-'
         + date.getDate().toString().padStart(2, 0);
 }
+
+function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+};

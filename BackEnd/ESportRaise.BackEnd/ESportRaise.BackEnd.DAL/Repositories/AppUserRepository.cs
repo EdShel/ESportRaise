@@ -139,7 +139,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             selectCommand.CommandText = "SELECT * FROM GetUsersByNamePaginated(@pageIndex, @pageSize, @name)";
             selectCommand.Parameters.AddWithValue("@pageIndex", pageIndex);
             selectCommand.Parameters.AddWithValue("@pageSize", pageSize);
-            selectCommand.Parameters.AddWithValue("@name", name);
+            selectCommand.Parameters.AddWithValue("@name", name ?? string.Empty);
             using(var r = await selectCommand.ExecuteReaderAsync())
             {
                 IList<AppUserInfo> users = new List<AppUserInfo>();
