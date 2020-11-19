@@ -1,6 +1,7 @@
 ﻿using ESportRaise.BackEnd.DAL.Entities;
 using ESportRaise.BackEnd.DAL.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -129,6 +130,40 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = "SELECT COUNT(*) FROM AppUser WHERE UserRole = 'Admin'";
+            return (int)await selectCommand.ExecuteScalarAsync();
+        }
+
+        public async Task<IEnumerable<AppUserInfo>> GetUsersByNamePaginatedAsync(int pageIndex, int pageSize, string name)
+        {
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText = "SELECT * FROM GetUsersByNamePaginated(@pageIndex, @pageSize, @name)";
+            selectCommand.Parameters.AddWithValue("@pageIndex", pageIndex);
+            selectCommand.Parameters.AddWithValue("@pageSize", pageSize);
+            selectCommand.Parameters.AddWithValue("@name", name);
+            using(var r = await selectCommand.ExecuteReaderAsync())
+            {
+                IList<AppUserInfo> users = new List<AppUserInfo>();
+                while(await r.ReadAsync())
+                {
+                    users.Add(new AppUserInfo
+                    {
+                        Id = r.GetInt32(0),
+                        UserName = r.GetString(1),
+                        Email = r.GetString(2),
+                        UserRole = r.GetString(3),
+                        TeamId = r.IsDBNull(4) ? -1 : r.GetInt32(4),
+                        TeamName = r.IsDBNull(5) ? null : r.GetString(5)
+                    });
+                }
+                return users;
+            }
+        }
+
+        public async Task<int> GetUsersByNameCountAsync(string name)
+        {
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText = "SELECT dbo.GetUsersByNameCount(@name)";
+            selectCommand.Parameters.AddWithValue("@name", name ?? string.Empty);
             return (int)await selectCommand.ExecuteScalarAsync();
         }
 

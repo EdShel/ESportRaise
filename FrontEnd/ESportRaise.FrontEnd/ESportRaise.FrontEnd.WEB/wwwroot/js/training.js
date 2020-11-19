@@ -76,6 +76,10 @@
             let langParam = '&hl=en';
 
             return videoUrl + playerParams + spanParams + langParam;
+        },
+        criticalMomentShareLink() {
+            return location.origin + '/Training?id=' + this.trainingId
+                + '&cid=' + this.currentCriticalMomentIndex;
         }
     },
     created: function () {
@@ -114,7 +118,8 @@
             }).then(r => {
                 let data = r.data;
                 this.criticalMoments = data.moments;
-                if (this.criticalMoments.length > 0) {
+                if (this.currentCriticalMomentIndex == -1
+                    && this.criticalMoments.length > 0) {
                     this.currentCriticalMomentIndex = 0;
                 }
 
@@ -147,6 +152,10 @@
                 }
             }
             return null;
+        },
+        copyShareUrlToClipboard() {
+            document.getElementById("momentUrl").select();
+            document.execCommand("copy");
         }
     }
 });

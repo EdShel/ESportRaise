@@ -1,5 +1,6 @@
 ﻿using ESportRaise.BackEnd.API.Models.Admin;
 using ESportRaise.BackEnd.BLL.Constants;
+using ESportRaise.BackEnd.BLL.DTOs.AppUser;
 using ESportRaise.BackEnd.BLL.DTOs.ConfigChange;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -12,14 +13,20 @@ namespace ESportRaise.BackEnd.API.Controllers
     [Route("[controller]"), ApiController, Authorize(Roles = AuthConstants.ADMIN_ROLE)]
     public class AdminController : ControllerBase
     {
-        private IDatabaseBackupService databaseBackupService;
+        private readonly IDatabaseBackupService databaseBackupService;
 
-        private IConfigChangeService configChangeService;
+        private readonly IConfigChangeService configChangeService;
 
-        public AdminController(IDatabaseBackupService databaseBackupService, IConfigChangeService configChangeService)
+        private readonly IAppUserService userService;
+
+        public AdminController(
+            IDatabaseBackupService databaseBackupService, 
+            IConfigChangeService configChangeService,
+            IAppUserService appUserService)
         {
             this.databaseBackupService = databaseBackupService;
             this.configChangeService = configChangeService;
+            this.userService = appUserService;
         }
 
         [HttpPost("backupDb")]
@@ -52,6 +59,13 @@ namespace ESportRaise.BackEnd.API.Controllers
                 Value = opt.Value
             }));
             return Ok();
+        }
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetUsersAsync(int pageIndex, int pageSize, string name)
+        {
+            AppUsersPaginatedDTO result = await userService.GetUsersByNamePaginatedAsync(pageIndex, pageSize, name);
+            return Ok(result);
         }
     }
 }

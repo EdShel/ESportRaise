@@ -3,6 +3,9 @@ using ESportRaise.BackEnd.BLL.Exceptions;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.DAL.Entities;
 using ESportRaise.BackEnd.DAL.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Services
@@ -50,6 +53,29 @@ namespace ESportRaise.BackEnd.BLL.Services
                 Id = user.Id,
                 Email = user.Email,
                 UserName = user.UserName
+            };
+        }
+
+        public async Task<AppUsersPaginatedDTO> GetUsersByNamePaginatedAsync(int pageIndex, int pageSize, string name)
+        {
+            int count = await users.GetUsersByNameCountAsync(name);
+            pageIndex = Math.Min(count / pageSize, Math.Max(pageIndex, 0));
+            pageSize = Math.Max(1, pageSize);
+            IEnumerable<AppUserInfo> foundUsers = await users.GetUsersByNamePaginatedAsync(pageIndex, pageSize, name);
+            return new AppUsersPaginatedDTO
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalPagesCount = count / pageSize,
+                Users = foundUsers.Select(u => new AppUserInfoDTO
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    UserName = u.UserName,
+                    UserRole = u.UserRole,
+                    TeamId = u.TeamId,
+                    TeamName = u.TeamName
+                })
             };
         }
     }

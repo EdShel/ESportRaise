@@ -10,5 +10,7 @@ namespace ESportRaise.BackEnd.BLL.Interfaces
         Task<AppUserDTO> GetUserAsync(int id);
 
         Task<AppUserDTO> GetUserAsync(string userNameOrEmail);
+
+        Task<AppUsersPaginatedDTO> GetUsersByNamePaginatedAsync(int pageIndex, int pageSize, string name);
     }
 }
