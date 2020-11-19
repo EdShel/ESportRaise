@@ -11,12 +11,18 @@
     },
     methods: {
         nextPage() {
-            this.pageIndex++;
-            this.updateTablePage();
+            let prevPage = this.pageIndex;
+            this.pageIndex = Math.max(0, Math.min(prevPage + 1, this.pagesCount));
+            if (this.pageIndex != prevPage) {
+                this.updateTablePage();
+            }
         },
         prevPage() {
-            this.pageIndex--;
-            this.updateTablePage();
+            let prevPage = this.pageIndex;
+            this.pageIndex = Math.max(0, Math.min(prevPage - 1, this.pagesCount));
+            if (this.pageIndex != prevPage) {
+                this.updateTablePage();
+            }
         },
         updateTablePage(pageIndex) {
             pageIndex = Math.max(0, Math.min(this.pageIndex, this.pagesCount));
