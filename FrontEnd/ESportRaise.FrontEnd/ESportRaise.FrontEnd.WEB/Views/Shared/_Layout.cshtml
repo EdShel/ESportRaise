@@ -41,9 +41,14 @@
                         </li>
                     </template>
                     <template v-else>
-                        <li v-if="isAdmin">
-                            <a class="nav-link" asp-controller="Admin" asp-action="Users">Users</a>
-                        </li>
+                        <template v-if="isAdmin">
+                            <li>
+                                <a class="nav-link" asp-controller="Admin" asp-action="Index">Configurations</a>
+                            </li>
+                            <li>
+                                <a class="nav-link" asp-controller="Admin" asp-action="Users">Users</a>
+                            </li>
+                        </template>
                         <li>
                             <a class="nav-link" asp-controller="Team" asp-action="Index">My team</a>
                         </li>

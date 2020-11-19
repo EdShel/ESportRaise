@@ -5,4 +5,29 @@
     ViewData["Title"] = Localizer["PageTitle"];
 }
 
-<a asp-action="Users" asp-controller="Admin">Go to users</a>
+<div id="configTable" class="container">
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Property</th>
+                <th scope="col">New value</th>
+                <th scope="col">Current value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(c, i) in configs" v-bind:class="{editedRow: c.value !== c.prevValue}">
+                <th>{{ i + 1 }}</th>
+                <td>{{ c.key }}</td>
+                <td><input type="text" v-model="c.value" /></td>
+                <td>{{ c.prevValue }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="btn btn-primary" v-on:click="saveChanges">Save changes</button>
+</div>
+
+@section Scripts {
+    <script src="~/js/configTable.js"></script>
+}

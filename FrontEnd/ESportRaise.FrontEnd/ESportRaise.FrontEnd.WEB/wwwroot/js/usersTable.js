@@ -24,8 +24,7 @@
                 this.updateTablePage();
             }
         },
-        updateTablePage(pageIndex) {
-            pageIndex = Math.max(0, Math.min(this.pageIndex, this.pagesCount));
+        updateTablePage() {
             sendGet('admin/users', {
                 pageIndex: this.pageIndex,
                 pageSize: 10,

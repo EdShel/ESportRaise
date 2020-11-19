@@ -223,3 +223,8 @@ div.nopadding {
     .inline-input select {
         flex: 2;
     }
+
+
+.editedRow {
+    background: #818181
+}
