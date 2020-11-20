@@ -5,5 +5,5 @@
 
 <form asp-action="SetLanguage" asp-controller="Home" id="changeLang" method="post">
     <input type="hidden" name="culture" value="uk" id="langToSet"/>
-    <input type="hidden" name="redirect" value="@Context.Request.Path" />
+    <input type="hidden" name="redirect" value="@Context.Request.Path@Context.Request.QueryString" />
 </form>

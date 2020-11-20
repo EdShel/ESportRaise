@@ -83,11 +83,17 @@
             </div>
         </modal>
     </div>
-</div> 
+</div>
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="~/js/chartLocales/uk.js"></script>
+    @{
+        string lang = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+    }
+    @if (lang != "en")
+    {
+        <script src="~/js/chartLocales/@(lang).js"></script>
+    }
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="~/js/components/stateDisplayer.js"></script>
     <script src="~/js/training.js"></script>
