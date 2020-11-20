@@ -28,6 +28,12 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
+    <script>
+        let changeData = "Make sure there is no errors in fields!";
+        let invalidLoginOrPassword = "Invalid login and/or password!";
+        let userIsRegisterd = "User is already registered!";
+    </script>
+
     <div id="navSection" v-cloak>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" asp-action="Index" asp-controller="Home">ESport Raise</a>
@@ -76,11 +82,20 @@
                closeText="@SharedLocalizer["CloseAction"]"
                okText="@SharedLocalizer["LoginAction"]" v-on:ok="login">
             <form id="loginForm">
+                <div v-if="loginData.error">
+                    {{ loginData.error }}
+                </div>
                 <div>
+                    <div v-if="loginData.user && !isLoginUserValid">
+                        Invalid user name or email!
+                    </div>
                     <label for="loginEmail">@SharedLocalizer["EmailOrUserName"]</label>
                     <input type="text" id="loginEmail" v-model="loginData.user" />
                 </div>
                 <div>
+                    <div v-if="loginData.password && !isLoginPasswordValid">
+                        Invalid password!
+                    </div>
                     <label for="loginPassword">@SharedLocalizer["Password"]</label>
                     <input type="password" id="loginPassword" v-model="loginData.password" />
                 </div>
@@ -92,15 +107,27 @@
                closeText="@SharedLocalizer["CloseAction"]"
                okText="@SharedLocalizer["RegisterAction"]" v-on:ok='register'>
             <form id="registerForm">
+                <div v-if="registerData.error">
+                    {{ registerData.error }}
+                </div>
                 <div>
+                    <div v-if="registerData.email && !isRegisterEmailValid">
+                        Invalid email!
+                    </div>
                     <label for="registerEmail">@SharedLocalizer["Email"]</label>
                     <input type="text" id="registerEmail" v-model="registerData.email" />
                 </div>
                 <div>
+                    <div v-if="registerData.userName && !isRegisterUserNameValid">
+                        Invalid user name!
+                    </div>
                     <label for="registerUserName">@SharedLocalizer["UserName"]</label>
                     <input type="text" id="registerUserName" v-model="registerData.userName" />
                 </div>
                 <div>
+                    <div v-if="registerData.password && !isRegisterPasswordValid">
+                        Password must contain uppercase, lowercase, digits, a special symbol and be 6-20 characters.
+                    </div>
                     <label for="registerPassword">@SharedLocalizer["Password"]</label>
                     <input type="password" id="registerPassword" v-model="registerData.password" />
                 </div>

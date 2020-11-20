@@ -1,19 +1,27 @@
 ﻿
 const backendServer = "https://localhost:5003/";
 
-const passwordRegex = RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{6,20}$');
+const loginRegex = /^[A-Za-z0-9_]{3,20}$/;
+
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{6,20}$/;
+
+const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+const userNameRegex = /^[A-Za-z0-9_]{3,20}$/;
 
 let auth = new Vue({
     el: "#navSection",
     data: {
         loginData: {
             user: "",
-            password: ""
+            password: "",
+            error: null
         },
         registerData: {
             email: "",
             userName: "",
-            password: ""
+            password: "",
+            error: null
         }
     },
     computed: {
@@ -43,8 +51,18 @@ let auth = new Vue({
             let tokenPayload = parseJwt(authToken);
             return tokenPayload.id;
         },
+        isLoginUserValid() {
+            return loginRegex.test(this.loginData.user)
+                || emailRegex.test(this.loginData.user);
+        },
         isLoginPasswordValid() {
             return passwordRegex.test(this.loginData.password);
+        },
+        isRegisterEmailValid() {
+            return emailRegex.test(this.registerData.email);
+        },
+        isRegisterUserNameValid() {
+            return userNameRegex.test(this.registerData.userName);
         },
         isRegisterPasswordValid() {
             return passwordRegex.test(this.registerData.password);
@@ -70,6 +88,11 @@ let auth = new Vue({
             this.$refs.registerModal.openModal();
         },
         login() {
+            if (!this.isLoginUserValid || !this.isLoginPasswordValid) {
+                this.loginData.error = changeData;
+                return;
+            }
+
             axios.post(backendServer + "auth/login", {
                 emailOrUserName: this.loginData.user,
                 password: this.loginData.password
@@ -77,10 +100,17 @@ let auth = new Vue({
                 this.saveUser(r.data);
                 location.reload();
             }).catch(error => {
-                console.log(error);
+                if (error.response.status === 400) {
+                    this.loginData.error = invalidLoginOrPassword;
+                }
             });
         },
         register() {
+            if (!this.isRegisterEmailValid || !this.isRegisterUserNameValid || !this.isRegisterPasswordValid) {
+                this.registerData.error = changeData;
+                return;
+            }
+
             axios.post(backendServer + "auth/register", {
                 email: this.registerData.email,
                 userName: this.registerData.userName,
@@ -90,10 +120,8 @@ let auth = new Vue({
                 this.loginData.user = this.registerData.userName;
                 this.loginData.password = this.registerData.password;
                 this.login();
-            }).catch(error => {
-                console.log(error.request);
-                console.log(error.response);
-                console.log(error.message);
+                }).catch(error => {
+                    this.registerData.error = userIsRegisterd;
             });
         },
         logout() {
