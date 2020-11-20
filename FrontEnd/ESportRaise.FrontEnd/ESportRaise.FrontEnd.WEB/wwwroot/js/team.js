@@ -10,7 +10,8 @@
             members: []
         },
         newTeam: {
-            name: null
+            name: null,
+            error: null
         },
         newTeamMember: {
             emailOrUserName: "",
@@ -20,6 +21,11 @@
             spanType: 1,
             date: getDateYYYY_MM_DD(new Date()),
             list: []
+        }
+    },
+    computed: {
+        isValidNewTeamName() {
+            return this.newTeam.name && /^[A-Za-z0-9_@]{4,30}$/.test(this.newTeam.name);
         }
     },
     mounted: function () {
@@ -44,10 +50,7 @@
                 this.team.members = data.members;
 
                 this.updateTrainings();
-            }).catch(error => {
-                console.log(error);
-                alert(error);
-            });
+            }).catch(handleCriticalError);
         },
         getCurrentUserTeamId() {
             return sendGet('teamMember/me')
@@ -55,13 +58,12 @@
                     let data = r.data;
                     return data.teamId;
                 }).catch(e => {
-                    console.log(e.response);
                     // Doesn't have a team
                     if (e.response.status === 400) {
                         return -1;
                     }
                     else {
-                        // TODO: redirect
+                        handleCriticalError(e);
                     }
                 });
         },
@@ -71,9 +73,7 @@
                     let data = r.data;
                     this.team.id = data.teamId;
                     this.getTeamInfo();
-                }).catch(e => {
-                    handle(e);
-                });
+                }).catch(handleCriticalError);
         },
         switchEditingMode() {
             this.edit.turnedOn = !this.edit.turnedOn;
@@ -93,7 +93,7 @@
                     this.newTeamMember.errorMessage = userNotFound;
                 }
                 else {
-                    console.log(e.response);
+                    handleCriticalError(e);
                 }
             });
         },
@@ -111,15 +111,12 @@
                 if (this.team.members.length === 0) {
                     location.reload();
                 }
-            }).catch(e => {
-                handle(e);
-            });
+            }).catch(handleCriticalError);
         },
         goToUserPage(memberIndex) {
             location.assign('/user?id=' + this.team.members[memberIndex].id);
         },
         updateTrainings() {
-            console.log("updating")
             let date;
             let hours;
             if (this.trainings.spanType == 0) {
@@ -142,8 +139,7 @@
             }).then(r => {
                 let data = r.data;
                 this.trainings.list = data.trainings;
-                }).catch(e => {
-            });
+            }).catch(handleCriticalError);
         },
         goToTrainingPage(trainingId) {
             location.assign('/Training?id=' + trainingId);

@@ -10,8 +10,6 @@
             let fileName = this.file.trim() + '.bak';
             downloadFile('admin/getBackup', { file: fileName }, fileName)
                 .then(r => {
-                    console.log("Lol)");
-
                     this.errorMessage = null;
                 }).catch(e => {
                     if (e.response.status === 400) {

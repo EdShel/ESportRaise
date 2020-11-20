@@ -31,14 +31,11 @@
                 name: this.userName.trim()
             }).then(r => {
                 let data = r.data;
-                console.log(data);
                 this.pageIndex = data.pageIndex;
                 this.pageSize = data.pageSize;
                 this.pagesCount = data.totalPagesCount;
                 this.users = data.users;
-            }).catch(e => {
-                console.log(e.response.data);
-            });
+            }).catch(handleCriticalError);
         }
     }
 });

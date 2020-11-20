@@ -17,7 +17,6 @@
                     let data = r.data;
                     let newConfigs = [];
                     for (let config of data) {
-                        console.log(config);
                         newConfigs.push({
                             key: config.Key,
                             value: config.Value,

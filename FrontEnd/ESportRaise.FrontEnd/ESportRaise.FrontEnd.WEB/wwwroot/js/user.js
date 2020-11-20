@@ -24,7 +24,6 @@
         this.editYT.canEdit = this.user.id === -1
             || this.user.id == auth.id
             || auth.isAdmin;
-        console.log(auth.isAdmin);
         this.getUserInfo();
     },
     methods: {
@@ -44,7 +43,6 @@
 
                 this.getTeamMemberInfo();
             }).catch(error => {
-                console.log(error);
                 alert(error);
             });
         },
@@ -52,7 +50,6 @@
             sendGet('teamMember/user', {
                 id: this.user.id
             }).then(r => {
-                console.log(r);
                 let data = r.data;
                 this.team.id = data.teamId;
                 this.teamMember.youTubeId = data.youTubeId;
@@ -69,18 +66,23 @@
                 let data = r.data;
                 this.team.name = data.name;
                 this.team.exists = true;
-            }).catch(handle);
+            }).catch(e => {
+                if (e.response.status === 404) {
+                    this.team.exists = false;
+                }
+                else {
+                    handleCriticalError(e);
+                }
+            });
         },
         changeYouTubeId() {
             sendPut('teamMember/youTube', null, {
                 teamMemberId: this.user.id,
                 channelUrl: this.editYT.youTubeUrl
             }).then(r => {
-                console.log(r);
                 this.$refs.changeYouTubeIdModal.closeModal();
                 this.getTeamMemberInfo();
-                }).catch(e => {
-                    console.log(e.response);
+            }).catch(e => {
                 if (e.response.status === 400) {
                     this.editYT.error = wrongYouTubeUrl;
                 }
@@ -92,9 +94,7 @@
                 channelUrl: ""
             }).then(r => {
                 this.getTeamMemberInfo();
-            }).catch(e => {
-                console.log(e.response);
-            })
+            });
         }
     }
 });

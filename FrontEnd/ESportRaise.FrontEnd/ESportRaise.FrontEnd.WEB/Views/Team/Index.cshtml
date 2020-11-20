@@ -14,37 +14,44 @@
     let userIsAlreadyInTeam = "User already belongs to a team!";
 </script>
 
-<div id="team">
+<div id="team" class="container">
     <template v-if="team.id === -2">
-        <input type="text" v-model="newTeam.name" />
-        <button v-on:click="registerTeam">Create new team</button>
+        <div class="background-box">
+            <h1>Don't you have a team?</h1>
+            <h2>Create one!</h2>
+        </div>
+        <p>Team name must contain 4-30 symbols and may consist of uppercase, lowercase characters, digits and @@ or _ signs.</p>
+        <div>
+            <label for="newTeamName">Input new team name:</label>
+            <input id="newTeamName" type="text" v-model="newTeam.name" />
+        </div>
+        <button v-on:click="registerTeam" class="btn btn-primary"
+                v-bind:disabled="!isValidNewTeamName">Create new team</button>
     </template>
     <template v-if="team.name !== null">
-        <div class="container">
-            <h1>{{ team.name }}</h1>
-            <button v-on:click="switchEditingMode">Turn on edit mode</button>
-            <div class="row row-eq-height">
-                <div v-for="(member, i) in team.members"
-                     class="col-lg-4 col-md-6 col-sm-12 col-xs-12 mt-3">
-                    <div class="team-member-card">
-                        <img v-on:click="goToUserPage(i)"
-                             v-bind:src="`https://eu.ui-avatars.com/api/?name=${member.name}&background=random`" />
-                        <div v-on:click="goToUserPage(i)"
-                             class="name">
-                            {{ member.name }}
-                        </div>
-                        <div v-if="edit.turnedOn" class="delete-button">
-                            <i v-on:click="removeMember(i)" class="fas fa-user-minus"></i>
-                        </div>
+        <h1>{{ team.name }}</h1>
+        <button v-on:click="switchEditingMode">Turn on edit mode</button>
+        <div class="row row-eq-height">
+            <div v-for="(member, i) in team.members"
+                 class="col-lg-4 col-md-6 col-sm-12 col-xs-12 mt-3">
+                <div class="team-member-card">
+                    <img v-on:click="goToUserPage(i)"
+                         v-bind:src="`https://eu.ui-avatars.com/api/?name=${member.name}&background=random`" />
+                    <div v-on:click="goToUserPage(i)"
+                         class="name">
+                        {{ member.name }}
+                    </div>
+                    <div v-if="edit.turnedOn" class="delete-button">
+                        <i v-on:click="removeMember(i)" class="fas fa-user-minus"></i>
                     </div>
                 </div>
-                <div v-if="edit.turnedOn"
-                     class="col-lg-4 col-md-12 col-sm-12 col-xs-12 mt-3">
-                    <div class="team-member-card">
-                        <div v-on:click="$refs.newTeamMemberModal.openModal()" class="name">
-                            <i class="fas fa-user-plus"></i>
-                            Add member
-                        </div>
+            </div>
+            <div v-if="edit.turnedOn"
+                 class="col-lg-4 col-md-12 col-sm-12 col-xs-12 mt-3">
+                <div class="team-member-card">
+                    <div v-on:click="$refs.newTeamMemberModal.openModal()" class="name">
+                        <i class="fas fa-user-plus"></i>
+                        Add member
                     </div>
                 </div>
             </div>
@@ -78,10 +85,10 @@
             </div>
             <div v-if="trainings.spanType == 2">
                 <label>Select date</label>
-                <input type="date" v-model="trainings.date" v-on:change="updateTrainings"/>
+                <input type="date" v-model="trainings.date" v-on:change="updateTrainings" />
             </div>
             <div class="row mt-3">
-                <div v-for="training in trainings.list" 
+                <div v-for="training in trainings.list"
                      class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                     <div class="training-card text-center" v-on:click="goToTrainingPage(training.id)">
                         {{ formatTrainingTime(training.beginTime) }}

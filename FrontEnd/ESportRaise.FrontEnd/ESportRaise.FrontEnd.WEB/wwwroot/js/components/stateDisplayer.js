@@ -50,7 +50,6 @@
                     y: state.temperature
                 });
             }
-            console.log(points);
             return points;
         },
         chartData() {

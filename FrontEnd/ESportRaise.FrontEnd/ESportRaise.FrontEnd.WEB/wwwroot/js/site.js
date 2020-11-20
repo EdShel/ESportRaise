@@ -120,8 +120,10 @@ let auth = new Vue({
                 this.loginData.user = this.registerData.userName;
                 this.loginData.password = this.registerData.password;
                 this.login();
-                }).catch(error => {
+            }).catch(error => {
+                if (error.response.status === 400) {
                     this.registerData.error = userIsRegisterd;
+                }
             });
         },
         logout() {
@@ -188,12 +190,6 @@ function downloadFile(url, params, fileName) {
         document.body.appendChild(link);
         link.click();
     });
-}
-
-function handle(e) {
-    console.log(e);
-    console.log(e.request);
-    console.log(e.response);
 }
 
 function getDateYYYY_MM_DD(date) {
