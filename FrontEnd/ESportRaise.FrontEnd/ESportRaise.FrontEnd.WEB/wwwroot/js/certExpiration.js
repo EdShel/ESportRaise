@@ -7,8 +7,6 @@
         axios.get('/Admin/SslExpiration')
             .then(r => {
                 this.expiration = new Date(r.data.expiresAt);
-            }).catch(e => {
-
             });
     },
     methods: {

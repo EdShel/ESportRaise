@@ -4,6 +4,10 @@
         configs: []
     },
     mounted: function () {
+        if (!auth.isAdmin) {
+            forbiddenPage();
+            return;
+        }
         this.updateTable();
     },
     methods: {
@@ -22,9 +26,7 @@
                     }
 
                     this.configs = newConfigs;
-                }).catch(e => {
-
-                });
+                }).catch(handleCriticalError);
         },
         saveChanges() {
             let toUpdate = [];
@@ -40,9 +42,7 @@
             sendPut('admin/config', null, toUpdate)
                 .then(r => {
                     this.updateTable();
-                }).catch(e => {
-
-                })
+                }).catch(handleCriticalError);
         }
     }
 });

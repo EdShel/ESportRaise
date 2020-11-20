@@ -9,7 +9,9 @@
         teamMembers: {},
 
         currentCriticalMomentIndex: criticalMomentIndex,
-        currentVideoIndex: -1
+        currentVideoIndex: -1,
+
+        notOver: false
     },
     computed: {
         currentCriticalMoment: {
@@ -73,7 +75,7 @@
             let videoUrl = '//www.youtube.com/embed/' + this.currentVideo.streamId;
             let playerParams = '?rel=0';//'?rel=0&autoplay=1';
             let spanParams = '&start=' + interval.begin + '&end=' + interval.end;
-            let langParam = '&hl=en';
+            let langParam = '&hl=' + getLanguage();
 
             return videoUrl + playerParams + spanParams + langParam;
         },
@@ -95,12 +97,9 @@
                 this.beginTime = new Date(data.beginTime);
 
                 this.getTeamMembersInfo();
-            }).catch(e => {
-
-            });
+            }).catch(handleCriticalError);
         },
         getTeamMembersInfo() {
-
             sendGet('team/full', {
                 id: this.teamId
             }).then(r => {
@@ -108,9 +107,7 @@
                 this.teamMembers = data.members;
 
                 this.getCriticalMoments();
-            }).catch(e => {
-
-            });
+            }).catch(handleCriticalError);
         },
         getCriticalMoments() {
             sendGet('criticalMoment/all', {
@@ -125,7 +122,12 @@
 
                 this.getVideos();
             }).catch(e => {
-
+                if (e.response.status === 400) {
+                    this.notOver = true;
+                }
+                else {
+                    handleCriticalError(e);
+                }
             });
         },
         getVideos() {
@@ -138,9 +140,7 @@
                 if (this.videoStreams.length > 0) {
                     this.currentVideoIndex = 0;
                 }
-            }).catch(e => {
-
-            });
+            }).catch(handleCriticalError);
         },
         secondsToHHMMSS(secs) {
             return new Date(secs * 1000).toISOString().substr(11, 8);
@@ -162,6 +162,14 @@
         },
         formatTime(time) {
             return formatTimeLocale(time);
+        },
+        stopTraining() {
+            sendPost('training/stop')
+                .then(r => {
+                    location.reload();
+                }).catch(r => {
+                    location.reload();
+                });
         }
     }
 });

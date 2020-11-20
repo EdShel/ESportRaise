@@ -1,6 +1,8 @@
 ﻿
 const backendServer = "https://localhost:5003/";
 
+const passwordRegex = RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{6,20}$');
+
 let auth = new Vue({
     el: "#navSection",
     data: {
@@ -29,6 +31,9 @@ let auth = new Vue({
         },
         isAdmin() {
             let authToken = this.user.token;
+            if (!authToken) {
+                return false;
+            }
             let tokenPayload = parseJwt(authToken);
             const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
             return tokenPayload[roleClaim] === "Admin";
@@ -37,6 +42,12 @@ let auth = new Vue({
             let authToken = this.user.token;
             let tokenPayload = parseJwt(authToken);
             return tokenPayload.id;
+        },
+        isLoginPasswordValid() {
+            return passwordRegex.test(this.loginData.password);
+        },
+        isRegisterPasswordValid() {
+            return passwordRegex.test(this.registerData.password);
         }
     },
     methods: {
@@ -87,7 +98,7 @@ let auth = new Vue({
         },
         logout() {
             this.clearUser();
-            location.reload();
+            location.assign('/');
         }
     }
 })
@@ -196,4 +207,12 @@ function formatDateLocale(dateTime) {
 
 function formatTimeLocale(dateTime) {
     return dateTime.toLocaleTimeString(getLanguage());
+}
+
+function handleCriticalError(error) {
+    location.assign('/Home/Error?code=' + error.response.status);
+}
+
+function forbiddenPage() {
+    location.assign('/Home/Error?code=' + 403);
 }

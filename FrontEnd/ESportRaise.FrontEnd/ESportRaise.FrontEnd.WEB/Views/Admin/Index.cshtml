@@ -5,6 +5,12 @@
     ViewData["Title"] = Localizer["PageTitle"];
 }
 
+<script>
+    const wrongBackupFile = "Enter valid backup name";
+    const backupNotFound = "Backup file doesn't exist";
+    const unableToMakeBackup = "Unable to make backup. Check whether backup name is valid path!";
+</script>
+
 <div class="container">
     <div id="backups">
         <h1>Backup database</h1>
@@ -14,6 +20,9 @@
         </div>
         <div v-if="successMessageSeen">
             Backup is successfully made!
+        </div>
+        <div v-if="errorMessage" class="text-danger">
+            {{ errorMessage }}
         </div>
         <button class="btn btn-primary" v-on:click="make">Make backup</button>
         <button class="btn btn-primary" v-on:click="download">Download backup</button>

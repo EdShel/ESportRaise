@@ -124,9 +124,7 @@
                 this.records = data.records;
                 this.getChart().data = this.chartData;
                 this.getChart().update();
-            }).catch(e => {
-
-            });
+            }).catch(handleCriticalError);
         }
     },
     template: `

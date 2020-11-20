@@ -18,7 +18,7 @@
         <h1 class="text-center">Training {{ formatDate(beginTime) }}</h1>
     </div>
 
-    <div v-cloak class="row">
+    <div v-if="!notOver" v-cloak class="row">
         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
             <h1>Critical moments</h1>
             <div class="list-group">
@@ -82,6 +82,19 @@
                        v-bind:value="criticalMomentShareLink" />
             </div>
         </modal>
+    </div>
+    <div v-if="notOver">
+        <h2>The training isn't over yet!</h2>
+        <p>
+            You can manually stop it to view processed data.
+            <b>
+                After stopping this training new data can't be
+                collected and you'll need to start a new training.
+            </b>
+        </p>
+        <div>
+            <button class="btn btn-danger" v-on:click="stopTraining">Stop training</button>
+        </div>
     </div>
 </div>
 
