@@ -10,5 +10,10 @@
             }).catch(e => {
 
             });
+    },
+    methods: {
+        formatDateTime(date) {
+            return formatDateTimeLocale(date);
+        }
     }
 });

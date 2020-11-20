@@ -147,6 +147,9 @@
         },
         goToTrainingPage(trainingId) {
             location.assign('/Training?id=' + trainingId);
+        },
+        formatTrainingTime(time) {
+            return formatDateTimeLocale(new Date(time));
         }
     }
 })

@@ -175,3 +175,20 @@ function getCookie(name) {
             ? cookiestring.toString().replace(/^[^=]+./, "")
             : "");
 }
+
+function getLanguage() {
+    let langCookie = getCookie(".AspNetCore.Culture");
+    return langCookie.substr(langCookie.length - 2);
+}
+
+function formatDateTimeLocale(dateTime) {
+    return dateTime.toLocaleString(getLanguage());
+}
+
+function formatDateLocale(dateTime) {
+    return dateTime.toLocaleDateString(getLanguage());
+}
+
+function formatTimeLocale(dateTime) {
+    return dateTime.toLocaleTimeString(getLanguage());
+}

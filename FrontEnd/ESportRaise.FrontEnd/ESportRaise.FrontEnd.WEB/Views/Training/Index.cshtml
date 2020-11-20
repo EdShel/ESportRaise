@@ -15,7 +15,7 @@
 <div id="training" class="container">
 
     <div v-if="beginTime" class="background-box">
-        <h1 class="text-center">Training {{ beginTime.toLocaleDateString() }}</h1>
+        <h1 class="text-center">Training {{ formatDate(beginTime) }}</h1>
     </div>
 
     <div v-cloak class="row">
@@ -26,8 +26,8 @@
                         class="list-group-item list-group-item-action"
                         v-bind:class="{active: currentCriticalMoment === m}"
                         v-on:click="currentCriticalMoment = m">
-                    {{ new Date(m.begin).toLocaleTimeString() }} -
-                    {{ new Date(m.end).toLocaleTimeString() }}
+                    {{ formatTime(new Date(m.begin)) }} -
+                    {{ formatTime(new Date(m.end)) }}
                 </button>
             </div>
         </div>

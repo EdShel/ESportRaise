@@ -2,8 +2,7 @@
     computed: {
         language: {
             get() {
-                let langCookie = getCookie(".AspNetCore.Culture");
-                return langCookie.substr(langCookie.length - 2);
+                return getLanguage();
             },
             set(val) {
                 document.getElementById('langToSet').value = val;

@@ -19,8 +19,8 @@
         <button class="btn btn-primary" v-on:click="download">Download backup</button>
     </div>
     <div id="certExpiration">
-        <div>
-            SSL certificate expires at {{ expiration.toLocaleString() }}
+        <div v-if="expiration">
+            SSL certificate expires at {{ formatDateTime(expiration) }}
         </div>
     </div>
 </div>

@@ -84,7 +84,7 @@
                 <div v-for="training in trainings.list" 
                      class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                     <div class="training-card text-center" v-on:click="goToTrainingPage(training.id)">
-                        {{ new Date(training.beginTime).toLocaleString() }}
+                        {{ formatTrainingTime(training.beginTime) }}
                     </div>
                 </div>
             </div>

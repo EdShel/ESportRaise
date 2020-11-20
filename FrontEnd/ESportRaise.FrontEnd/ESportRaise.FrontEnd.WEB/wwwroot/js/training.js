@@ -156,6 +156,12 @@
         copyShareUrlToClipboard() {
             document.getElementById("momentUrl").select();
             document.execCommand("copy");
+        },
+        formatDate(date) {
+            return formatDateLocale(date);
+        },
+        formatTime(time) {
+            return formatTimeLocale(time);
         }
     }
 });
