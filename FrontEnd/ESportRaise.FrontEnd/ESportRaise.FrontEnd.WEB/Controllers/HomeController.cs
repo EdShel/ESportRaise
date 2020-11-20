@@ -1,9 +1,7 @@
-﻿using ESportRaise.FrontEnd.WEB.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Diagnostics;
 
 namespace ESportRaise.FrontEnd.WEB.Controllers
 {
@@ -11,20 +9,6 @@ namespace ESportRaise.FrontEnd.WEB.Controllers
     {
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
             return View();
         }
 
@@ -38,11 +22,6 @@ namespace ESportRaise.FrontEnd.WEB.Controllers
             );
 
             return Redirect(redirect);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         public IActionResult Error(int code)
