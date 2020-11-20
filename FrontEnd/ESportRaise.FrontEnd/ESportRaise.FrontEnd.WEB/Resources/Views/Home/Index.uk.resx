@@ -117,7 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Register" xml:space="preserve">
-    <value>Зареєструватися</value>
+  <data name="AboutText" xml:space="preserve">
+    <value>ESport Raise &amp;mdash; це програмна система, призначена для автоматизації процесу тренувань кіберспортивних команд.</value>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>Що це</value>
+  </data>
+  <data name="Feature1" xml:space="preserve">
+    <value>Відстежує фізичний стан учасників команди</value>
+  </data>
+  <data name="Feature2" xml:space="preserve">
+    <value>Аналізує його</value>
+  </data>
+  <data name="Feature3" xml:space="preserve">
+    <value>Інформує про стрес</value>
+  </data>
+  <data name="Feature4" xml:space="preserve">
+    <value>Відстежує критичні моменти тренування</value>
+  </data>
+  <data name="Feature5" xml:space="preserve">
+    <value>Має інтеграцію з прямими трансляціями гри на YouTube</value>
+  </data>
+  <data name="FeaturesTitle" xml:space="preserve">
+    <value>Що робить</value>
+  </data>
+  <data name="FreeImp" xml:space="preserve">
+    <value>Використання сервісу є абсолютно безкоштовним.</value>
+  </data>
+  <data name="FreeText" xml:space="preserve">
+    <value>Однак вам необхідний розумний пристрій для відстеження фізичного стану гравців.</value>
+  </data>
+  <data name="FreeTitle" xml:space="preserve">
+    <value>Це безкоштовно?</value>
+  </data>
+  <data name="StartText1" xml:space="preserve">
+    <value>Зареєструвати команду</value>
+  </data>
+  <data name="StartText2" xml:space="preserve">
+    <value>Отримати розумний пристрій</value>
+  </data>
+  <data name="StartText3" xml:space="preserve">
+    <value>Встановити Android застосунок</value>
+  </data>
+  <data name="StartText4" xml:space="preserve">
+    <value>Тренуватися!</value>
+  </data>
+  <data name="StartTtile" xml:space="preserve">
+    <value>Як почати</value>
   </data>
 </root>

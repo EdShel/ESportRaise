@@ -29,7 +29,7 @@ namespace ESportRaise.FrontEnd.WEB.Controllers
         }
 
         [HttpPost]
-        public IActionResult SetLanguage(string culture)
+        public IActionResult SetLanguage(string culture, string redirect)
         {
             Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,
@@ -37,7 +37,7 @@ namespace ESportRaise.FrontEnd.WEB.Controllers
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
 
-            return RedirectToAction(nameof(Index));
+            return Redirect(redirect);
         }
 
         public IActionResult Privacy()

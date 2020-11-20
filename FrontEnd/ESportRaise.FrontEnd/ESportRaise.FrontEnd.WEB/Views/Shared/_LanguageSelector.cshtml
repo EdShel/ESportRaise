@@ -1,0 +1,9 @@
+﻿<lang-selector>
+    <option value="en">English</option>
+    <option value="uk">Українська</option>
+</lang-selector>
+
+<form asp-action="SetLanguage" asp-controller="Home" id="changeLang" method="post">
+    <input type="hidden" name="culture" value="uk" id="langToSet"/>
+    <input type="hidden" name="redirect" value="@Context.Request.Path" />
+</form>

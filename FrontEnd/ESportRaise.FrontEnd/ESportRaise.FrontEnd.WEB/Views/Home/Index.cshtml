@@ -20,9 +20,8 @@
 <div class="container info">
     <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-right">
-            <h1>About</h1>
-            ESport Raise &mdash; is a program system designed to automate
-            esport teams training.
+            <h1>@Localizer["AboutTitle"]</h1>
+            @Localizer["AboutText"]
         </div>
         <div class="col-lg-6 col-md-6 d-none d-md-block nopadding">
             <div class="background-box"></div>
@@ -33,22 +32,21 @@
             <div class="background-box"></div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-            <h1>What it does</h1>
+            <h1>@Localizer["FeaturesTitle"]</h1>
             <ul>
-                <li>Tracks physical state of team members</li>
-                <li>Analyzes it</li>
-                <li>Informs about stress</li>
-                <li>Easy critical moments tracking</li>
-                <li>You<span style="color: white; background: red">Tube</span> livestream integration</li>
+                <li>@Localizer["Feature1"]</li>
+                <li>@Localizer["Feature2"]</li>
+                <li>@Localizer["Feature3"]</li>
+                <li>@Localizer["Feature4"]</li>
+                <li>@Localizer["Feature5"]</li>
             </ul>
         </div>
     </div>
     <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-right">
-            <h1>Is it free?</h1>
-                <b>Using the service is absolutely free.</b>
-                However you need a smart device in order to 
-                track players' physical state.
+            <h1>@Localizer["FreeTitle"]</h1>
+            <b>@Localizer["FreeImp"]</b>
+            @Localizer["FreeText"]
         </div>
         <div class="col-lg-6 col-md-6 d-none d-md-block nopadding">
             <div class="background-box"></div>
@@ -59,50 +57,18 @@
             <div class="background-box"></div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-            <h1>How to start</h1>
+            <h1>@Localizer["StartTtile"]</h1>
             <ul>
-                <li>Register your team</li>
-                <li>Aquire smart device</li>
-                <li>Install Android app</li>
-                <li>Just train!</li>
+                <li>@Localizer["StartText1"]</li>
+                <li>@Localizer["StartText2"]</li>
+                <li>@Localizer["StartText3"]</li>
+                <li>@Localizer["StartText4"]</li>
             </ul>
         </div>
     </div>
 </div>
 
-
-
-<h1>"@Localizer["Register"]"</h1>
-<h1>In your language dog is @SharedLocalizer["Dog"]</h1>
-
-<form asp-action="SetLanguage" asp-controller="Home">
-    <input name="culture" value="uk" />
-    <input type="submit" class="btn btn-primary" />
-</form>
-
-<div class="container body-content">
-    <div id="f">
-
-        <button v-on:click="info">
-            get user info
-        </button>
-
-        <div v-for="n in 100">
-            Hello {{ n }}
-        </div>
-    </div>
-</div>
-
 <script>
-    new Vue({
-        el: '#f',
-        methods: {
-            info() {
-                sendGet('auth/me').then(r => console.log(r)).catch(e => console.log(e));
-            }
-        }
-    })
-
     window.addEventListener("scroll", function () {
         let logo = document.querySelector(".gamepad-logo img");
 

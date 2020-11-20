@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AdminConfig" xml:space="preserve">
+    <value>Configurations</value>
+  </data>
+  <data name="AdminUsers" xml:space="preserve">
+    <value>Users</value>
+  </data>
   <data name="CloseAction" xml:space="preserve">
     <value>Close</value>
   </data>
@@ -146,5 +152,8 @@
   </data>
   <data name="UserName" xml:space="preserve">
     <value>User name</value>
+  </data>
+  <data name="UserTeam" xml:space="preserve">
+    <value>My team</value>
   </data>
 </root>

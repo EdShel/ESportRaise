@@ -117,7 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Register" xml:space="preserve">
-    <value>Register me</value>
+  <data name="AboutText" xml:space="preserve">
+    <value>ESport Raise &amp;mdash; is a program system designed to automate esport teams training.</value>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Feature1" xml:space="preserve">
+    <value>Tracks physical state of team members</value>
+  </data>
+  <data name="Feature2" xml:space="preserve">
+    <value>Analyzes it</value>
+  </data>
+  <data name="Feature3" xml:space="preserve">
+    <value>Informs about stress</value>
+  </data>
+  <data name="Feature4" xml:space="preserve">
+    <value>Easy critical moments tracking</value>
+  </data>
+  <data name="Feature5" xml:space="preserve">
+    <value>YouTube livestream integration</value>
+  </data>
+  <data name="FeaturesTitle" xml:space="preserve">
+    <value>What it does</value>
+  </data>
+  <data name="FreeImp" xml:space="preserve">
+    <value>Using the service is absolutely free.</value>
+  </data>
+  <data name="FreeText" xml:space="preserve">
+    <value>However you need a smart device in order to track players' physical state.</value>
+  </data>
+  <data name="FreeTitle" xml:space="preserve">
+    <value>Is it free?</value>
+  </data>
+  <data name="StartText1" xml:space="preserve">
+    <value>Register your team</value>
+  </data>
+  <data name="StartText2" xml:space="preserve">
+    <value>Aquire the smart device</value>
+  </data>
+  <data name="StartText3" xml:space="preserve">
+    <value>Install the Android app</value>
+  </data>
+  <data name="StartText4" xml:space="preserve">
+    <value>Just train!</value>
+  </data>
+  <data name="StartTtile" xml:space="preserve">
+    <value>How to start</value>
   </data>
 </root>
