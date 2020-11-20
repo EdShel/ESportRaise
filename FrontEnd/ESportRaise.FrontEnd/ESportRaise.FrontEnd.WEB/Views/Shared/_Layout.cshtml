@@ -29,9 +29,9 @@
 </head>
 <body>
     <script>
-        let changeData = "Make sure there is no errors in fields!";
-        let invalidLoginOrPassword = "Invalid login and/or password!";
-        let userIsRegisterd = "User is already registered!";
+        let changeData = "@SharedLocalizer["ErrorsInFields"]";
+        let invalidLoginOrPassword = "@SharedLocalizer["InvalidLoginPassword"]";
+        let userIsRegisterd = "@SharedLocalizer["UserAlreadyRegistered"]";
     </script>
 
     <div id="navSection" v-cloak>
@@ -88,7 +88,7 @@
                 </div>
                 <div>
                     <div class="hidden warning" v-bind:class="{show: loginData.user && !isLoginUserValid}">
-                        Invalid user name or email!
+                        @SharedLocalizer["InvalidNameEmail"]
                     </div>
                     <div class="form-group">
                         <label for="loginEmail">@SharedLocalizer["EmailOrUserName"]</label>
@@ -97,7 +97,7 @@
                 </div>
                 <div>
                     <div class="hidden warning" v-bind:class="{show: loginData.password && !isLoginPasswordValid}">
-                        Invalid password!
+                        @SharedLocalizer["InvalidPassword"]
                     </div>
                     <div class="form-group">
                         <label for="loginPassword">@SharedLocalizer["Password"]</label>
@@ -117,7 +117,7 @@
                 </div>
                 <div>
                     <div class="hidden warning" v-bind:class="{show: registerData.email && !isRegisterEmailValid}">
-                        Invalid email!
+                        @SharedLocalizer["InvalidEmail"]
                     </div>
                     <div class="form-group">
                         <label for="registerEmail">@SharedLocalizer["Email"]</label>
@@ -127,7 +127,7 @@
                 </div>
                 <div>
                     <div class="hidden warning" v-bind:class="{show: registerData.userName && !isRegisterUserNameValid}">
-                        Invalid user name!
+                        @SharedLocalizer["InvalidUserName"]
                     </div>
                     <div class="form-group">
                         <label for="registerUserName">@SharedLocalizer["UserName"]</label>
@@ -136,7 +136,7 @@
                 </div>
                 <div>
                     <div class="hidden warning" v-bind:class="{show: registerData.password && !isRegisterPasswordValid}">
-                        Password must contain uppercase, lowercase, digits, a special symbol and be 6-20 characters.
+                        @SharedLocalizer["InvalidPasswordReg"]
                     </div>
                     <div class="form-group">
                         <label for="registerPassword">@SharedLocalizer["Password"]</label>

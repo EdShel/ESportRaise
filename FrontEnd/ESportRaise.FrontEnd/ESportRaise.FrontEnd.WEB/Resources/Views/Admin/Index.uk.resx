@@ -117,73 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="30Days" xml:space="preserve">
-    <value>Last 30 days</value>
+  <data name="BackupDbTitle" xml:space="preserve">
+    <value>Резервне копіювання БД</value>
   </data>
-  <data name="7Days" xml:space="preserve">
-    <value>Last 7 days</value>
+  <data name="BackupDownloadAction" xml:space="preserve">
+    <value>Завантажити резервну копію</value>
   </data>
-  <data name="AddMemberAction" xml:space="preserve">
-    <value>Add member</value>
+  <data name="BackupFileNameText" xml:space="preserve">
+    <value>Назва файлу резервної копії</value>
   </data>
-  <data name="AddMemberModalTitle" xml:space="preserve">
-    <value>Adding team member</value>
+  <data name="BackupMakeAction" xml:space="preserve">
+    <value>Зробити резервну копію</value>
   </data>
-  <data name="ConfirmMemberRemovalBegin" xml:space="preserve">
-    <value>Do you really want to remove </value>
+  <data name="BackupNotFound" xml:space="preserve">
+    <value>Файл резервної копії не існує</value>
   </data>
-  <data name="ConfirmMemberRemovalEnd" xml:space="preserve">
-    <value>?</value>
+  <data name="BackupSuccess" xml:space="preserve">
+    <value>Резервна копія успішно створена!</value>
   </data>
-  <data name="CreateTeamAction" xml:space="preserve">
-    <value>Create new team</value>
+  <data name="CertExpires" xml:space="preserve">
+    <value>Термін дії сертифікату завершується</value>
   </data>
-  <data name="Date" xml:space="preserve">
-    <value>Date</value>
+  <data name="CertTitle" xml:space="preserve">
+    <value>Сертифікат</value>
   </data>
-  <data name="ModalAdd" xml:space="preserve">
-    <value>Add</value>
+  <data name="ConfigCurVal" xml:space="preserve">
+    <value>Поточне значення</value>
   </data>
-  <data name="ModalClose" xml:space="preserve">
-    <value>Close</value>
+  <data name="ConfigKey" xml:space="preserve">
+    <value>Властивість</value>
   </data>
-  <data name="NameEmailText" xml:space="preserve">
-    <value>User name or email</value>
+  <data name="ConfigSave" xml:space="preserve">
+    <value>Зберегти зміни</value>
   </data>
-  <data name="NoTeamTitle" xml:space="preserve">
-    <value>Don't you have a team?</value>
-  </data>
-  <data name="NoTeamTitle2" xml:space="preserve">
-    <value>Create one!</value>
-  </data>
-  <data name="NoTrainings" xml:space="preserve">
-    <value>No trainings found</value>
+  <data name="ConfigVal" xml:space="preserve">
+    <value>Нове значення</value>
   </data>
   <data name="PageTitle" xml:space="preserve">
-    <value>Team</value>
+    <value>Панель адміністратора</value>
   </data>
-  <data name="SelectDateText" xml:space="preserve">
-    <value>Select date</value>
+  <data name="SysConfig" xml:space="preserve">
+    <value>Налаштування системи</value>
   </data>
-  <data name="SelectPeriod" xml:space="preserve">
-    <value>Select period of time</value>
+  <data name="UnableMakeBackup" xml:space="preserve">
+    <value>Помилка створення резервної копії. Перевірте, чи вказане ім'я є коректним шляхом!</value>
   </data>
-  <data name="SwitchEdit" xml:space="preserve">
-    <value>Switch edit mode</value>
-  </data>
-  <data name="TeamNameRule" xml:space="preserve">
-    <value>Team name must contain 4-30 symbols and may consist of uppercase, lowercase characters, digits and @@ or _ signs.</value>
-  </data>
-  <data name="TeamNameText" xml:space="preserve">
-    <value>Input new team name:</value>
-  </data>
-  <data name="TrainingsTitle" xml:space="preserve">
-    <value>Trainings</value>
-  </data>
-  <data name="UserAlreadyInTeam" xml:space="preserve">
-    <value>User already belongs to a team!</value>
-  </data>
-  <data name="UserNotFound" xml:space="preserve">
-    <value>User does not exist!</value>
+  <data name="WrongBackupFile" xml:space="preserve">
+    <value>Введіть коректне ім'я для файлу резервної копії</value>
   </data>
 </root>

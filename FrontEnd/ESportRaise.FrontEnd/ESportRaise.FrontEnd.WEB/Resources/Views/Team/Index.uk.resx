@@ -118,72 +118,72 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="30Days" xml:space="preserve">
-    <value>Last 30 days</value>
+    <value>Останні 30 днів</value>
   </data>
   <data name="7Days" xml:space="preserve">
-    <value>Last 7 days</value>
+    <value>Останні 7 днів</value>
   </data>
   <data name="AddMemberAction" xml:space="preserve">
-    <value>Add member</value>
+    <value>Додати учасника</value>
   </data>
   <data name="AddMemberModalTitle" xml:space="preserve">
-    <value>Adding team member</value>
+    <value>Додання учасника команди</value>
   </data>
   <data name="ConfirmMemberRemovalBegin" xml:space="preserve">
-    <value>Do you really want to remove </value>
+    <value>Ви дійсно хочете видалити </value>
   </data>
   <data name="ConfirmMemberRemovalEnd" xml:space="preserve">
     <value>?</value>
   </data>
   <data name="CreateTeamAction" xml:space="preserve">
-    <value>Create new team</value>
+    <value>Створити команду</value>
   </data>
   <data name="Date" xml:space="preserve">
-    <value>Date</value>
+    <value>За датою</value>
   </data>
   <data name="ModalAdd" xml:space="preserve">
-    <value>Add</value>
+    <value>Додати</value>
   </data>
   <data name="ModalClose" xml:space="preserve">
-    <value>Close</value>
+    <value>Закрити</value>
   </data>
   <data name="NameEmailText" xml:space="preserve">
-    <value>User name or email</value>
+    <value>Пошта або ім'я</value>
   </data>
   <data name="NoTeamTitle" xml:space="preserve">
-    <value>Don't you have a team?</value>
+    <value>Нема команди?</value>
   </data>
   <data name="NoTeamTitle2" xml:space="preserve">
-    <value>Create one!</value>
+    <value>Створіть власну!</value>
   </data>
   <data name="NoTrainings" xml:space="preserve">
-    <value>No trainings found</value>
+    <value>Тренування не знайдені</value>
   </data>
   <data name="PageTitle" xml:space="preserve">
-    <value>Team</value>
+    <value>Команда</value>
   </data>
   <data name="SelectDateText" xml:space="preserve">
-    <value>Select date</value>
+    <value>Оберіть дату</value>
   </data>
   <data name="SelectPeriod" xml:space="preserve">
-    <value>Select period of time</value>
+    <value>Оберіть період часу</value>
   </data>
   <data name="SwitchEdit" xml:space="preserve">
-    <value>Switch edit mode</value>
+    <value>Перемкнути режим редагування</value>
   </data>
   <data name="TeamNameRule" xml:space="preserve">
-    <value>Team name must contain 4-30 symbols and may consist of uppercase, lowercase characters, digits and @@ or _ signs.</value>
+    <value>Назва команди повинна містити 4-30 символів та може містити латинські літери, цифри символи @ та _</value>
   </data>
   <data name="TeamNameText" xml:space="preserve">
-    <value>Input new team name:</value>
+    <value>Введіть ім'я для нової команди:</value>
   </data>
   <data name="TrainingsTitle" xml:space="preserve">
-    <value>Trainings</value>
+    <value>Тренування</value>
   </data>
   <data name="UserAlreadyInTeam" xml:space="preserve">
-    <value>User already belongs to a team!</value>
+    <value>Користувач уже має команду!</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
-    <value>User does not exist!</value>
+    <value>Користувач не існує!</value>
   </data>
 </root>

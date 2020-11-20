@@ -117,7 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BackupDbTitle" xml:space="preserve">
+    <value>Backup database</value>
+  </data>
+  <data name="BackupDownloadAction" xml:space="preserve">
+    <value>Download backup</value>
+  </data>
+  <data name="BackupFileNameText" xml:space="preserve">
+    <value>Backup file name</value>
+  </data>
+  <data name="BackupMakeAction" xml:space="preserve">
+    <value>Make backup</value>
+  </data>
+  <data name="BackupNotFound" xml:space="preserve">
+    <value>Backup file doesn't exist</value>
+  </data>
+  <data name="BackupSuccess" xml:space="preserve">
+    <value>Backup is successfully made!</value>
+  </data>
+  <data name="CertExpires" xml:space="preserve">
+    <value>SSL certificate expires at</value>
+  </data>
+  <data name="CertTitle" xml:space="preserve">
+    <value>Certificate</value>
+  </data>
+  <data name="ConfigCurVal" xml:space="preserve">
+    <value>Current value</value>
+  </data>
+  <data name="ConfigKey" xml:space="preserve">
+    <value>Property</value>
+  </data>
+  <data name="ConfigSave" xml:space="preserve">
+    <value>Save changes</value>
+  </data>
+  <data name="ConfigVal" xml:space="preserve">
+    <value>New value</value>
+  </data>
   <data name="PageTitle" xml:space="preserve">
     <value>Admin page</value>
+  </data>
+  <data name="SysConfig" xml:space="preserve">
+    <value>System configuration</value>
+  </data>
+  <data name="UnableMakeBackup" xml:space="preserve">
+    <value>Unable to make backup. Check whether backup name is valid path!</value>
+  </data>
+  <data name="WrongBackupFile" xml:space="preserve">
+    <value>Enter valid backup name</value>
   </data>
 </root>

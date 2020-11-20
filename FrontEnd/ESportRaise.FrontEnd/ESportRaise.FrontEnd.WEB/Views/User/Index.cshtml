@@ -8,7 +8,7 @@
 
 <script>
     let userId = @Model;
-    let wrongYouTubeUrl = "Invalid or outdated channel url!";
+    let wrongYouTubeUrl = "@Localizer["InvalidChannelUrl"]";
 </script>
 
 <div id="user">
@@ -17,23 +17,23 @@
             <h1>{{ user.userName }}</h1>
         </div>
         <div>
-            <b>Email:</b>
+            <b>@Localizer["EmailTitle"]:</b>
             <span>{{ user.email }}</span>
         </div>
         <template v-if="team.exists">
             <div>
-                <b>Team:</b>
+                <b>@Localizer["TeamTitle"]:</b>
                 <a v-bind:href="'/team?id=' + team.id">{{ team.name }}</a>
             </div>
             <div>
-                <b>YouTube channel:</b>
+                <b>@Localizer["YouTubeChannelTitle"]:</b>
                 <a v-if="teamMember.youTubeId !== null"
                    v-bind:href="'https://www.youtube.com/channel/' + teamMember.youTubeId"
-                   title="Go to YouTube channel">
-                    connected
+                   title="@Localizer["GoToChannelAction"]">
+                    @Localizer["ChannelBinded"]
                 </a>
                 <span v-else>
-                    not assigned
+                    @Localizer["ChannelNotBinded"]
                 </span>
                 <template v-if="editYT.canEdit">
                     <button v-on:click="$refs.changeYouTubeIdModal.openModal" class="icon edit">
@@ -47,20 +47,20 @@
         </template>
         <template v-else>
             <div>
-                Does not have any team yet!
+                @Localizer["NoTeam"]
             </div>
         </template>
     </div>
 
-    <modal v-cloak ref="changeYouTubeIdModal" header="Set YouTube account"
-           closeText="Cancel"
-           okText="Change" v-on:ok="changeYouTubeId">
+    <modal v-cloak ref="changeYouTubeIdModal" header="@Localizer["SetYouTubeTitle"]"
+           closeText="@Localizer["CancelAction"]"
+           okText="@Localizer["ChangeAction"]" v-on:ok="changeYouTubeId">
         <div style="color: red">
             {{ editYT.error }}
         </div>
         <div>
             <div>
-                <label>Enter YouTube channel link</label>
+                <label>@Localizer["EnterChannelText"]</label>
                 <input type="text" v-model="editYT.youTubeUrl" />
             </div>
         </div>

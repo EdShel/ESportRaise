@@ -8,23 +8,23 @@
 
 <div id="usersTable" class="container">
     <div v-cloak>
-        <h1 class="big-header">Users of the system</h1>
+        <h1 class="big-header">@Localizer["UsersTitle"]</h1>
         <div>
-            <label for="userNameText">Search by user name</label>
+            <label for="userNameText">@Localizer["SearchByNameText"]</label>
             <input id="userNameText" type="text" v-model="userName" />
             <button v-on:click="updateTablePage(pageIndex)"
                     class="btn btn-primary">
-                Search
+                @Localizer["SearchAction"]
             </button>
         </div>
         <br />
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th scope="col">Role</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Team</th>
+                    <th scope="col">@Localizer["Role"]</th>
+                    <th scope="col">@Localizer["Name"]</th>
+                    <th scope="col">@Localizer["Email"]</th>
+                    <th scope="col">@Localizer["Team"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,13 +39,13 @@
 
         <div class="row">
             <div class="col col-xs-4">
-                <button v-on:click="prevPage" class="btn btn-primary">Back</button>
+                <button v-on:click="prevPage" class="btn btn-primary">@Localizer["PrevPage"]</button>
             </div>
             <div class="col col-xs-4 text-center">
                 <span>{{ pagesCount == 0 ? 0 : pageIndex + 1 }} / {{ pagesCount }}</span>
             </div>
             <div class="col col-xs-3">
-                <button v-on:click="nextPage" class="btn btn-primary btn-right">Next</button>
+                <button v-on:click="nextPage" class="btn btn-primary btn-right">@Localizer["NextPage"]</button>
             </div>
         </div>
     </div>

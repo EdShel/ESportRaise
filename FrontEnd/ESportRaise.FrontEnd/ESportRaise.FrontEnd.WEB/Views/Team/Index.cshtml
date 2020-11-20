@@ -10,24 +10,24 @@
     let teamId = @Model;
     let removeMemberConfirmBegin = "@Localizer["ConfirmMemberRemovalBegin"]";
     let removeMemberConfirmEnd = "@Localizer["ConfirmMemberRemovalEnd"]";
-    let userNotFound = "User does not exist!";
-    let userIsAlreadyInTeam = "User already belongs to a team!";
+    let userNotFound = "@Localizer["UserNotFound"]";
+    let userIsAlreadyInTeam = "@Localizer["UserAlreadyInTeam"]";
 </script>
 
 <div id="team" class="container">
     <template v-if="team.id === -2">
         <div class="background-box">
-            <h1>Don't you have a team?</h1>
-            <h2>Create one!</h2>
+            <h1>@Localizer["NoTeamTitle"]</h1>
+            <h2>@Localizer["NoTeamTitle2"]</h2>
         </div>
-        <p>Team name must contain 4-30 symbols and may consist of uppercase, lowercase characters, digits and @@ or _ signs.</p>
+        <p>@Localizer["TeamNameRule"]</p>
         <div>
-            <label for="newTeamName">Input new team name:</label>
+            <label for="newTeamName">@Localizer["TeamNameText"]</label>
             <input id="newTeamName" type="text" v-model="newTeam.name" />
         </div>
         <button v-on:click="registerTeam" class="btn btn-primary"
                 v-bind:disabled="!isValidNewTeamName">
-            Create new team
+            @Localizer["CreateTeamAction"]
         </button>
     </template>
     <template v-if="team.name !== null">
@@ -35,7 +35,7 @@
             <h1 class="big-header center">{{ team.name }}</h1>
         </div>
         <button v-on:click="switchEditingMode" class="btn btn-success">
-            <i class="fas fa-cogs"></i> Switch edit mode
+            <i class="fas fa-cogs"></i> @Localizer["SwitchEdit"]
         </button>
         <div class="row row-eq-height">
             <div v-for="(member, i) in team.members"
@@ -57,22 +57,22 @@
                 <div class="team-member-card add-member">
                     <div v-on:click="$refs.newTeamMemberModal.openModal()" class="name">
                         <i class="fas fa-user-plus"></i>
-                        Add member
+                        @Localizer["AddMemberAction"]
                     </div>
                 </div>
             </div>
         </div>
     </template>
 
-    <modal v-cloak ref="newTeamMemberModal" header="Add team member"
-           closeText="Close"
-           okText="Add" v-on:ok="addMember">
+    <modal v-cloak ref="newTeamMemberModal" header="@Localizer["AddMemberModalTitle"]"
+           closeText="@Localizer["ModalClose"]"
+           okText="@Localizer["ModalAdd"]" v-on:ok="addMember">
         <div v-if="newTeamMember.errorMessage !== null" style="color: red">
             {{ newTeamMember.errorMessage }}
         </div>
         <form id="addTeamMemberForm">
             <div class="form-group">
-                <label>User name or email</label>
+                <label>@Localizer["NameEmailText"]</label>
                 <input type="text" v-model="newTeamMember.emailOrUserName"
                        class="form-control"/>
             </div>
@@ -81,19 +81,19 @@
 
     <template v-if="team.name !== null">
         <div class="container">
-            <h1 class="big-header center">Trainings</h1>
+            <h1 class="big-header center">@Localizer["TrainingsTitle"]</h1>
             <div>
-                <label><i class="fas fa-calendar"></i> Select period of time</label>
+                <label><i class="fas fa-calendar"></i> @Localizer["SelectPeriod"]</label>
                 <select v-model="trainings.spanType" v-on:change="updateTrainings"
                         class="browser-default custom-select">
-                    <option value="0">Last 7 days</option>
-                    <option value="1">Last 30 days</option>
-                    <option value="2">Date</option>
+                    <option value="0">@Localizer["7Days"]</option>
+                    <option value="1">@Localizer["30Days"]</option>
+                    <option value="2">@Localizer["Date"]</option>
                 </select>
             </div>
             <div v-if="trainings.spanType == 2">
                 <br />
-                <label>Select date</label>
+                <label>@Localizer["SelectDateText"]</label>
                 <input type="date" v-model="trainings.date" v-on:change="updateTrainings" />
             </div>
             <div class="row mt-3">
@@ -105,7 +105,7 @@
                         </div>
                     </div>
                 </template>
-                <h1 v-else class="center not-important">No trainings found</h1>
+                <h1 v-else class="center not-important">@Localizer["NoTrainings"]</h1>
             </div>
         </div>
     </template>

@@ -132,6 +132,33 @@
   <data name="EmailOrUserName" xml:space="preserve">
     <value>Електронна пошта або ім'я користувача</value>
   </data>
+  <data name="ErrorDescr" xml:space="preserve">
+    <value>Схоже, що ви намагалися отримати доступ до видаленої або захищеної сторінки.</value>
+  </data>
+  <data name="ErrorMistake" xml:space="preserve">
+    <value>Якщо ви впевнені, що виникла помилка, зверніться за допомогою.</value>
+  </data>
+  <data name="ErrorsInFields" xml:space="preserve">
+    <value>Переконайтесь, що усі поля заповнені правильно</value>
+  </data>
+  <data name="InvalidEmail" xml:space="preserve">
+    <value>Неправильна електронна пошта!</value>
+  </data>
+  <data name="InvalidLoginPassword" xml:space="preserve">
+    <value>Неправильні ім'я користувача та/або пароль</value>
+  </data>
+  <data name="InvalidNameEmail" xml:space="preserve">
+    <value>Неправильна пошта або ім'я користувача!</value>
+  </data>
+  <data name="InvalidPassword" xml:space="preserve">
+    <value>Неправильний запис паролю!</value>
+  </data>
+  <data name="InvalidPasswordReg" xml:space="preserve">
+    <value>Пароль має містити великі та малі латинські літери, цифру, спеціальний символ та бути довжиною 6-20 символів.</value>
+  </data>
+  <data name="InvalidUserName" xml:space="preserve">
+    <value>Ім'я користувача має бути 3-20 символів та містити латинські букви, цифри або знак '_'!</value>
+  </data>
   <data name="LoginAction" xml:space="preserve">
     <value>Увійти</value>
   </data>
@@ -149,6 +176,9 @@
   </data>
   <data name="RegisterModalTitle" xml:space="preserve">
     <value>Реєстрація</value>
+  </data>
+  <data name="UserAlreadyRegistered" xml:space="preserve">
+    <value>Користувач уже зареєстрований!</value>
   </data>
   <data name="UserName" xml:space="preserve">
     <value>Ім'я користувача</value>

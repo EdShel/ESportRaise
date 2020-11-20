@@ -117,73 +117,55 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="30Days" xml:space="preserve">
-    <value>Last 30 days</value>
+  <data name="CopyAction" xml:space="preserve">
+    <value>Скопіювати в буфер обміну</value>
   </data>
-  <data name="7Days" xml:space="preserve">
-    <value>Last 7 days</value>
+  <data name="CriticalMomentsTitle" xml:space="preserve">
+    <value>Критичні моменти</value>
   </data>
-  <data name="AddMemberAction" xml:space="preserve">
-    <value>Add member</value>
+  <data name="LinkText" xml:space="preserve">
+    <value>Посилання на критичний момент</value>
   </data>
-  <data name="AddMemberModalTitle" xml:space="preserve">
-    <value>Adding team member</value>
-  </data>
-  <data name="ConfirmMemberRemovalBegin" xml:space="preserve">
-    <value>Do you really want to remove </value>
-  </data>
-  <data name="ConfirmMemberRemovalEnd" xml:space="preserve">
-    <value>?</value>
-  </data>
-  <data name="CreateTeamAction" xml:space="preserve">
-    <value>Create new team</value>
-  </data>
-  <data name="Date" xml:space="preserve">
-    <value>Date</value>
-  </data>
-  <data name="ModalAdd" xml:space="preserve">
-    <value>Add</value>
-  </data>
-  <data name="ModalClose" xml:space="preserve">
-    <value>Close</value>
-  </data>
-  <data name="NameEmailText" xml:space="preserve">
-    <value>User name or email</value>
-  </data>
-  <data name="NoTeamTitle" xml:space="preserve">
-    <value>Don't you have a team?</value>
-  </data>
-  <data name="NoTeamTitle2" xml:space="preserve">
-    <value>Create one!</value>
-  </data>
-  <data name="NoTrainings" xml:space="preserve">
-    <value>No trainings found</value>
+  <data name="NoVideoText" xml:space="preserve">
+    <value>Жоден відео-запис не був знайдений</value>
   </data>
   <data name="PageTitle" xml:space="preserve">
-    <value>Team</value>
+    <value>Тренування</value>
   </data>
-  <data name="SelectDateText" xml:space="preserve">
-    <value>Select date</value>
+  <data name="PhysStateTitle" xml:space="preserve">
+    <value>Фізичний стан</value>
   </data>
-  <data name="SelectPeriod" xml:space="preserve">
-    <value>Select period of time</value>
+  <data name="RecordOfText" xml:space="preserve">
+    <value>Переглянути запис </value>
   </data>
-  <data name="SwitchEdit" xml:space="preserve">
-    <value>Switch edit mode</value>
+  <data name="RestartMomentAction" xml:space="preserve">
+    <value>Перейти до початку</value>
   </data>
-  <data name="TeamNameRule" xml:space="preserve">
-    <value>Team name must contain 4-30 symbols and may consist of uppercase, lowercase characters, digits and @@ or _ signs.</value>
+  <data name="SelectMemberText" xml:space="preserve">
+    <value>Оберіть члена команди, стан якого ви хочете переглянути</value>
   </data>
-  <data name="TeamNameText" xml:space="preserve">
-    <value>Input new team name:</value>
+  <data name="ShareAction" xml:space="preserve">
+    <value>Поділитися моментом</value>
   </data>
-  <data name="TrainingsTitle" xml:space="preserve">
-    <value>Trainings</value>
+  <data name="ShareModalTitle" xml:space="preserve">
+    <value>Поділитися моментом</value>
   </data>
-  <data name="UserAlreadyInTeam" xml:space="preserve">
-    <value>User already belongs to a team!</value>
+  <data name="StopTrainingAction" xml:space="preserve">
+    <value>Зупинити тренування</value>
   </data>
-  <data name="UserNotFound" xml:space="preserve">
-    <value>User does not exist!</value>
+  <data name="TrainingNotOverInfo" xml:space="preserve">
+    <value>Ви можете самостійно завершити його, щоб переглянути оброблені дані.</value>
+  </data>
+  <data name="TrainingNotOverTitle" xml:space="preserve">
+    <value>Тренування ще не завершене!</value>
+  </data>
+  <data name="TrainingStopWarn" xml:space="preserve">
+    <value>Після зупинки цього тренування нові дані не будуть збиратися, та вам потрібно буде почати нове тренування, щоб продовжити зараз</value>
+  </data>
+  <data name="TrainingTitle" xml:space="preserve">
+    <value>Тренування</value>
+  </data>
+  <data name="VideoRecordTitle" xml:space="preserve">
+    <value>Відео-запис</value>
   </data>
 </root>

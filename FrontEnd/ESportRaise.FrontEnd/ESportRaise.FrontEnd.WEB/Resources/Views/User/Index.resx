@@ -120,4 +120,40 @@
   <data name="AccountPageTitle" xml:space="preserve">
     <value>Account</value>
   </data>
+  <data name="CancelAction" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ChangeAction" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="ChannelBinded" xml:space="preserve">
+    <value>connected</value>
+  </data>
+  <data name="ChannelNotBinded" xml:space="preserve">
+    <value>not assigned</value>
+  </data>
+  <data name="EmailTitle" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="EnterChannelText" xml:space="preserve">
+    <value>Enter YouTube channel link</value>
+  </data>
+  <data name="GoToChannelAction" xml:space="preserve">
+    <value>Go to YouTube channel</value>
+  </data>
+  <data name="InvalidChannelUrl" xml:space="preserve">
+    <value>Invalid or outdated channel url!</value>
+  </data>
+  <data name="NoTeam" xml:space="preserve">
+    <value>Does not have any team yet!</value>
+  </data>
+  <data name="SetYouTubeTitle" xml:space="preserve">
+    <value>Set YouTube account</value>
+  </data>
+  <data name="TeamTitle" xml:space="preserve">
+    <value>Team</value>
+  </data>
+  <data name="YouTubeChannelTitle" xml:space="preserve">
+    <value>YouTube channel</value>
+  </data>
 </root>

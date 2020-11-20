@@ -132,6 +132,33 @@
   <data name="EmailOrUserName" xml:space="preserve">
     <value>Email or user name</value>
   </data>
+  <data name="ErrorDescr" xml:space="preserve">
+    <value>It looks like you've tried to access a deleted or restricted page.</value>
+  </data>
+  <data name="ErrorMistake" xml:space="preserve">
+    <value>If you're sure that this is an error, contact us.</value>
+  </data>
+  <data name="ErrorsInFields" xml:space="preserve">
+    <value>Make sure there is no errors in fields!</value>
+  </data>
+  <data name="InvalidEmail" xml:space="preserve">
+    <value>Invalid email!</value>
+  </data>
+  <data name="InvalidLoginPassword" xml:space="preserve">
+    <value>Invalid login and/or password!</value>
+  </data>
+  <data name="InvalidNameEmail" xml:space="preserve">
+    <value>Invalid user name or email!</value>
+  </data>
+  <data name="InvalidPassword" xml:space="preserve">
+    <value>Invalid password!</value>
+  </data>
+  <data name="InvalidPasswordReg" xml:space="preserve">
+    <value>Password must contain uppercase, lowercase, digits, a special symbol and be 6-20 characters long.</value>
+  </data>
+  <data name="InvalidUserName" xml:space="preserve">
+    <value>User name must contain 3-20 symbols of latin, numbers and '_'!</value>
+  </data>
   <data name="LoginAction" xml:space="preserve">
     <value>Login</value>
   </data>
@@ -149,6 +176,9 @@
   </data>
   <data name="RegisterModalTitle" xml:space="preserve">
     <value>Register</value>
+  </data>
+  <data name="UserAlreadyRegistered" xml:space="preserve">
+    <value>User is already registered!</value>
   </data>
   <data name="UserName" xml:space="preserve">
     <value>User name</value>

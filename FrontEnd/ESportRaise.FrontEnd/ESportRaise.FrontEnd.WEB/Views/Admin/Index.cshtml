@@ -6,32 +6,32 @@
 }
 
 <script>
-    const wrongBackupFile = "Enter valid backup name";
-    const backupNotFound = "Backup file doesn't exist";
-    const unableToMakeBackup = "Unable to make backup. Check whether backup name is valid path!";
+    const wrongBackupFile = "@Localizer["WrongBackupFile"]";
+    const backupNotFound = "@Localizer["BackupNotFound"]";
+    const unableToMakeBackup = "@Localizer["UnableMakeBackup"]";
 </script>
 
 <div class="container">
     <div class="row">
         <div id="backups" class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-            <h1 class="big-header">Backup database</h1>
+            <h1 class="big-header">@Localizer["BackupDbTitle"]</h1>
             <div>
-                <label>Backup file name</label>
+                <label>@Localizer["BackupFileNameText"]</label>
                 <input type="text" v-model="file" />
             </div>
             <div v-if="successMessageSeen">
-                Backup is successfully made!
+                @Localizer["BackupSuccess"]
             </div>
             <div v-if="errorMessage" class="text-danger">
                 {{ errorMessage }}
             </div>
-            <button class="btn btn-primary" v-on:click="make">Make backup</button>
-            <button class="btn btn-primary" v-on:click="download">Download backup</button>
+            <button class="btn btn-primary" v-on:click="make">@Localizer["BackupMakeAction"]</button>
+            <button class="btn btn-primary" v-on:click="download">@Localizer["BackupDownloadAction"]</button>
         </div>
         <div id="certExpiration" class="col-lg-6 col-md-6 col-sm-12 col-xs-12 mt-3">
             <div v-if="expiration">
-                <h1 class="big-header">Certificate</h1>
-                SSL certificate expires at
+                <h1 class="big-header">@Localizer["CertTitle"]</h1>
+                @Localizer["CertExpires"]
                 <b v-bind:class="{warning: (expiration - (new Date()) < 1000 * 60 * 60 * 24 * 365)}">
                     {{ formatDateTime(expiration) }}
                 </b>
@@ -41,14 +41,14 @@
 </div>
 
 <div id="configTable" class="container">
-    <h1 class="big-header">System configuration</h1>
+    <h1 class="big-header">@Localizer["SysConfig"]</h1>
     <table class="table table-hover">
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Property</th>
-                <th scope="col">New value</th>
-                <th scope="col">Current value</th>
+                <th scope="col">@Localizer["ConfigKey"]</th>
+                <th scope="col">@Localizer["ConfigVal"]</th>
+                <th scope="col">@Localizer["ConfigCurVal"]</th>
             </tr>
         </thead>
         <tbody>
@@ -60,7 +60,7 @@
             </tr>
         </tbody>
     </table>
-    <button class="btn btn-primary" v-on:click="saveChanges">Save changes</button>
+    <button class="btn btn-primary" v-on:click="saveChanges">@Localizer["ConfigSave"]</button>
 </div>
 
 @section Scripts {

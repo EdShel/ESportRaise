@@ -117,7 +117,55 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CopyAction" xml:space="preserve">
+    <value>Copy to the clipboard</value>
+  </data>
+  <data name="CriticalMomentsTitle" xml:space="preserve">
+    <value>Critical moments</value>
+  </data>
+  <data name="LinkText" xml:space="preserve">
+    <value>The link to the critical moment</value>
+  </data>
+  <data name="NoVideoText" xml:space="preserve">
+    <value>No video streams were captured</value>
+  </data>
   <data name="PageTitle" xml:space="preserve">
     <value>Training</value>
+  </data>
+  <data name="PhysStateTitle" xml:space="preserve">
+    <value>Physical state</value>
+  </data>
+  <data name="RecordOfText" xml:space="preserve">
+    <value>View record of</value>
+  </data>
+  <data name="RestartMomentAction" xml:space="preserve">
+    <value>Move to beginning</value>
+  </data>
+  <data name="SelectMemberText" xml:space="preserve">
+    <value>Select team member to view physical state</value>
+  </data>
+  <data name="ShareAction" xml:space="preserve">
+    <value>Share moment</value>
+  </data>
+  <data name="ShareModalTitle" xml:space="preserve">
+    <value>Share the moment</value>
+  </data>
+  <data name="StopTrainingAction" xml:space="preserve">
+    <value>Stop training</value>
+  </data>
+  <data name="TrainingNotOverInfo" xml:space="preserve">
+    <value>You can manually stop it to view processed data.</value>
+  </data>
+  <data name="TrainingNotOverTitle" xml:space="preserve">
+    <value>The training isn't over yet!</value>
+  </data>
+  <data name="TrainingStopWarn" xml:space="preserve">
+    <value>After stopping this training new data can't be collected and you'll need to start a new training.</value>
+  </data>
+  <data name="TrainingTitle" xml:space="preserve">
+    <value>Training</value>
+  </data>
+  <data name="VideoRecordTitle" xml:space="preserve">
+    <value>Video record</value>
   </data>
 </root>

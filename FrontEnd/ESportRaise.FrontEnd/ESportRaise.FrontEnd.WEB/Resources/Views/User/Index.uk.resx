@@ -117,73 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="30Days" xml:space="preserve">
-    <value>Last 30 days</value>
+  <data name="AccountPageTitle" xml:space="preserve">
+    <value>Профіль</value>
   </data>
-  <data name="7Days" xml:space="preserve">
-    <value>Last 7 days</value>
+  <data name="CancelAction" xml:space="preserve">
+    <value>Закрити</value>
   </data>
-  <data name="AddMemberAction" xml:space="preserve">
-    <value>Add member</value>
+  <data name="ChangeAction" xml:space="preserve">
+    <value>Змінити</value>
   </data>
-  <data name="AddMemberModalTitle" xml:space="preserve">
-    <value>Adding team member</value>
+  <data name="ChannelBinded" xml:space="preserve">
+    <value>під'єднаний</value>
   </data>
-  <data name="ConfirmMemberRemovalBegin" xml:space="preserve">
-    <value>Do you really want to remove </value>
+  <data name="ChannelNotBinded" xml:space="preserve">
+    <value>не під'єднаний</value>
   </data>
-  <data name="ConfirmMemberRemovalEnd" xml:space="preserve">
-    <value>?</value>
+  <data name="EmailTitle" xml:space="preserve">
+    <value>Пошта</value>
   </data>
-  <data name="CreateTeamAction" xml:space="preserve">
-    <value>Create new team</value>
+  <data name="EnterChannelText" xml:space="preserve">
+    <value>Введіть посилання на канал на YouTube</value>
   </data>
-  <data name="Date" xml:space="preserve">
-    <value>Date</value>
+  <data name="GoToChannelAction" xml:space="preserve">
+    <value>Перейти на YouTube канал</value>
   </data>
-  <data name="ModalAdd" xml:space="preserve">
-    <value>Add</value>
+  <data name="InvalidChannelUrl" xml:space="preserve">
+    <value>Неправильне або застаріле посилання на канал!</value>
   </data>
-  <data name="ModalClose" xml:space="preserve">
-    <value>Close</value>
+  <data name="NoTeam" xml:space="preserve">
+    <value>Немає команди!</value>
   </data>
-  <data name="NameEmailText" xml:space="preserve">
-    <value>User name or email</value>
+  <data name="SetYouTubeTitle" xml:space="preserve">
+    <value>Прив'язати YouTube профіль</value>
   </data>
-  <data name="NoTeamTitle" xml:space="preserve">
-    <value>Don't you have a team?</value>
+  <data name="TeamTitle" xml:space="preserve">
+    <value>Команда</value>
   </data>
-  <data name="NoTeamTitle2" xml:space="preserve">
-    <value>Create one!</value>
-  </data>
-  <data name="NoTrainings" xml:space="preserve">
-    <value>No trainings found</value>
-  </data>
-  <data name="PageTitle" xml:space="preserve">
-    <value>Team</value>
-  </data>
-  <data name="SelectDateText" xml:space="preserve">
-    <value>Select date</value>
-  </data>
-  <data name="SelectPeriod" xml:space="preserve">
-    <value>Select period of time</value>
-  </data>
-  <data name="SwitchEdit" xml:space="preserve">
-    <value>Switch edit mode</value>
-  </data>
-  <data name="TeamNameRule" xml:space="preserve">
-    <value>Team name must contain 4-30 symbols and may consist of uppercase, lowercase characters, digits and @@ or _ signs.</value>
-  </data>
-  <data name="TeamNameText" xml:space="preserve">
-    <value>Input new team name:</value>
-  </data>
-  <data name="TrainingsTitle" xml:space="preserve">
-    <value>Trainings</value>
-  </data>
-  <data name="UserAlreadyInTeam" xml:space="preserve">
-    <value>User already belongs to a team!</value>
-  </data>
-  <data name="UserNotFound" xml:space="preserve">
-    <value>User does not exist!</value>
+  <data name="YouTubeChannelTitle" xml:space="preserve">
+    <value>YouTube канал</value>
   </data>
 </root>

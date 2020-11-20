@@ -3,6 +3,8 @@
     ViewData["Title"] = "Error";
 }
 
+@inject IHtmlLocalizer<SharedView> SharedLocalizer
+
 <div class="container">
     <h1 class="text-danger">
         @Model
@@ -15,9 +17,9 @@
         }
     </h1>
     <h2 class="text-danger">
-        It looks like you've tried to access a deleted or restricted page.
+        @SharedLocalizer["ErrorDescr"]
     </h2>
     <h3>
-        If you're sure that this is an error, contact us.
+        @SharedLocalizer["ErrorMistake"]
     </h3>
 </div>
