@@ -69,7 +69,6 @@
                 </div>
                 <state-displayer v-bind:training-id="trainingId"
                                  v-bind:users-list="teamMembers">
-                    <p>;)</p>
                 </state-displayer>
             </div>
         </div>
@@ -78,28 +77,18 @@
                closeText="@SharedLocalizer["CloseAction"]"
                okText="Copy to the clipboard" v-on:ok='copyShareUrlToClipboard'>
             <div>
-                <ShareNetwork network="telegram"
-                              :url="criticalMomentShareLink"
-                              title="Shit"
-                              description="Yo Yo Yo, 1483 to the 3 to the 6 to the 9. Representing the ABQ. What up BIATCH! Leave at the tone."
-                              quote="Hare"
-                              hashtags="nu vse">
-                    Share on Telegram
-                </ShareNetwork>
-
                 <label for="momentUrl">The link to the critical moment</label>
                 <input id="momentUrl" type="text" readonly
                        v-bind:value="criticalMomentShareLink" />
             </div>
         </modal>
     </div>
-</div>
+</div> 
 
 @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="~/js/chartLocales/uk.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-social-sharing@3.0.3/dist/vue-social-sharing.min.js"></script>
-    <script src="~/js/components/statePlot.js"></script>
     <script src="~/js/components/stateDisplayer.js"></script>
     <script src="~/js/training.js"></script>
 }

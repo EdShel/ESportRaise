@@ -2,10 +2,13 @@
     props: ["trainingId", "usersList"],
     data: function () {
         return {
-            chartIsVisible: false,
             records: [],
-            memberIndex: 0
+            memberIndex: 0,
+            _chart: null
         }
+    },
+    mounted() {
+        this.updateChart();
     },
     computed: {
         member: {
@@ -20,9 +23,98 @@
                     }
                 }
             }
+        },
+        heartrateAsCartesianPoints() {
+            if (!this.records) {
+                return [];
+            }
+
+            let points = [];
+            for (let state of this.records) {
+                points.push({
+                    x: new Date(state.createTime),
+                    y: state.heartRate
+                });
+            }
+            return points;
+        },
+        temperatureAsCartesianPoints() {
+            if (!this.records) {
+                return [];
+            }
+
+            let points = [];
+            for (let state of this.records) {
+                points.push({
+                    x: new Date(state.createTime),
+                    y: state.temperature
+                });
+            }
+            console.log(points);
+            return points;
+        },
+        chartData() {
+            return {
+                datasets: [
+                    {
+                        label: 'HR',
+                        fill: false,
+                        backgroundColor: 'dc3545',
+                        borderColor: '#dc3545',
+                        data: this.heartrateAsCartesianPoints,
+                        yAxisID: 'hrAxis'
+                    },
+                    {
+                        label: 'T',
+                        backgroundColor: '#ffc107',
+                        borderColor: '#ffc107',
+                        data: this.temperatureAsCartesianPoints,
+                        yAxisID: 'tAxis'
+                    }]
+            }
+        },
+        chartOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            format: "hh:mm:ss",
+                            tooltipFormat: 'LTS'
+                        },
+                        position: 'bottom',
+                    }],
+                    yAxes: [
+                        {
+                            id: 'tAxis',
+                            type: 'linear',
+                            position: 'right'
+                        },
+                        {
+                            id: 'hrAxis',
+                            type: 'linear',
+                            position: 'left'
+                        }
+                    ]
+                }
+            }
         }
     },
     methods: {
+        getChart() {
+            if (this._chart) {
+                return this._chart;
+            }
+            let chartCanvas = document.getElementById("stateChart");
+            this._chart = new Chart(chartCanvas.getContext('2d'), {
+                type: 'line',
+                data: this.chartData,
+                options: this.chartOptions
+            });
+            return this._chart;
+        },
         updateChart() {
             sendGet('stateRecord', {
                 trainingId: this.trainingId,
@@ -30,7 +122,8 @@
             }).then(r => {
                 let data = r.data;
                 this.records = data.records;
-                this.$refs.plot.update();
+                this.getChart().data = this.chartData;
+                this.getChart().update();
             }).catch(e => {
 
             });
@@ -46,8 +139,9 @@
             </option>
         </select>
     </div>
-    <button v-on:click="chartIsVisible = !chartIsVisible">Show</button>
-    <stateplot ref="plot" v-if="chartIsVisible" v-bind:stateRecords="records"></stateplot>
+    <div>
+        <canvas id="stateChart"></canvas>
+    </div>
 </div>
 `
 })
