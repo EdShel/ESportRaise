@@ -15,16 +15,6 @@ let auth = new Vue({
         }
     },
     computed: {
-        isAuthorized() {
-            let authToken = localStorage.getItem("token");
-            return authToken !== null;
-        },
-        isAdmin() {
-            let authToken = localStorage.getItem("token");
-            let tokenPayload = parseJwt(authToken);
-            const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-            return tokenPayload[roleClaim] === "Admin";
-        },
         user() {
             return {
                 email: localStorage.getItem("email"),
@@ -32,6 +22,21 @@ let auth = new Vue({
                 token: localStorage.getItem("token"),
                 refreshToken: localStorage.getItem("refreshToken")
             }
+        },
+        isAuthorized() {
+            let authToken = this.user.token;
+            return authToken !== null;
+        },
+        isAdmin() {
+            let authToken = this.user.token;
+            let tokenPayload = parseJwt(authToken);
+            const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+            return tokenPayload[roleClaim] === "Admin";
+        },
+        id() {
+            let authToken = this.user.token;
+            let tokenPayload = parseJwt(authToken);
+            return tokenPayload.id;
         }
     },
     methods: {

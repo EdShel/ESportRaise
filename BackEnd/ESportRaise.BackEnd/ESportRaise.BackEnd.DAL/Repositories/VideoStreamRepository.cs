@@ -13,17 +13,19 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         public async Task<IEnumerable<VideoStream>> GetForTrainingAsync(int trainingId)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT * FROM VideoStream WHERE TrainingId = @id";
-            selectCommand.Parameters.AddWithValue("@id", trainingId);
-            using(var r = await selectCommand.ExecuteReaderAsync())
+            using (var selectCommand = db.CreateCommand())
             {
-                var streams = new List<VideoStream>();
-                while(await r.ReadAsync())
+                selectCommand.CommandText = "SELECT * FROM VideoStream WHERE TrainingId = @id";
+                selectCommand.Parameters.AddWithValue("@id", trainingId);
+                using (var r = await selectCommand.ExecuteReaderAsync())
                 {
-                    streams.Add(MapFromReader(r));
+                    var streams = new List<VideoStream>();
+                    while (await r.ReadAsync())
+                    {
+                        streams.Add(MapFromReader(r));
+                    }
+                    return streams;
                 }
-                return streams;
             }
         }
 

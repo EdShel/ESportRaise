@@ -26,66 +26,62 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         public async Task<AppUser> GetUserOrDefaultByUserNameAsync(string userName)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT * FROM AppUser WHERE UserName = @userName";
-            selectCommand.Parameters.AddWithValue("@userName", userName);
-
-            SqlDataReader reader = null;
-            try
+            using (var selectCommand = db.CreateCommand())
             {
-                reader = await selectCommand.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
+                selectCommand.CommandText = "SELECT * FROM AppUser WHERE UserName = @userName";
+                selectCommand.Parameters.AddWithValue("@userName", userName);
+
+                using (var reader = await selectCommand.ExecuteReaderAsync())
                 {
-                    return MapFromReader(reader);
+                    if (await reader.ReadAsync())
+                    {
+                        return MapFromReader(reader);
+                    }
+                    return null;
                 }
             }
-            finally
-            {
-                reader.Close();
-            }
-            return null;
         }
 
         public async Task<AppUser> GetUserOrDefaultByEmailOrUserNameAsync(string emailOrUserName)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT * FROM AppUser WHERE Email = @emailOrUserName OR UserName = @emailOrUserName";
-            selectCommand.Parameters.AddWithValue("@emailOrUserName", emailOrUserName);
-
-            SqlDataReader reader = null;
-            try
+            using (var selectCommand = db.CreateCommand())
             {
-                reader = await selectCommand.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
+                selectCommand.CommandText = "SELECT * FROM AppUser WHERE Email = @emailOrUserName OR UserName = @emailOrUserName";
+                selectCommand.Parameters.AddWithValue("@emailOrUserName", emailOrUserName);
+
+                using (var reader = await selectCommand.ExecuteReaderAsync())
                 {
-                    return MapFromReader(reader);
+                    if (await reader.ReadAsync())
+                    {
+                        return MapFromReader(reader);
+                    }
+                    return null;
                 }
             }
-            finally
-            {
-                reader.Close();
-            }
-            return null;
         }
 
         public async Task<bool> IsAnyUserWithEmailAsync(string email)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT 1 FROM AppUser WHERE Email = @email";
-            selectCommand.Parameters.AddWithValue("@email", email);
-            var existsResult = await selectCommand.ExecuteScalarAsync();
+            using (var selectCommand = db.CreateCommand())
+            {
+                selectCommand.CommandText = "SELECT 1 FROM AppUser WHERE Email = @email";
+                selectCommand.Parameters.AddWithValue("@email", email);
+                var existsResult = await selectCommand.ExecuteScalarAsync();
 
-            return 1.Equals(existsResult);
+                return 1.Equals(existsResult);
+            }
         }
 
         public async Task<bool> IsAnyUserWithUserNameAsync(string userName)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT 1 FROM AppUser WHERE Email = @userName";
-            selectCommand.Parameters.AddWithValue("@userName", userName);
-            var existsResult = await selectCommand.ExecuteScalarAsync();
+            using (var selectCommand = db.CreateCommand())
+            {
+                selectCommand.CommandText = "SELECT 1 FROM AppUser WHERE Email = @userName";
+                selectCommand.Parameters.AddWithValue("@userName", userName);
+                var existsResult = await selectCommand.ExecuteScalarAsync();
 
-            return 1.Equals(existsResult);
+                return 1.Equals(existsResult);
+            }
         }
 
         public bool IsUserPasswordCorrect(AppUser user, string password)
@@ -96,75 +92,87 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         public async Task CreateRefreshTokenAsync(AppUser user, string refreshToken)
         {
             var tokenExpirationDate = DateTime.UtcNow.AddDays(7);
-            var insertCommand = db.CreateCommand();
-            insertCommand.CommandText =
-                "INSERT INTO RefreshToken(UserId, Token, ExpirationDate) " +
-                "VALUES(@userId, @token, @expirationDate)";
-            insertCommand.Parameters.AddWithValue("@userId", user.Id);
-            insertCommand.Parameters.AddWithValue("@token", refreshToken);
-            insertCommand.Parameters.AddWithValue("@expirationDate", tokenExpirationDate);
-            await insertCommand.ExecuteNonQueryAsync();
+            using (var insertCommand = db.CreateCommand())
+            {
+                insertCommand.CommandText =
+                    "INSERT INTO RefreshToken(UserId, Token, ExpirationDate) " +
+                    "VALUES(@userId, @token, @expirationDate)";
+                insertCommand.Parameters.AddWithValue("@userId", user.Id);
+                insertCommand.Parameters.AddWithValue("@token", refreshToken);
+                insertCommand.Parameters.AddWithValue("@expirationDate", tokenExpirationDate);
+                await insertCommand.ExecuteNonQueryAsync();
+            }
         }
 
         public async Task<bool> HasRefreshTokenAsync(AppUser user, string refreshToken)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT 1 FROM RefreshToken WHERE UserId = @userId AND Token = @token";
-            selectCommand.Parameters.AddWithValue("@userId", user.Id);
-            selectCommand.Parameters.AddWithValue("@token", refreshToken);
-            var searchResult = await selectCommand.ExecuteScalarAsync();
+            using (var selectCommand = db.CreateCommand())
+            {
+                selectCommand.CommandText = "SELECT 1 FROM RefreshToken WHERE UserId = @userId AND Token = @token";
+                selectCommand.Parameters.AddWithValue("@userId", user.Id);
+                selectCommand.Parameters.AddWithValue("@token", refreshToken);
+                var searchResult = await selectCommand.ExecuteScalarAsync();
 
-            return 1.Equals(searchResult);
+                return 1.Equals(searchResult);
+            }
         }
 
         public async Task DeleteRefreshTokenAsync(AppUser user, string refreshToken)
         {
-            var deleteCommand = db.CreateCommand();
-            deleteCommand.CommandText = "DELETE FROM RefreshToken WHERE UserId = @userId AND Token = @token";
-            deleteCommand.Parameters.AddWithValue("@userId", user.Id);
-            deleteCommand.Parameters.AddWithValue("@token", refreshToken);
-            await deleteCommand.ExecuteNonQueryAsync();
+            using (var deleteCommand = db.CreateCommand())
+            {
+                deleteCommand.CommandText = "DELETE FROM RefreshToken WHERE UserId = @userId AND Token = @token";
+                deleteCommand.Parameters.AddWithValue("@userId", user.Id);
+                deleteCommand.Parameters.AddWithValue("@token", refreshToken);
+                await deleteCommand.ExecuteNonQueryAsync();
+            }
         }
 
         public async Task<int> GetRegisteredAdminsCount()
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT COUNT(*) FROM AppUser WHERE UserRole = 'Admin'";
-            return (int)await selectCommand.ExecuteScalarAsync();
+            using (var selectCommand = db.CreateCommand())
+            {
+                selectCommand.CommandText = "SELECT COUNT(*) FROM AppUser WHERE UserRole = 'Admin'";
+                return (int)await selectCommand.ExecuteScalarAsync();
+            }
         }
 
         public async Task<IEnumerable<AppUserInfo>> GetUsersByNamePaginatedAsync(int pageIndex, int pageSize, string name)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT * FROM GetUsersByNamePaginated(@pageIndex, @pageSize, @name)";
-            selectCommand.Parameters.AddWithValue("@pageIndex", pageIndex);
-            selectCommand.Parameters.AddWithValue("@pageSize", pageSize);
-            selectCommand.Parameters.AddWithValue("@name", name ?? string.Empty);
-            using(var r = await selectCommand.ExecuteReaderAsync())
+            using (var selectCommand = db.CreateCommand())
             {
-                IList<AppUserInfo> users = new List<AppUserInfo>();
-                while(await r.ReadAsync())
+                selectCommand.CommandText = "SELECT * FROM GetUsersByNamePaginated(@pageIndex, @pageSize, @name)";
+                selectCommand.Parameters.AddWithValue("@pageIndex", pageIndex);
+                selectCommand.Parameters.AddWithValue("@pageSize", pageSize);
+                selectCommand.Parameters.AddWithValue("@name", name ?? string.Empty);
+                using (var r = await selectCommand.ExecuteReaderAsync())
                 {
-                    users.Add(new AppUserInfo
+                    IList<AppUserInfo> users = new List<AppUserInfo>();
+                    while (await r.ReadAsync())
                     {
-                        Id = r.GetInt32(0),
-                        UserName = r.GetString(1),
-                        Email = r.GetString(2),
-                        UserRole = r.GetString(3),
-                        TeamId = r.IsDBNull(4) ? -1 : r.GetInt32(4),
-                        TeamName = r.IsDBNull(5) ? null : r.GetString(5)
-                    });
+                        users.Add(new AppUserInfo
+                        {
+                            Id = r.GetInt32(0),
+                            UserName = r.GetString(1),
+                            Email = r.GetString(2),
+                            UserRole = r.GetString(3),
+                            TeamId = r.IsDBNull(4) ? -1 : r.GetInt32(4),
+                            TeamName = r.IsDBNull(5) ? null : r.GetString(5)
+                        });
+                    }
+                    return users;
                 }
-                return users;
             }
         }
 
         public async Task<int> GetUsersByNameCountAsync(string name)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = "SELECT dbo.GetUsersByNameCount(@name)";
-            selectCommand.Parameters.AddWithValue("@name", name ?? string.Empty);
-            return (int)await selectCommand.ExecuteScalarAsync();
+            using (var selectCommand = db.CreateCommand())
+            {
+                selectCommand.CommandText = "SELECT dbo.GetUsersByNameCount(@name)";
+                selectCommand.Parameters.AddWithValue("@name", name ?? string.Empty);
+                return (int)await selectCommand.ExecuteScalarAsync();
+            }
         }
 
         #region Default mapping

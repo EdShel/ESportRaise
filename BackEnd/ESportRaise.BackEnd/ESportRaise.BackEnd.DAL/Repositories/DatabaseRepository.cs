@@ -16,10 +16,12 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         public async Task MakeBackupAsync(string backupFile)
         {
-            var backupCommand = db.CreateCommand();
-            backupCommand.CommandText = $"BACKUP DATABASE {db.Database} TO DISK = @file";
-            backupCommand.Parameters.AddWithValue("@file", backupFile);
-            await backupCommand.ExecuteNonQueryAsync();
+            using (var backupCommand = db.CreateCommand())
+            {
+                backupCommand.CommandText = $"BACKUP DATABASE {db.Database} TO DISK = @file";
+                backupCommand.Parameters.AddWithValue("@file", backupFile);
+                await backupCommand.ExecuteNonQueryAsync();
+            }
         } 
 
         #region IDisposable Support

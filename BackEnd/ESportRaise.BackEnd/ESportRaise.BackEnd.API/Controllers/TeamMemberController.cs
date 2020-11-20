@@ -1,4 +1,5 @@
 ﻿using ESportRaise.BackEnd.API.Models.TeamMember;
+using ESportRaise.BackEnd.BLL.Constants;
 using ESportRaise.BackEnd.BLL.DTOs.TeamMember;
 using ESportRaise.BackEnd.BLL.Exceptions;
 using ESportRaise.BackEnd.BLL.Interfaces;
@@ -25,13 +26,26 @@ namespace ESportRaise.BackEnd.API.Controllers
         [HttpPut("youTube")]
         public async Task<IActionResult> ChangeYouTubeAccount([FromBody] EditYouTubeIdRequest request)
         {
-            int userId = User.GetUserId();
-            if (memberService.GetTeamMemberOrNullAsync(userId) == null)
+            int currentUserId = User.GetUserId();
+            if (currentUserId != request.TeamMemberId && !User.IsInRole(AuthConstants.ADMIN_ROLE))
             {
-                throw new BadRequestException("You need to belong to a team first!");
+                throw new ForbiddenException("Can't edit this user data!");
             }
-            string channelId = await youTubeService.GetUserIdAsync(request.ChannelUrl);
-            await memberService.ChangeYouTubeChannelIdAsync(userId, channelId);
+
+            if (memberService.GetTeamMemberOrNullAsync(currentUserId) == null)
+            {
+                throw new BadRequestException("The user need to belong to a team first!");
+            }
+            string channelId;
+            if (string.IsNullOrWhiteSpace(request.ChannelUrl))
+            {
+                channelId = null;
+            }
+            else
+            {
+                channelId = await youTubeService.GetUserIdAsync(request.ChannelUrl);
+            }
+            await memberService.ChangeYouTubeChannelIdAsync(request.TeamMemberId, channelId);
 
             return Ok();
         }

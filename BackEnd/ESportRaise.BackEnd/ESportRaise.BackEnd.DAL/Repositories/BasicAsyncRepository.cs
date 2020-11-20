@@ -45,61 +45,69 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         public async virtual Task DeleteAsync(int id)
         {
-            var deleteCommand = db.CreateCommand();
-            deleteCommand.CommandText = $"DELETE FROM {tableName} WHERE Id = @id";
-            deleteCommand.Parameters.AddWithValue("@id", id);
-            await deleteCommand.ExecuteNonQueryAsync();
+            using (var deleteCommand = db.CreateCommand())
+            {
+                deleteCommand.CommandText = $"DELETE FROM {tableName} WHERE Id = @id";
+                deleteCommand.Parameters.AddWithValue("@id", id);
+                await deleteCommand.ExecuteNonQueryAsync();
+            }
         }
 
         public async virtual Task<T> GetAsync(int id)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = $"SELECT * FROM {tableName} WHERE Id = @id";
-            selectCommand.Parameters.AddWithValue("@id", id);
-            using (var reader = await selectCommand.ExecuteReaderAsync())
+            using (var selectCommand = db.CreateCommand())
             {
-                if (await reader.ReadAsync())
+                selectCommand.CommandText = $"SELECT * FROM {tableName} WHERE Id = @id";
+                selectCommand.Parameters.AddWithValue("@id", id);
+                using (var reader = await selectCommand.ExecuteReaderAsync())
                 {
-                    return MapFromReader(reader);
+                    if (await reader.ReadAsync())
+                    {
+                        return MapFromReader(reader);
+                    }
+                    return null;
                 }
-                return null;
             }
         }
 
         public async virtual Task<IEnumerable<T>> GetAllAsync()
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = $"SELECT * FROM {tableName}";
-            using (var reader = await selectCommand.ExecuteReaderAsync())
+            using (var selectCommand = db.CreateCommand())
             {
-                var items = new List<T>();
-                while (await reader.ReadAsync())
+                selectCommand.CommandText = $"SELECT * FROM {tableName}";
+                using (var reader = await selectCommand.ExecuteReaderAsync())
                 {
-                    items.Add(MapFromReader(reader));
+                    var items = new List<T>();
+                    while (await reader.ReadAsync())
+                    {
+                        items.Add(MapFromReader(reader));
+                    }
+                    return items;
                 }
-                return items;
             }
         }
 
         public async virtual Task<int> CreateAsync(T item)
         {
             var values = ExtractInsertValues(item);
-            var insertCommand = db.CreateCommand();
-            insertCommand.CommandText = GenerateInsertCommandOfValues(values);
+            using (var insertCommand = db.CreateCommand())
+            {
+                insertCommand.CommandText = GenerateInsertCommandOfValues(values);
 
-            for (int i = 0; i < values.Length; i++)
-            {
-                insertCommand.Parameters.AddWithValue($"@{i}", values[i] ?? DBNull.Value);
-            }
+                for (int i = 0; i < values.Length; i++)
+                {
+                    insertCommand.Parameters.AddWithValue($"@{i}", values[i] ?? DBNull.Value);
+                }
 
-            if (HasIdentityId)
-            {
-                return (int)await insertCommand.ExecuteScalarAsync();
-            }
-            else
-            {
-                await insertCommand.ExecuteNonQueryAsync();
-                return default;
+                if (HasIdentityId)
+                {
+                    return (int)await insertCommand.ExecuteScalarAsync();
+                }
+                else
+                {
+                    await insertCommand.ExecuteNonQueryAsync();
+                    return default;
+                }
             }
         }
 
@@ -126,17 +134,19 @@ namespace ESportRaise.BackEnd.DAL.Repositories
         public async virtual Task UpdateAsync(T item)
         {
             var fieldsAndValues = ExtractUpdateProperties(item);
-            var updateCommand = db.CreateCommand();
-            updateCommand.CommandText = GenerateUpdateCommandOfPropertiesAndValues(fieldsAndValues);
-
-            for (int i = 0; i < fieldsAndValues.Length; i++)
+            using (var updateCommand = db.CreateCommand())
             {
-                updateCommand.Parameters.AddWithValue($"@{i}", fieldsAndValues[i].PropertyValue ?? DBNull.Value);
+                updateCommand.CommandText = GenerateUpdateCommandOfPropertiesAndValues(fieldsAndValues);
+
+                for (int i = 0; i < fieldsAndValues.Length; i++)
+                {
+                    updateCommand.Parameters.AddWithValue($"@{i}", fieldsAndValues[i].PropertyValue ?? DBNull.Value);
+                }
+
+                updateCommand.Parameters.AddWithValue($"@id", GetPrimaryKeyValue(item));
+
+                await updateCommand.ExecuteNonQueryAsync();
             }
-
-            updateCommand.Parameters.AddWithValue($"@id", GetPrimaryKeyValue(item));
-
-            await updateCommand.ExecuteNonQueryAsync();
         }
 
         private string GenerateUpdateCommandOfPropertiesAndValues(TablePropertyValuePair[] propertiesAndValues)

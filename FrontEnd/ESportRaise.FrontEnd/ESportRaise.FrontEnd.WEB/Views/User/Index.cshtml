@@ -22,7 +22,7 @@
         </div>
         <template v-if="team.exists">
             <div>
-                <b>Team name:</b>
+                <b>Team:</b>
                 <a v-bind:href="'/team?id=' + team.id">{{ team.name }}</a>
             </div>
             <div>
@@ -35,7 +35,10 @@
                 <span v-else>
                     not assigned
                 </span>
-                <button v-on:click="$refs.changeYouTubeIdModal.openModal">Edit</button>
+                <template v-if="editYT.canEdit">
+                    <button v-on:click="$refs.changeYouTubeIdModal.openModal">Edit</button>
+                    <button v-on:click="discardYouTubeId">Unbind</button>
+                </template>
             </div>
         </template>
         <template v-else>

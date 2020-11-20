@@ -3,6 +3,7 @@ using ESportRaise.BackEnd.BLL.Exceptions;
 using ESportRaise.BackEnd.BLL.Interfaces;
 using ESportRaise.BackEnd.DAL.Entities;
 using ESportRaise.BackEnd.DAL.Repositories;
+using System;
 using System.Threading.Tasks;
 
 namespace ESportRaise.BackEnd.BLL.Services
@@ -46,9 +47,17 @@ namespace ESportRaise.BackEnd.BLL.Services
 
         public async Task ChangeYouTubeChannelIdAsync(int userId, string channelId)
         {
-            TeamMember member = await teamMembers.GetAsync(userId);
-            member.YouTubeId = string.IsNullOrEmpty(channelId) ? null : channelId;
-            await teamMembers.UpdateAsync(member);
+            try
+            {
+                TeamMember member = await teamMembers.GetAsync(userId);
+                member.YouTubeId = string.IsNullOrEmpty(channelId) ? null : channelId;
+                await teamMembers.UpdateAsync(member);
+
+            }
+            catch (Exception ex)
+            {
+                throw new System.Exception($"{ex.Message} \r\n\r\n {ex.StackTrace}");
+            }
         }
     }
 }

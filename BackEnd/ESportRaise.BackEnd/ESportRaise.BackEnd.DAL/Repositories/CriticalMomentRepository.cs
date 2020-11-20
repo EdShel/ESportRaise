@@ -15,67 +15,75 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         public async Task<bool> IsCachedForTrainingAsync(int trainingId)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = 
-                "SELECT HasCachedMoments FROM CriticalMomentsCache WHERE TrainingId = @id";
-            selectCommand.Parameters.AddWithValue("@id", trainingId);
-            var obj = await selectCommand.ExecuteScalarAsync();
-            return Convert.ToBoolean(obj);
+            using (var selectCommand = db.CreateCommand())
+            {
+                selectCommand.CommandText =
+                    "SELECT HasCachedMoments FROM CriticalMomentsCache WHERE TrainingId = @id";
+                selectCommand.Parameters.AddWithValue("@id", trainingId);
+                var obj = await selectCommand.ExecuteScalarAsync();
+                return Convert.ToBoolean(obj);
+            }
         }
 
         public async Task SetCachedForTrainingAsync(int trainingId)
         {
-            var insertCommand = db.CreateCommand();
-            insertCommand.CommandText =
-                "INSERT INTO CriticalMomentsCache(TrainingId) VALUES(@trainingId)";
-            insertCommand.Parameters.AddWithValue("@trainingId", trainingId);
-            await insertCommand.ExecuteNonQueryAsync();
+            using (var insertCommand = db.CreateCommand())
+            {
+                insertCommand.CommandText =
+                    "INSERT INTO CriticalMomentsCache(TrainingId) VALUES(@trainingId)";
+                insertCommand.Parameters.AddWithValue("@trainingId", trainingId);
+                await insertCommand.ExecuteNonQueryAsync();
+            }
         }
 
         public async Task<IEnumerable<CriticalMoment>> GetForTrainingAsync(int trainingId)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = $"SELECT * FROM {nameof(CriticalMoment)} WHERE TrainingId = @trainingId";
-            selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
-            using(var r = await selectCommand.ExecuteReaderAsync())
+            using (var selectCommand = db.CreateCommand())
             {
-                var moments = new List<CriticalMoment>();
-                while(await r.ReadAsync())
+                selectCommand.CommandText = $"SELECT * FROM {nameof(CriticalMoment)} WHERE TrainingId = @trainingId";
+                selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
+                using (var r = await selectCommand.ExecuteReaderAsync())
                 {
-                    moments.Add(MapFromReader(r));
+                    var moments = new List<CriticalMoment>();
+                    while (await r.ReadAsync())
+                    {
+                        moments.Add(MapFromReader(r));
+                    }
+                    return moments;
                 }
-                return moments;
             }
         }
 
         public async Task CreateManyAsync(IEnumerable<CriticalMoment> moments)
         {
             string insertSql = $"INSERT INTO {nameof(CriticalMoment)} VALUES(@trainingId, @beginTime, @endTime)";
-            var insertCommand = db.CreateCommand();
-            insertCommand.CommandText = insertSql;
-            insertCommand.Parameters.Add("@trainingId", SqlDbType.Int);
-            insertCommand.Parameters.Add("@beginTime", SqlDbType.DateTime);
-            insertCommand.Parameters.Add("@endTime", SqlDbType.DateTime);
-            using(var transaction = db.BeginTransaction())
+            using (var insertCommand = db.CreateCommand())
             {
-                insertCommand.Transaction = transaction;
-                try
+                insertCommand.CommandText = insertSql;
+                insertCommand.Parameters.Add("@trainingId", SqlDbType.Int);
+                insertCommand.Parameters.Add("@beginTime", SqlDbType.DateTime);
+                insertCommand.Parameters.Add("@endTime", SqlDbType.DateTime);
+                using (var transaction = db.BeginTransaction())
                 {
-                    foreach (var moment in moments)
+                    insertCommand.Transaction = transaction;
+                    try
                     {
-                        insertCommand.Parameters["@trainingId"].Value = moment.TrainingId;
-                        insertCommand.Parameters["@beginTime"].Value = moment.BeginTime;
-                        insertCommand.Parameters["@endTime"].Value = moment.EndTime;
+                        foreach (var moment in moments)
+                        {
+                            insertCommand.Parameters["@trainingId"].Value = moment.TrainingId;
+                            insertCommand.Parameters["@beginTime"].Value = moment.BeginTime;
+                            insertCommand.Parameters["@endTime"].Value = moment.EndTime;
 
-                        await insertCommand.ExecuteNonQueryAsync();
+                            await insertCommand.ExecuteNonQueryAsync();
+                        }
                     }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                    transaction.Commit();
                 }
-                catch
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-                transaction.Commit();
             }
         }
 

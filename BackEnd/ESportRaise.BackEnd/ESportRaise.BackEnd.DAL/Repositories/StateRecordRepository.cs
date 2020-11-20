@@ -15,15 +15,17 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         public async override Task<int> CreateAsync(StateRecord stateRecord)
         {
-            var saveCommand = db.CreateCommand();
-            saveCommand.CommandText =
-                "EXEC SaveStateRecord @teamMember, @trainingId, @heartRate, @temperature";
-            saveCommand.Parameters.AddWithValue("@teamMember", stateRecord.TeamMemberId);
-            saveCommand.Parameters.AddWithValue("@trainingId", stateRecord.TrainingId);
-            saveCommand.Parameters.AddWithValue("@heartRate", stateRecord.HeartRate);
-            saveCommand.Parameters.AddWithValue("@temperature", stateRecord.Temperature);
-            await saveCommand.ExecuteNonQueryAsync();
-            return default;
+            using (var saveCommand = db.CreateCommand())
+            {
+                saveCommand.CommandText =
+                    "EXEC SaveStateRecord @teamMember, @trainingId, @heartRate, @temperature";
+                saveCommand.Parameters.AddWithValue("@teamMember", stateRecord.TeamMemberId);
+                saveCommand.Parameters.AddWithValue("@trainingId", stateRecord.TrainingId);
+                saveCommand.Parameters.AddWithValue("@heartRate", stateRecord.HeartRate);
+                saveCommand.Parameters.AddWithValue("@temperature", stateRecord.Temperature);
+                await saveCommand.ExecuteNonQueryAsync();
+                return default;
+            }
         }
 
         public async Task<IEnumerable<StateRecord>> GetForTrainingAndUserMostRecentAsync(
@@ -31,22 +33,24 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             int seconds,
             int userId)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText =
-                "SELECT * FROM StateRecord WHERE TrainingId = @trainingId AND " +
-                "TeamMemberId = @userId AND DATEDIFF(SECOND, CreateTime, GETDATE()) < @secs " +
-                "ORDER BY CreateTime DESC";
-            selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
-            selectCommand.Parameters.AddWithValue("@userId", userId);
-            selectCommand.Parameters.AddWithValue("@secs", seconds);
-            using (var r = await selectCommand.ExecuteReaderAsync())
+            using (var selectCommand = db.CreateCommand())
             {
-                var states = new List<StateRecord>();
-                while (await r.ReadAsync())
+                selectCommand.CommandText =
+                    "SELECT * FROM StateRecord WHERE TrainingId = @trainingId AND " +
+                    "TeamMemberId = @userId AND DATEDIFF(SECOND, CreateTime, GETDATE()) < @secs " +
+                    "ORDER BY CreateTime DESC";
+                selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
+                selectCommand.Parameters.AddWithValue("@userId", userId);
+                selectCommand.Parameters.AddWithValue("@secs", seconds);
+                using (var r = await selectCommand.ExecuteReaderAsync())
                 {
-                    states.Add(MapFromReader(r));
+                    var states = new List<StateRecord>();
+                    while (await r.ReadAsync())
+                    {
+                        states.Add(MapFromReader(r));
+                    }
+                    return states;
                 }
-                return states;
             }
         }
 
@@ -54,57 +58,63 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             int trainingId,
             int seconds)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText =
-                "SELECT * FROM StateRecord WHERE TrainingId = @trainingId AND " +
-                "DATEDIFF(SECOND, CreateTime, GETDATE()) < @secs " +
-                "ORDER BY CreateTime DESC";
-            selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
-            selectCommand.Parameters.AddWithValue("@secs", seconds);
-            using (var r = await selectCommand.ExecuteReaderAsync())
+            using (var selectCommand = db.CreateCommand())
             {
-                var states = new List<StateRecord>();
-                while (await r.ReadAsync())
+                selectCommand.CommandText =
+                    "SELECT * FROM StateRecord WHERE TrainingId = @trainingId AND " +
+                    "DATEDIFF(SECOND, CreateTime, GETDATE()) < @secs " +
+                    "ORDER BY CreateTime DESC";
+                selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
+                selectCommand.Parameters.AddWithValue("@secs", seconds);
+                using (var r = await selectCommand.ExecuteReaderAsync())
                 {
-                    states.Add(MapFromReader(r));
+                    var states = new List<StateRecord>();
+                    while (await r.ReadAsync())
+                    {
+                        states.Add(MapFromReader(r));
+                    }
+                    return states;
                 }
-                return states;
             }
         }
 
         public async Task<IEnumerable<StateRecord>> GetForTrainingAsync(int trainingId)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText =
-                "SELECT * FROM StateRecord WHERE TrainingId = @trainingId ORDER BY CreateTime";
-            selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
-            using (var r = await selectCommand.ExecuteReaderAsync())
+            using (var selectCommand = db.CreateCommand())
             {
-                var states = new List<StateRecord>();
-                while (await r.ReadAsync())
+                selectCommand.CommandText =
+                    "SELECT * FROM StateRecord WHERE TrainingId = @trainingId ORDER BY CreateTime";
+                selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
+                using (var r = await selectCommand.ExecuteReaderAsync())
                 {
-                    states.Add(MapFromReader(r));
+                    var states = new List<StateRecord>();
+                    while (await r.ReadAsync())
+                    {
+                        states.Add(MapFromReader(r));
+                    }
+                    return states;
                 }
-                return states;
             }
         }
 
         public async Task<IEnumerable<StateRecord>> GetForTrainingAsync(int trainingId, int teamMemberId)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText =
-                "SELECT * FROM StateRecord WHERE TrainingId = @trainingId " +
-                "AND TeamMemberId = @teamMemberId ORDER BY CreateTime";
-            selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
-            selectCommand.Parameters.AddWithValue("@teamMemberId", teamMemberId);
-            using (var r = await selectCommand.ExecuteReaderAsync())
+            using (var selectCommand = db.CreateCommand())
             {
-                var states = new List<StateRecord>();
-                while (await r.ReadAsync())
+                selectCommand.CommandText =
+                    "SELECT * FROM StateRecord WHERE TrainingId = @trainingId " +
+                    "AND TeamMemberId = @teamMemberId ORDER BY CreateTime";
+                selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
+                selectCommand.Parameters.AddWithValue("@teamMemberId", teamMemberId);
+                using (var r = await selectCommand.ExecuteReaderAsync())
                 {
-                    states.Add(MapFromReader(r));
+                    var states = new List<StateRecord>();
+                    while (await r.ReadAsync())
+                    {
+                        states.Add(MapFromReader(r));
+                    }
+                    return states;
                 }
-                return states;
             }
         }
 

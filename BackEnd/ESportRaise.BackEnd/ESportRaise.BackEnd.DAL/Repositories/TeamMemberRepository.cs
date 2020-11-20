@@ -14,33 +14,39 @@ namespace ESportRaise.BackEnd.DAL.Repositories
 
         public async Task<IEnumerable<TeamMember>> GetAllFromTeamAsync(int teamId)
         {
-            var selectCommand = db.CreateCommand();
-            selectCommand.CommandText = $"SELECT * FROM {nameof(TeamMember)} WHERE TeamId = @teamId";
-            selectCommand.Parameters.AddWithValue("@teamId", teamId);
-            using (var r = await selectCommand.ExecuteReaderAsync())
+            using (var selectCommand = db.CreateCommand())
             {
-                var list = new List<TeamMember>();
-                while(await r.ReadAsync())
+                selectCommand.CommandText = $"SELECT * FROM {nameof(TeamMember)} WHERE TeamId = @teamId";
+                selectCommand.Parameters.AddWithValue("@teamId", teamId);
+                using (var r = await selectCommand.ExecuteReaderAsync())
                 {
-                    list.Add(MapFromReader(r));
+                    var list = new List<TeamMember>();
+                    while (await r.ReadAsync())
+                    {
+                        list.Add(MapFromReader(r));
+                    }
+                    return list;
                 }
-                return list;
             }
         }
 
         public async override Task DeleteAsync(int id)
         {
-            var deleteRecordsCommand = db.CreateCommand();
-            deleteRecordsCommand.CommandText = $"DELETE FROM {nameof(StateRecord)} " +
-                                               $"WHERE TeamMemberId = @id";
-            deleteRecordsCommand.Parameters.AddWithValue("@id", id);
-            await deleteRecordsCommand.ExecuteNonQueryAsync();
+            using (var deleteRecordsCommand = db.CreateCommand())
+            {
+                deleteRecordsCommand.CommandText = $"DELETE FROM {nameof(StateRecord)} " +
+                                                   $"WHERE TeamMemberId = @id";
+                deleteRecordsCommand.Parameters.AddWithValue("@id", id);
+                await deleteRecordsCommand.ExecuteNonQueryAsync();
+            }
 
-            var setNullForStreams = db.CreateCommand();
-            setNullForStreams.CommandText = $"UPDATE {nameof(VideoStream)} SET TeamMemberId = NULL " +
-                                            $"WHERE TeamMemberId = @id";
-            setNullForStreams.Parameters.AddWithValue("@id", id);
-            await setNullForStreams.ExecuteNonQueryAsync();
+            using (var setNullForStreams = db.CreateCommand())
+            {
+                setNullForStreams.CommandText = $"UPDATE {nameof(VideoStream)} SET TeamMemberId = NULL " +
+                                                $"WHERE TeamMemberId = @id";
+                setNullForStreams.Parameters.AddWithValue("@id", id);
+                await setNullForStreams.ExecuteNonQueryAsync();
+            }
 
             await base.DeleteAsync(id);
         }
