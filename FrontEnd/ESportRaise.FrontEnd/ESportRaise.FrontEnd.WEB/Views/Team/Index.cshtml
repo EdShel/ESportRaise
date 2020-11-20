@@ -26,11 +26,17 @@
             <input id="newTeamName" type="text" v-model="newTeam.name" />
         </div>
         <button v-on:click="registerTeam" class="btn btn-primary"
-                v-bind:disabled="!isValidNewTeamName">Create new team</button>
+                v-bind:disabled="!isValidNewTeamName">
+            Create new team
+        </button>
     </template>
     <template v-if="team.name !== null">
-        <h1>{{ team.name }}</h1>
-        <button v-on:click="switchEditingMode">Turn on edit mode</button>
+        <div class="background-box">
+            <h1 class="big-header center">{{ team.name }}</h1>
+        </div>
+        <button v-on:click="switchEditingMode" class="btn btn-success">
+            <i class="fas fa-cogs"></i> Switch edit mode
+        </button>
         <div class="row row-eq-height">
             <div v-for="(member, i) in team.members"
                  class="col-lg-4 col-md-6 col-sm-12 col-xs-12 mt-3">
@@ -48,7 +54,7 @@
             </div>
             <div v-if="edit.turnedOn"
                  class="col-lg-4 col-md-12 col-sm-12 col-xs-12 mt-3">
-                <div class="team-member-card">
+                <div class="team-member-card add-member">
                     <div v-on:click="$refs.newTeamMemberModal.openModal()" class="name">
                         <i class="fas fa-user-plus"></i>
                         Add member
@@ -65,35 +71,41 @@
             {{ newTeamMember.errorMessage }}
         </div>
         <form id="addTeamMemberForm">
-            <div>
+            <div class="form-group">
                 <label>User name or email</label>
-                <input type="text" v-model="newTeamMember.emailOrUserName" />
+                <input type="text" v-model="newTeamMember.emailOrUserName"
+                       class="form-control"/>
             </div>
         </form>
     </modal>
 
     <template v-if="team.name !== null">
         <div class="container">
-            <h1>Trainings</h1>
+            <h1 class="big-header center">Trainings</h1>
             <div>
-                <label>Select period of time</label>
-                <select v-model="trainings.spanType" v-on:change="updateTrainings">
+                <label><i class="fas fa-calendar"></i> Select period of time</label>
+                <select v-model="trainings.spanType" v-on:change="updateTrainings"
+                        class="browser-default custom-select">
                     <option value="0">Last 7 days</option>
                     <option value="1">Last 30 days</option>
                     <option value="2">Date</option>
                 </select>
             </div>
             <div v-if="trainings.spanType == 2">
+                <br />
                 <label>Select date</label>
                 <input type="date" v-model="trainings.date" v-on:change="updateTrainings" />
             </div>
             <div class="row mt-3">
-                <div v-for="training in trainings.list"
-                     class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                    <div class="training-card text-center" v-on:click="goToTrainingPage(training.id)">
-                        {{ formatTrainingTime(training.beginTime) }}
+                <template v-if="trainings.list && trainings.list.length > 0">
+                    <div v-for="training in trainings.list"
+                         class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="training-card text-center" v-on:click="goToTrainingPage(training.id)">
+                            {{ formatTrainingTime(training.beginTime) }}
+                        </div>
                     </div>
-                </div>
+                </template>
+                <h1 v-else class="center not-important">No trainings found</h1>
             </div>
         </div>
     </template>

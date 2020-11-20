@@ -1,7 +1,7 @@
 ﻿
 @inject IHtmlLocalizer<SharedView> SharedLocalizer
 
-@{ 
+@{
     string lang = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
     string textDir = new[] { "ar", "dv", "fa", "ps" }.Contains(lang) ? "rtl" : "ltr";
 }
@@ -37,11 +37,12 @@
     <div id="navSection" v-cloak>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" asp-action="Index" asp-controller="Home">ESport Raise</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button"
+                    v-on:click="$refs.hiddenNav.classList.toggle('show')">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse" ref="hiddenNav">
                 <ul class="navbar-nav mr-auto">
                     <template v-if="!isAuthorized">
                         <li>
@@ -82,54 +83,65 @@
                closeText="@SharedLocalizer["CloseAction"]"
                okText="@SharedLocalizer["LoginAction"]" v-on:ok="login">
             <form id="loginForm">
-                <div v-if="loginData.error">
+                <div class="hidden warning" v-bind:class="{show: loginData.error}">
                     {{ loginData.error }}
                 </div>
                 <div>
-                    <div v-if="loginData.user && !isLoginUserValid">
+                    <div class="hidden warning" v-bind:class="{show: loginData.user && !isLoginUserValid}">
                         Invalid user name or email!
                     </div>
-                    <label for="loginEmail">@SharedLocalizer["EmailOrUserName"]</label>
-                    <input type="text" id="loginEmail" v-model="loginData.user" />
+                    <div class="form-group">
+                        <label for="loginEmail">@SharedLocalizer["EmailOrUserName"]</label>
+                        <input class="form-control" type="text" id="loginEmail" v-model="loginData.user" />
+                    </div>
                 </div>
                 <div>
-                    <div v-if="loginData.password && !isLoginPasswordValid">
+                    <div class="hidden warning" v-bind:class="{show: loginData.password && !isLoginPasswordValid}">
                         Invalid password!
                     </div>
-                    <label for="loginPassword">@SharedLocalizer["Password"]</label>
-                    <input type="password" id="loginPassword" v-model="loginData.password" />
+                    <div class="form-group">
+                        <label for="loginPassword">@SharedLocalizer["Password"]</label>
+                        <input class="form-control" type="password" id="loginPassword" v-model="loginData.password" />
+                    </div>
                 </div>
             </form>
         </modal>
 
         <!-- Register modal -->
-        <modal ref="registerModal" header="@SharedLocalizer["LoginModalTitle"]"
+        <modal ref="registerModal" header="@SharedLocalizer["RegisterModalTitle"]"
                closeText="@SharedLocalizer["CloseAction"]"
                okText="@SharedLocalizer["RegisterAction"]" v-on:ok='register'>
-            <form id="registerForm">
-                <div v-if="registerData.error">
+            <form id="registerForm" autocomplete="off">
+                <div class="hidden warning" v-bind:class="{show: registerData.error}">
                     {{ registerData.error }}
                 </div>
                 <div>
-                    <div v-if="registerData.email && !isRegisterEmailValid">
+                    <div class="hidden warning" v-bind:class="{show: registerData.email && !isRegisterEmailValid}">
                         Invalid email!
                     </div>
-                    <label for="registerEmail">@SharedLocalizer["Email"]</label>
-                    <input type="text" id="registerEmail" v-model="registerData.email" />
+                    <div class="form-group">
+                        <label for="registerEmail">@SharedLocalizer["Email"]</label>
+                        <input class="form-control" type="text" id="registerEmail" 
+                               v-model="registerData.email" autocomplete="chrome-off"/>
+                    </div>
                 </div>
                 <div>
-                    <div v-if="registerData.userName && !isRegisterUserNameValid">
+                    <div class="hidden warning" v-bind:class="{show: registerData.userName && !isRegisterUserNameValid}">
                         Invalid user name!
                     </div>
-                    <label for="registerUserName">@SharedLocalizer["UserName"]</label>
-                    <input type="text" id="registerUserName" v-model="registerData.userName" />
+                    <div class="form-group">
+                        <label for="registerUserName">@SharedLocalizer["UserName"]</label>
+                        <input class="form-control" type="text" id="registerUserName" v-model="registerData.userName" />
+                    </div>
                 </div>
                 <div>
-                    <div v-if="registerData.password && !isRegisterPasswordValid">
+                    <div class="hidden warning" v-bind:class="{show: registerData.password && !isRegisterPasswordValid}">
                         Password must contain uppercase, lowercase, digits, a special symbol and be 6-20 characters.
                     </div>
-                    <label for="registerPassword">@SharedLocalizer["Password"]</label>
-                    <input type="password" id="registerPassword" v-model="registerData.password" />
+                    <div class="form-group">
+                        <label for="registerPassword">@SharedLocalizer["Password"]</label>
+                        <input class="form-control" type="password" id="registerPassword" v-model="registerData.password" />
+                    </div>
                 </div>
             </form>
         </modal>
@@ -140,7 +152,7 @@
     @RenderBody()
     <hr />
     <footer>
-        <p>&copy; 2020 - ESportRaise</p>
+        <p>&copy; 2020 - ESport Raise</p>
     </footer>
 
     <script src="~/js/components/modal.js"></script>

@@ -36,8 +36,12 @@
                     not assigned
                 </span>
                 <template v-if="editYT.canEdit">
-                    <button v-on:click="$refs.changeYouTubeIdModal.openModal">Edit</button>
-                    <button v-on:click="discardYouTubeId">Unbind</button>
+                    <button v-on:click="$refs.changeYouTubeIdModal.openModal" class="icon edit">
+                        <i class="fas fa-user-edit"></i>
+                    </button>
+                    <button v-on:click="discardYouTubeId" class="icon remove">
+                        <i class="fas fa-unlink"></i>
+                    </button>
                 </template>
             </div>
         </template>

@@ -130,7 +130,7 @@
 <div v-if="usersList && usersList.length > 0">
     <slot></slot>
     <div>
-        <select v-model="member" v-on:change="updateChart">
+        <select v-model="member" v-on:change="updateChart" class="browser-default custom-select">
             <option v-for="user in usersList" v-bind:value="user">
                 {{ user.name }}
             </option>

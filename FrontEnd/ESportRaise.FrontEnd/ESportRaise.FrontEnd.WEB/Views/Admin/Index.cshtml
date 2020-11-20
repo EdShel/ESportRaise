@@ -12,30 +12,36 @@
 </script>
 
 <div class="container">
-    <div id="backups">
-        <h1>Backup database</h1>
-        <div>
-            <label>Backup file name</label>
-            <input type="text" v-model="file" />
+    <div class="row">
+        <div id="backups" class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <h1 class="big-header">Backup database</h1>
+            <div>
+                <label>Backup file name</label>
+                <input type="text" v-model="file" />
+            </div>
+            <div v-if="successMessageSeen">
+                Backup is successfully made!
+            </div>
+            <div v-if="errorMessage" class="text-danger">
+                {{ errorMessage }}
+            </div>
+            <button class="btn btn-primary" v-on:click="make">Make backup</button>
+            <button class="btn btn-primary" v-on:click="download">Download backup</button>
         </div>
-        <div v-if="successMessageSeen">
-            Backup is successfully made!
-        </div>
-        <div v-if="errorMessage" class="text-danger">
-            {{ errorMessage }}
-        </div>
-        <button class="btn btn-primary" v-on:click="make">Make backup</button>
-        <button class="btn btn-primary" v-on:click="download">Download backup</button>
-    </div>
-    <div id="certExpiration">
-        <div v-if="expiration">
-            SSL certificate expires at {{ formatDateTime(expiration) }}
+        <div id="certExpiration" class="col-lg-6 col-md-6 col-sm-12 col-xs-12 mt-3">
+            <div v-if="expiration">
+                <h1 class="big-header">Certificate</h1>
+                SSL certificate expires at
+                <b v-bind:class="{warning: (expiration - (new Date()) < 1000 * 60 * 60 * 24 * 365)}">
+                    {{ formatDateTime(expiration) }}
+                </b>
+            </div>
         </div>
     </div>
 </div>
 
 <div id="configTable" class="container">
-    <h1>System configuration</h1>
+    <h1 class="big-header">System configuration</h1>
     <table class="table table-hover">
         <thead>
             <tr>

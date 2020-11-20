@@ -12,14 +12,14 @@
     methods: {
         nextPage() {
             let prevPage = this.pageIndex;
-            this.pageIndex = Math.max(0, Math.min(prevPage + 1, this.pagesCount));
+            this.pageIndex = Math.max(0, Math.min(prevPage + 1, this.pagesCount - 1));
             if (this.pageIndex != prevPage) {
                 this.updateTablePage();
             }
         },
         prevPage() {
             let prevPage = this.pageIndex;
-            this.pageIndex = Math.max(0, Math.min(prevPage - 1, this.pagesCount));
+            this.pageIndex = Math.max(0, Math.min(prevPage - 1, this.pagesCount - 1));
             if (this.pageIndex != prevPage) {
                 this.updateTablePage();
             }

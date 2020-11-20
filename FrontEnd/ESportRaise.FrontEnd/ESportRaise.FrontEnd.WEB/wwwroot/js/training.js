@@ -73,7 +73,7 @@
             let interval = this.momentVideoInterval;
 
             let videoUrl = '//www.youtube.com/embed/' + this.currentVideo.streamId;
-            let playerParams = '?rel=0';//'?rel=0&autoplay=1';
+            let playerParams = '?rel=0&autoplay=1';
             let spanParams = '&start=' + interval.begin + '&end=' + interval.end;
             let langParam = '&hl=' + getLanguage();
 

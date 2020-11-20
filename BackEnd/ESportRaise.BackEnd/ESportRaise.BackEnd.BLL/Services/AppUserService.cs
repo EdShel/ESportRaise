@@ -66,7 +66,7 @@ namespace ESportRaise.BackEnd.BLL.Services
             {
                 PageIndex = pageIndex,
                 PageSize = pageSize,
-                TotalPagesCount = count / pageSize,
+                TotalPagesCount = (int)Math.Ceiling((double)count / pageSize),
                 Users = foundUsers.Select(u => new AppUserInfoDTO
                 {
                     Id = u.Id,

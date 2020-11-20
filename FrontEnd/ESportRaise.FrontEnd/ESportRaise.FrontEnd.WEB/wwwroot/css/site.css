@@ -228,3 +228,64 @@ div.nopadding {
 .editedRow {
     background: #818181
 }
+
+h1.big-header {
+    font-weight: bold;
+    font-size: 3em;
+    margin-top: 0.5em;
+}
+
+h1.center {
+    text-align: center;
+}
+
+.warning {
+    color: red;
+}
+
+.btn-right {
+    float: right;
+}
+
+h1.not-important {
+    color: #5c5c5c;
+    width: 100%;
+    text-align: center;
+}
+
+select.lang {
+    border: 0;
+    background: transparent;
+}
+
+.hidden:not(.show) {
+    visibility: hidden;
+}
+
+footer {
+    text-align: center;
+    font-size: 1.25em;
+}
+
+.btn.share {
+    height: 100%;
+    width: 100%;
+}
+
+button.icon {
+    border: 0;
+    background: transparent;
+}
+
+button.icon.edit {
+    color: #9f15a5;
+}
+
+button.icon.remove {
+    color: red;
+}
+
+.add-member {
+    border-color: #28a745;
+    color: #127027;
+}

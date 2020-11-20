@@ -13,89 +13,96 @@
 </script>
 
 <div id="training" class="container">
-
-    <div v-if="beginTime" class="background-box">
-        <h1 class="text-center">Training {{ formatDate(beginTime) }}</h1>
-    </div>
-
-    <div v-if="!notOver" v-cloak class="row">
-        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-            <h1>Critical moments</h1>
-            <div class="list-group">
-                <button v-for="m in criticalMoments"
-                        class="list-group-item list-group-item-action"
-                        v-bind:class="{active: currentCriticalMoment === m}"
-                        v-on:click="currentCriticalMoment = m">
-                    {{ formatTime(new Date(m.begin)) }} -
-                    {{ formatTime(new Date(m.end)) }}
-                </button>
-            </div>
-        </div>
-        <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
-            <div v-if="currentVideo">
-                <h1>Video record</h1>
-                <div class="videoContainer">
-                    <iframe v-if="currentVideo" name="mainVideo"
-                            v-bind:src="restartVideoUrl" frameborder="0"
-                            allowfullscreen></iframe>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 mt-3">
-                        <a v-bind:href="restartVideoUrl"
-                           target="mainVideo">
-                            <div class="btn btn-primary">
-                                Move to beginning
-                                {{ secondsToHHMMSS(momentVideoInterval.begin) }} -
-                                {{ secondsToHHMMSS(momentVideoInterval.end) }}
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 mt-3">
-                        <button class="btn btn-secondary"
-                                v-on:click="$refs.shareModal.openModal">
-                            Share
-                        </button>
-                    </div>
-                    <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12 mt-2 inline-input">
-                        <label>View record of </label>
-                        <select v-model="currentVideoIndex">
-                            <option v-for="(video, i) in videosForMoment"
-                                    v-bind:value="i">
-                                {{ getTeamMemberNameById(video.teamMemberId) }}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <state-displayer v-bind:training-id="trainingId"
-                                 v-bind:users-list="teamMembers">
-                </state-displayer>
-            </div>
+    <template v-cloak>
+        <div v-if="beginTime" class="background-box">
+            <h1 class="text-center big-header">Training {{ formatDate(beginTime) }}</h1>
         </div>
 
-        <modal v-cloak ref="shareModal" header="Share the moment"
-               closeText="@SharedLocalizer["CloseAction"]"
-               okText="Copy to the clipboard" v-on:ok='copyShareUrlToClipboard'>
+        <div v-if="!notOver" class="row">
+            <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                <h1>Critical moments</h1>
+                <div class="list-group">
+                    <button v-for="m in criticalMoments"
+                            class="list-group-item list-group-item-action"
+                            v-bind:class="{active: currentCriticalMoment === m}"
+                            v-on:click="currentCriticalMoment = m">
+                        {{ formatTime(new Date(m.begin)) }} -
+                        {{ formatTime(new Date(m.end)) }}
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
+                <div v-if="currentVideo">
+                    <h1>Video record</h1>
+                    <div class="videoContainer">
+                        <iframe v-if="currentVideo" name="mainVideo"
+                                v-bind:src="restartVideoUrl" frameborder="0"
+                                allowfullscreen></iframe>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 mt-3">
+                            <a v-bind:href="restartVideoUrl"
+                               target="mainVideo">
+                                <div class="btn btn-primary">
+                                    <i class="fas fa-play"></i> 
+                                    Move to beginning
+                                    {{ secondsToHHMMSS(momentVideoInterval.begin) }} -
+                                    {{ secondsToHHMMSS(momentVideoInterval.end) }}
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 mt-3">
+                            <button class="btn btn-secondary share"
+                                    v-on:click="$refs.shareModal.openModal">
+                                <i class="fas fa-share-alt"></i> Share moment
+                            </button>
+                        </div>
+                        <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12 mt-2 inline-input">
+                            <label>View record of </label>
+                            <select v-model="currentVideoIndex" class="browser-default custom-select">
+                                <option v-for="(video, i) in videosForMoment"
+                                        v-bind:value="i">
+                                    {{ getTeamMemberNameById(video.teamMemberId) }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="big-header">Physical state</h1>
+                        <label>Select team member to view physical state</label>
+                        <state-displayer v-bind:training-id="trainingId"
+                                         v-bind:users-list="teamMembers">
+                        </state-displayer>
+                    </div>
+                </div>
+                <h1 v-else class="center not-important">No video streams were captured</h1>
+            </div>
+
+            <modal ref="shareModal" header="Share the moment"
+                   closeText="@SharedLocalizer["CloseAction"]"
+                   okText="Copy to the clipboard" v-on:ok='copyShareUrlToClipboard'>
+                <div>
+                    <label for="momentUrl">The link to the critical moment</label>
+                    <input id="momentUrl" type="text" readonly
+                           v-bind:value="criticalMomentShareLink" />
+                </div>
+            </modal>
+        </div>
+        <div v-if="notOver">
+            <h2>The training isn't over yet!</h2>
+            <p>
+                You can manually stop it to view processed data.
+                <b>
+                    After stopping this training new data can't be
+                    collected and you'll need to start a new training.
+                </b>
+            </p>
             <div>
-                <label for="momentUrl">The link to the critical moment</label>
-                <input id="momentUrl" type="text" readonly
-                       v-bind:value="criticalMomentShareLink" />
+                <button class="btn btn-danger" v-on:click="stopTraining">Stop training</button>
             </div>
-        </modal>
-    </div>
-    <div v-if="notOver">
-        <h2>The training isn't over yet!</h2>
-        <p>
-            You can manually stop it to view processed data.
-            <b>
-                After stopping this training new data can't be
-                collected and you'll need to start a new training.
-            </b>
-        </p>
-        <div>
-            <button class="btn btn-danger" v-on:click="stopTraining">Stop training</button>
         </div>
-    </div>
+    </template>
 </div>
 
 @section Scripts {

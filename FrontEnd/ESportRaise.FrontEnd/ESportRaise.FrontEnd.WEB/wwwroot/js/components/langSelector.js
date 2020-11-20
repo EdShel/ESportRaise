@@ -22,7 +22,7 @@
     template: `
 <div>
     <i class="fas fa-globe"></i>
-    <select v-model="language">
+    <select v-model="language" class="lang">
         <slot></slot>
     </select>
 </div>
