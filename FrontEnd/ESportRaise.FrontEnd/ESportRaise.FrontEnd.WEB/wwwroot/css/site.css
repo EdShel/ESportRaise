@@ -28,9 +28,6 @@
     .gamepad-logo img {
         position: relative;
         align-content: center;
-        animation-duration: 15s;
-        /*animation-name: vibrate;*/
-        animation-iteration-count: infinite;
         display: block;
         margin-left: auto;
         margin-right: auto;
@@ -50,34 +47,6 @@
         background: rgba(50, 50, 50, 0.75);
         text-shadow: 0 0 10px #000;
     }
-
-
-@keyframes vibrate {
-    0% {
-        transform: translate(0, 0);
-    }
-
-    20% {
-        transform: translate(10px, 10px);
-    }
-
-    40% {
-        transform: translate(-10px, 5px);
-    }
-
-    60% {
-        transform: translate(-10px, -10px);
-    }
-
-    80% {
-        transform: translate(0px, -10px);
-    }
-
-    100% {
-        transform: translate(0px, 0px);
-    }
-}
-
 
 .info {
     font-family: Verdana, Geneva, sans-serif;
@@ -288,4 +257,16 @@ button.icon.remove {
 .add-member {
     border-color: #28a745;
     color: #127027;
+}
+
+@media (max-width: 1000px) {
+    .logo-text {
+        font-size: 5em !important;
+    }
+}
+
+@media (max-width: 500px) {
+    .logo-text {
+        font-size: 2.5em !important;
+    }
 }

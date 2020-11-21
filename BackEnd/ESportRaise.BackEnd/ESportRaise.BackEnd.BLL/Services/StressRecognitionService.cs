@@ -91,7 +91,7 @@ namespace ESportRaise.BackEnd.BLL.Services
                 {
                     var interval = new TimeInterval
                     {
-                        Begin = normalizedStates[i - abnormalValuesInRow].Time,
+                        Begin = normalizedStates[i - abnormalValuesInRow - 1].Time,
                         End = normalizedStates[i].Time
                     };
                     if (interval.GetDurationInSeconds() >= parameters.MinDurationSeconds)

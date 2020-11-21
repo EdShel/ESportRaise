@@ -42,7 +42,7 @@
             if (!this.records) {
                 return [];
             }
-
+            
             let points = [];
             for (let state of this.records) {
                 points.push({
@@ -50,9 +50,15 @@
                     y: state.temperature
                 });
             }
+
+            if (getLanguage() === 'en') {
+                this.temperaturePointsToFarenheit(points)
+            }
+
             return points;
         },
         chartData() {
+            let tUnits = getLanguage() === 'en' ? '°F' : '°C';
             return {
                 datasets: [
                     {
@@ -64,7 +70,7 @@
                         yAxisID: 'hrAxis'
                     },
                     {
-                        label: 'T',
+                        label: 't, ' + tUnits,
                         backgroundColor: '#ffc107',
                         borderColor: '#ffc107',
                         data: this.temperatureAsCartesianPoints,
@@ -124,6 +130,11 @@
                 this.getChart().data = this.chartData;
                 this.getChart().update();
             }).catch(handleCriticalError);
+        },
+        temperaturePointsToFarenheit(temperPoints) {
+            for (let point of temperPoints) {
+                point.y = (point.y * 1.8) + 32;
+            }
         }
     },
     template: `

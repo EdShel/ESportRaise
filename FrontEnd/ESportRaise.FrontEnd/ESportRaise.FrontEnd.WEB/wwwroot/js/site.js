@@ -211,7 +211,7 @@ function parseJwt(token) {
 function getCookie(name) {
     var cookiestring = RegExp(name + "=[^;]+").exec(document.cookie);
     return decodeURIComponent(
-        !!cookiestring
+        cookiestring
             ? cookiestring.toString().replace(/^[^=]+./, "")
             : "");
 }
