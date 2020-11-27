@@ -14,14 +14,21 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import ua.nure.sheliemietiev.esportraisemobile.App
 
 import ua.nure.sheliemietiev.esportraisemobile.R
+import ua.nure.sheliemietiev.esportraisemobile.api.AuthorizationInfo
+import javax.inject.Inject
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
 
+    @Inject lateinit var authorizationInfo: AuthorizationInfo
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        (applicationContext as App).components.inject(this)
+
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_login)
@@ -30,6 +37,9 @@ class LoginActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.password)
         val login = findViewById<Button>(R.id.login)
         val loading = findViewById<ProgressBar>(R.id.loading)
+
+
+        Toast.makeText(this, authorizationInfo.userName, Toast.LENGTH_LONG).show()
 
         loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
                 .get(LoginViewModel::class.java)
