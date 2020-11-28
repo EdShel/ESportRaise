@@ -26,6 +26,8 @@ class LoginActivity : AppCompatActivity() {
 
     @Inject lateinit var authorizationInfo: AuthorizationInfo
 
+    @Inject lateinit var presenter : LoginPresenter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         (applicationContext as App).components.inject(this)
 
@@ -35,11 +37,8 @@ class LoginActivity : AppCompatActivity() {
 
         val username = findViewById<EditText>(R.id.username)
         val password = findViewById<EditText>(R.id.password)
-        val login = findViewById<Button>(R.id.login)
+        val loginButton = findViewById<Button>(R.id.login)
         val loading = findViewById<ProgressBar>(R.id.loading)
-
-
-        Toast.makeText(this, authorizationInfo.userName, Toast.LENGTH_LONG).show()
 
         loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
                 .get(LoginViewModel::class.java)
@@ -48,8 +47,7 @@ class LoginActivity : AppCompatActivity() {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
-            login.isEnabled = loginState.isDataValid
-
+            loginButton.isEnabled = loginState.isDataValid
             if (loginState.usernameError != null) {
                 username.error = getString(loginState.usernameError)
             }
@@ -100,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
                 false
             }
 
-            login.setOnClickListener {
+            loginButton.setOnClickListener {
                 loading.visibility = View.VISIBLE
                 loginViewModel.login(username.text.toString(), password.text.toString())
             }
