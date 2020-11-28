@@ -2,7 +2,6 @@ package ua.nure.sheliemietiev.esportraisemobile.ui.login
 
 import android.app.Activity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +13,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import ua.nure.sheliemietiev.esportraisemobile.App
 
 import ua.nure.sheliemietiev.esportraisemobile.R
@@ -22,26 +26,26 @@ import javax.inject.Inject
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var loginViewModel: LoginViewModel
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject lateinit var authorizationInfo: AuthorizationInfo
-
-    @Inject lateinit var presenter : LoginPresenter
+    @Inject
+    lateinit var authorizationInfo: AuthorizationInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (applicationContext as App).components.inject(this)
 
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_login)
+        val loginViewModel = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
 
         val username = findViewById<EditText>(R.id.username)
         val password = findViewById<EditText>(R.id.password)
         val loginButton = findViewById<Button>(R.id.login)
         val loading = findViewById<ProgressBar>(R.id.loading)
 
-        loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
-                .get(LoginViewModel::class.java)
+        username.setText("Eduardo")
+        password.setText("Qwerty12345@")
 
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
@@ -58,13 +62,13 @@ class LoginActivity : AppCompatActivity() {
 
         loginViewModel.loginResult.observe(this@LoginActivity, Observer {
             val loginResult = it ?: return@Observer
-
+            Toast.makeText(this, "Loool", Toast.LENGTH_LONG).show()
             loading.visibility = View.GONE
-            if (loginResult.error != null) {
-                showLoginFailed(loginResult.error)
+            if (loginResult.isFailure) {
+                showLoginFailed(loginResult.getErrorCode())
             }
-            if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
+            if (loginResult.isSuccess) {
+                updateUiWithUser(loginResult.getOrThrow())
             }
             setResult(Activity.RESULT_OK)
 
@@ -74,45 +78,48 @@ class LoginActivity : AppCompatActivity() {
 
         username.afterTextChanged {
             loginViewModel.loginDataChanged(
-                    username.text.toString(),
-                    password.text.toString()
+                username.text.toString(),
+                password.text.toString()
             )
         }
 
         password.apply {
             afterTextChanged {
                 loginViewModel.loginDataChanged(
-                        username.text.toString(),
-                        password.text.toString()
+                    username.text.toString(),
+                    password.text.toString()
                 )
             }
 
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        loginViewModel.login(
+                            loginViewModel.loginButtonPressed(
                                 username.text.toString(),
                                 password.text.toString()
-                        )
+                            )
                 }
                 false
             }
 
             loginButton.setOnClickListener {
                 loading.visibility = View.VISIBLE
-                loginViewModel.login(username.text.toString(), password.text.toString())
+                    loginViewModel.loginButtonPressed(
+                        username.text.toString(),
+                        password.text.toString()
+                    )
             }
         }
     }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
+    private fun updateUiWithUser(model: AuthorizedView) {
         val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
+        val displayName = model.userName
         // TODO : initiate successful logged in experience
         Toast.makeText(
-                applicationContext,
-                "$welcome $displayName",
-                Toast.LENGTH_LONG
+            applicationContext,
+            "$welcome $displayName",
+            Toast.LENGTH_LONG
         ).show()
     }
 

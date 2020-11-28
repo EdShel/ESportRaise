@@ -1,6 +1,6 @@
 package ua.nure.sheliemietiev.esportraisemobile.data
 
-open class OperationResult<out T> constructor(
+open class OperationResult<out T> protected constructor(
     private val value: T?
 ) {
     val isSuccess: Boolean get() = value != null
@@ -14,24 +14,38 @@ open class OperationResult<out T> constructor(
         }
 
     fun getOrThrow(): T {
-        if (this is OperationFailure){
+        if (this is OperationFailure) {
             throw this.exception;
         }
-        if (value == null){
+        if (value == null) {
             throw Exception("Value is null!")
         }
         return this.value
+    }
+
+    fun getErrorCode(): Int {
+        if (this is OperationError) {
+            return this.errorCode
+        }
+        throw IllegalStateException("The result does not have an error!")
     }
 
     companion object {
         fun <T> success(value: T): OperationResult<T> =
             OperationResult(value)
 
-        fun <T> failure(error : Throwable?): OperationResult<T> =
+        fun <T> failure(error: Throwable?): OperationResult<T> =
             OperationFailure(error ?: Exception("Operation failure!"))
+
+        fun <T> error(errorCode: Int): OperationResult<T> =
+            OperationError(errorCode)
     }
 
     private class OperationFailure<T>(
-        internal val exception : Throwable
+        internal val exception: Throwable
+    ) : OperationResult<T>(null)
+
+    private class OperationError<T>(
+        internal val errorCode: Int
     ) : OperationResult<T>(null)
 }
