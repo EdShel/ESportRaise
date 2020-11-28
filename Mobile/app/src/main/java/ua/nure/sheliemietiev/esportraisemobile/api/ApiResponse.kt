@@ -5,7 +5,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import okhttp3.Response
 
-class ApiResponseFuck() {
+class ApiResponse() {
 
     var statusCode : Int = 0
         private set

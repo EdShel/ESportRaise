@@ -6,24 +6,71 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import ru.gildor.coroutines.okhttp.await
-import java.io.IOException
 import java.security.SecureRandom
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
+import javax.inject.Inject
+import javax.inject.Singleton
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
-
+@Singleton
 class AuthorizationInfo(
     var userName: String,
     var email: String,
     var token: String,
     var refreshToken: String
-)
+) {
+    val isAuthorized: Boolean
+        get() {
+            return token.isNotBlank()
+        }
+}
 
-class Api(
+class ApiRequestBuilder @Inject constructor(
     private val apiUrl: String,
+    private val authorization: AuthorizationInfo
+) {
+    fun buildPostRequest(
+        relativeUrl: String,
+        queryParams: Map<String, String>?,
+        body: Any?
+    ): Request {
+        val url = buildUrl(relativeUrl, queryParams)
+
+        val bodyJson = Gson().toJson(body)
+        val requestBuilder = Request.Builder()
+            .url(url)
+            .post(RequestBody.create(MediaType.parse("application/json"), bodyJson))
+
+        if (authorization.isAuthorized) {
+            requestBuilder.addHeader("Authorization", "Bearer ${authorization.token}")
+        }
+
+        return requestBuilder.build()
+    }
+
+    fun buildRefreshRequest(): Request {
+        return buildPostRequest(
+            "auth/refresh", null, mapOf(
+                "refreshToken" to authorization.refreshToken
+            )
+        )
+    }
+
+    private fun buildUrl(
+        relativeUrl: String,
+        queryParams: Map<String, String>?
+    ): HttpUrl {
+        val urlBuilder = HttpUrl.parse("$apiUrl/$relativeUrl")!!.newBuilder()
+        queryParams?.forEach { (name, value) -> urlBuilder.addQueryParameter(name, value) }
+        return urlBuilder.build()
+    }
+}
+
+class Api @Inject constructor(
+    private val requestBuilder: ApiRequestBuilder,
     private val authorization: AuthorizationInfo
 ) {
     private val client: OkHttpClient = getCertIgnoringOkHttpClient().build()
@@ -64,85 +111,33 @@ class Api(
         }
     }
 
-    suspend fun post(relativeUrl: String, queryParams: Map<String, String>?, body: Any?): ApiResponseFuck {
-        val urlBuilder = HttpUrl.parse("$apiUrl/$relativeUrl")!!.newBuilder()
-        queryParams?.forEach { (name, value) -> urlBuilder.addQueryParameter(name, value) }
-        val bodyJson = Gson().toJson(body)
-        val requestBuilder = Request.Builder()
-            .url(urlBuilder.build())
-            .post(RequestBody.create(MediaType.parse("application/json"), bodyJson))
-
-        requestBuilder.addHeader("Authorization", "Bearer ${authorization.token}")
-
-        return withContext(Dispatchers.IO) {
-            return@withContext ApiResponseFuck(client.newCall(requestBuilder.build()).await())
-        }
+    private suspend fun sendAsync(request: Request): ApiResponse {
+        return ApiResponse(client.newCall(request).await())
     }
 
-    fun runAsync(request: Request, onSuccess: (Response) -> Unit, onError: (IOException) -> Unit) {
-        client.newCall(request).enqueue(object : Callback {
-            override fun onResponse(call: Call?, response: Response?) {
-                if (response!!.code() == 401) {
-//                    refreshAndRetry(request, onSuccess, onError)
-                } else {
-                    onSuccess(response)
+    suspend fun post(
+        relativeUrl: String,
+        queryParams: Map<String, String>?,
+        body: Any?
+    ): ApiResponse {
+        var request = requestBuilder.buildPostRequest(relativeUrl, queryParams, body)
+
+        return withContext(Dispatchers.IO) {
+            var response = sendAsync(request)
+            if (response.statusCode == 401 && authorization.isAuthorized) {
+                val refreshRequest = requestBuilder.buildRefreshRequest()
+                val refreshResponse = sendAsync(refreshRequest)
+                if (refreshResponse.statusCode == 200) {
+                    val jsonBody = refreshResponse.asJsonMap()
+                    authorization.token = jsonBody["token"].asString
+                    authorization.refreshToken = jsonBody["refreshToken"].asString
+
+                    request = requestBuilder.buildPostRequest(relativeUrl, queryParams, body)
+                    response = sendAsync(request)
                 }
             }
 
-            override fun onFailure(p0: Call?, p1: IOException?) {
-                onError(p1!!)
-                p0!!.cancel()
-            }
-        })
-    }
-
-//    private fun refreshAndRetry(
-//        request: Request,
-//        onSuccess: (Response) -> Unit,
-//        onError: (IOException) -> Unit
-//    ) {
-//        buildRefreshRequest().enqueue(object : Callback {
-//            override fun onResponse(call: Call, response: Response) {
-//                val jsonBodyString = response.body()!!.string()
-//                val jsonBody = Gson().fromJson(jsonBodyString, JsonElement::class.java).asJsonObject
-//                authorization.token = jsonBody["token"].asString
-//                authorization.refreshToken = jsonBody["refreshToken"].asString
-//
-//                val requestWithFreshToken = request.newBuilder()
-//                    .header("Authorization", "Bearer ${authorization.token}")
-//                    .build()
-//
-//                runWithNoRefreshAsync(requestWithFreshToken, onSuccess, onError)
-//            }
-//
-//            override fun onFailure(p0: Call?, p1: IOException?) {
-//                onError(p1!!)
-//                p0!!.cancel()
-//            }
-//        })
-//    }
-//
-//    private fun buildRefreshRequest(): ApiResponse {
-//        return this.post("auth/refresh", null, object {
-//            val refreshToken = authorization.refreshToken
-//        })
-//    }
-
-    private fun runWithNoRefreshAsync(
-        request: Request,
-        onSuccess: (Response) -> Unit,
-        onError: (IOException) -> Unit
-    ) {
-        client.newCall(request).enqueue(object : Callback {
-            override fun onResponse(call: Call?, response: Response?) {
-                onSuccess(response!!)
-            }
-
-            override fun onFailure(p0: Call?, p1: IOException?) {
-                onError(p1!!)
-                p0!!.cancel()
-            }
-        })
+            return@withContext response
+        }
     }
 }
-

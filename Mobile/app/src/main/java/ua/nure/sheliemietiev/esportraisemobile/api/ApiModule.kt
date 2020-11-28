@@ -17,10 +17,7 @@ class ApiModule {
     }
 
     @Provides
-    fun provideApiClient(authInfo : AuthorizationInfo) : Api {
-        return Api(
-            BuildConfig.API_URL,
-            authInfo
-        )
+    fun provideRequestBuilder(authInfo: AuthorizationInfo) : ApiRequestBuilder{
+        return ApiRequestBuilder(BuildConfig.API_URL, authInfo)
     }
 }
