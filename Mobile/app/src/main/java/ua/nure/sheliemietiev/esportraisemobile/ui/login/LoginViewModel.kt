@@ -5,14 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import ru.gildor.coroutines.okhttp.await
 import ua.nure.sheliemietiev.esportraisemobile.R
 import ua.nure.sheliemietiev.esportraisemobile.api.Api
 import ua.nure.sheliemietiev.esportraisemobile.api.AuthorizationInfo
-import ua.nure.sheliemietiev.esportraisemobile.data.OperationResult
+import ua.nure.sheliemietiev.esportraisemobile.util.OperationResult
 import javax.inject.Inject
 
 class LoginModel @Inject constructor(
@@ -28,7 +25,15 @@ class LoginModel @Inject constructor(
         )
 
         val json = response.asJsonMap()
-        val userName = json["email"].asString
+        val userName = json["userName"].asString
+        val token = json["token"].asString
+        val refreshToken = json["refreshToken"].asString
+        authInfo.setUser(
+            userName,
+            email,
+            token,
+            refreshToken
+        )
         return OperationResult.success(AuthorizedView(userName))
     }
 }

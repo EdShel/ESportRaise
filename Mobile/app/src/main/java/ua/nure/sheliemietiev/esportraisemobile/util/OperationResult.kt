@@ -1,4 +1,4 @@
-package ua.nure.sheliemietiev.esportraisemobile.data
+package ua.nure.sheliemietiev.esportraisemobile.util
 
 open class OperationResult<out T> protected constructor(
     private val value: T?

@@ -1,6 +1,7 @@
 package ua.nure.sheliemietiev.esportraisemobile.ui.login
 
 import android.app.Activity
+import android.content.SharedPreferences
 import androidx.lifecycle.Observer
 import android.os.Bundle
 import androidx.annotation.StringRes
@@ -14,10 +15,6 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
 import ua.nure.sheliemietiev.esportraisemobile.App
 
 import ua.nure.sheliemietiev.esportraisemobile.R
@@ -37,14 +34,18 @@ class LoginActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        val loginViewModel = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
+
+        val loginViewModel = ViewModelProvider(this, viewModelFactory)
+            .get(LoginViewModel::class.java)
 
         val username = findViewById<EditText>(R.id.username)
         val password = findViewById<EditText>(R.id.password)
         val loginButton = findViewById<Button>(R.id.login)
         val loading = findViewById<ProgressBar>(R.id.loading)
 
-        username.setText("Eduardo")
+
+
+        username.setText(authorizationInfo.userName)
         password.setText("Qwerty12345@")
 
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
@@ -94,20 +95,20 @@ class LoginActivity : AppCompatActivity() {
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                            loginViewModel.loginButtonPressed(
-                                username.text.toString(),
-                                password.text.toString()
-                            )
+                        loginViewModel.loginButtonPressed(
+                            username.text.toString(),
+                            password.text.toString()
+                        )
                 }
                 false
             }
 
             loginButton.setOnClickListener {
                 loading.visibility = View.VISIBLE
-                    loginViewModel.loginButtonPressed(
-                        username.text.toString(),
-                        password.text.toString()
-                    )
+                loginViewModel.loginButtonPressed(
+                    username.text.toString(),
+                    password.text.toString()
+                )
             }
         }
     }
