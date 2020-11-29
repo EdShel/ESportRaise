@@ -1,5 +1,5 @@
 ﻿
-const backendServer = "https://localhost:5003/";
+const backendServer = "https://192.168.1.16:5003/";
 
 const loginRegex = /^[A-Za-z0-9_]{3,20}$/;
 
@@ -218,6 +218,9 @@ function getCookie(name) {
 
 function getLanguage() {
     let langCookie = getCookie(".AspNetCore.Culture");
+    if (!langCookie) {
+        return 'en'
+    }
     return langCookie.substr(langCookie.length - 2);
 }
 
