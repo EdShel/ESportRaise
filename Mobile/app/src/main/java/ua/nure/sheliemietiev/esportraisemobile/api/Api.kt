@@ -87,4 +87,31 @@ class Api @Inject constructor(
             return@withContext response
         }
     }
+
+    suspend fun get(
+        relativeUrl: String,
+        queryParams: Map<String, String>?
+    ): ApiResponse {
+        var request = requestBuilder.buildGetRequest(relativeUrl, queryParams)
+
+        return withContext(Dispatchers.IO) {
+            var response = sendAsync(request)
+            if (response.statusCode == 401 && authorization.isAuthorized) {
+                val refreshRequest = requestBuilder.buildRefreshRequest()
+                val refreshResponse = sendAsync(refreshRequest)
+                if (refreshResponse.statusCode == 200) {
+                    val jsonBody = refreshResponse.asJsonMap()
+                    authorization.changeAuth(
+                        jsonBody["token"].asString,
+                        jsonBody["refreshToken"].asString
+                    )
+
+                    request = requestBuilder.buildGetRequest(relativeUrl, queryParams)
+                    response = sendAsync(request)
+                }
+            }
+
+            return@withContext response
+        }
+    }
 }

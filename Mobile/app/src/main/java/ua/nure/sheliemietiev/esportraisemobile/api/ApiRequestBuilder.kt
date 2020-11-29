@@ -36,6 +36,21 @@ class ApiRequestBuilder @Inject constructor(
         return requestBuilder.build()
     }
 
+    fun buildGetRequest(
+        relativeUrl: String,
+        queryParams: Map<String, String>?
+    ): Request {
+        val url = buildUrl(relativeUrl, queryParams)
+
+        val requestBuilder = Request.Builder().url(url).get()
+
+        if (authorization.isAuthorized) {
+            requestBuilder.addHeader("Authorization", "Bearer ${authorization.token}")
+        }
+
+        return requestBuilder.build()
+    }
+
     fun buildRefreshRequest(): Request {
         return buildPostRequest(
             "auth/refresh", null, mapOf(

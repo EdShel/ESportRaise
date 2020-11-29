@@ -48,6 +48,7 @@ class LoginActivity : AppCompatActivity() {
         // TODO: remove it, it's just for test
         username.setText("Eduardo")
         password.setText("Qwerty12345@")
+        loginButton.isEnabled = true
 
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
