@@ -1,7 +1,6 @@
 package ua.nure.sheliemietiev.esportraisemobile.ui.login
 
-import android.app.Activity
-import android.content.SharedPreferences
+import android.content.Intent
 import androidx.lifecycle.Observer
 import android.os.Bundle
 import androidx.annotation.StringRes
@@ -19,6 +18,7 @@ import ua.nure.sheliemietiev.esportraisemobile.App
 
 import ua.nure.sheliemietiev.esportraisemobile.R
 import ua.nure.sheliemietiev.esportraisemobile.api.AuthorizationInfo
+import ua.nure.sheliemietiev.esportraisemobile.ui.main.MainActivity
 import javax.inject.Inject
 
 class LoginActivity : AppCompatActivity() {
@@ -28,6 +28,8 @@ class LoginActivity : AppCompatActivity() {
 
     @Inject
     lateinit var authorizationInfo: AuthorizationInfo
+
+    lateinit var loading: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (applicationContext as App).components.inject(this)
@@ -41,11 +43,10 @@ class LoginActivity : AppCompatActivity() {
         val username = findViewById<EditText>(R.id.username)
         val password = findViewById<EditText>(R.id.password)
         val loginButton = findViewById<Button>(R.id.login)
-        val loading = findViewById<ProgressBar>(R.id.loading)
+        this.loading = findViewById(R.id.loading)
 
-
-
-        username.setText(authorizationInfo.userName)
+        // TODO: remove it, it's just for test
+        username.setText("Eduardo")
         password.setText("Qwerty12345@")
 
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
@@ -61,21 +62,7 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
-        loginViewModel.loginResult.observe(this@LoginActivity, Observer {
-            val loginResult = it ?: return@Observer
-            Toast.makeText(this, "Loool", Toast.LENGTH_LONG).show()
-            loading.visibility = View.GONE
-            if (loginResult.isFailure) {
-                showLoginFailed(loginResult.getErrorCode())
-            }
-            if (loginResult.isSuccess) {
-                updateUiWithUser(loginResult.getOrThrow())
-            }
-            setResult(Activity.RESULT_OK)
-
-            //Complete and destroy login activity once successful
-            finish()
-        })
+        observeLoginResult(loginViewModel)
 
         username.afterTextChanged {
             loginViewModel.loginDataChanged(
@@ -113,10 +100,30 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateUiWithUser(model: AuthorizedView) {
+    private fun observeLoginResult(
+        loginViewModel: LoginViewModel
+    ) {
+        loginViewModel.loginResult.observe(this@LoginActivity, Observer {
+            val loginResult = it ?: return@Observer
+            loading.visibility = View.GONE
+            if (loginResult.isFailure) {
+                showLoginFailed(loginResult.getErrorCode())
+            }
+            if (loginResult.isSuccess) {
+                showWelcomeMessage(loginResult.getOrThrow())
+                goToMainActivity()
+            }
+        })
+    }
+
+    private fun goToMainActivity() {
+        val mainActivity = Intent(this, MainActivity::class.java)
+        startActivity(mainActivity)
+    }
+
+    private fun showWelcomeMessage(model: AuthResultView) {
         val welcome = getString(R.string.welcome)
         val displayName = model.userName
-        // TODO : initiate successful logged in experience
         Toast.makeText(
             applicationContext,
             "$welcome $displayName",

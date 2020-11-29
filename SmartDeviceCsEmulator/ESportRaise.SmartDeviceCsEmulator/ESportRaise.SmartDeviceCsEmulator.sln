@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1231
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESportRaise.SmartDeviceEmulator", "ESportRaise.SmartDeviceEmulator\ESportRaise.SmartDeviceEmulator.csproj", "{4D5FDFBC-4D90-4E86-A3ED-E1CF559D54EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D5FDFBC-4D90-4E86-A3ED-E1CF559D54EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D5FDFBC-4D90-4E86-A3ED-E1CF559D54EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D5FDFBC-4D90-4E86-A3ED-E1CF559D54EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D5FDFBC-4D90-4E86-A3ED-E1CF559D54EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A9F2A4B8-7EB3-4668-A94F-521FB513E377}
+	EndGlobalSection
+EndGlobal

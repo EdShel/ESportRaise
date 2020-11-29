@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ESportRaise.Mobile</string>
+    <string name="app_name">ESport Raise</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email or user name</string>
     <string name="prompt_password">Password</string>

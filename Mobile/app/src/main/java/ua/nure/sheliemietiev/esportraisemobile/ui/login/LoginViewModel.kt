@@ -7,48 +7,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ua.nure.sheliemietiev.esportraisemobile.R
-import ua.nure.sheliemietiev.esportraisemobile.api.Api
-import ua.nure.sheliemietiev.esportraisemobile.api.AuthorizationInfo
 import ua.nure.sheliemietiev.esportraisemobile.util.OperationResult
 import javax.inject.Inject
 
-class LoginModel @Inject constructor(
-    var api: Api,
-    var authInfo: AuthorizationInfo
-) {
-    suspend fun signIn(email: String, password: String): OperationResult<AuthorizedView> {
-        val response = api.post(
-            "auth/login", null, mapOf<String, Any>(
-                "emailOrUserName" to email,
-                "password" to password
-            )
-        )
-
-        val json = response.asJsonMap()
-        val userName = json["userName"].asString
-        val token = json["token"].asString
-        val refreshToken = json["refreshToken"].asString
-        authInfo.setUser(
-            userName,
-            email,
-            token,
-            refreshToken
-        )
-        return OperationResult.success(AuthorizedView(userName))
-    }
-}
-
-class AuthorizedView(val userName: String)
-
 class LoginViewModel @Inject constructor(
-    val loginModel: LoginModel
+    private val loginModel: LoginModel
 ) : ViewModel() {
 
     private val _loginFormState = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> get() = _loginFormState
 
-    private val _loginResult = MutableLiveData<OperationResult<AuthorizedView>>()
-    val loginResult: LiveData<OperationResult<AuthorizedView>> get() = _loginResult
+    private val _loginResult = MutableLiveData<OperationResult<AuthResultView>>()
+    val loginResult: LiveData<OperationResult<AuthResultView>> get() = _loginResult
 
     fun loginButtonPressed(email: String, password: String) {
         viewModelScope.launch {
@@ -64,6 +34,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    // TODO: validate
     fun loginDataChanged(username: String, password: String) {
         if (!isUserNameValid(username)) {
             _loginFormState.value = LoginFormState(usernameError = R.string.invalid_username)

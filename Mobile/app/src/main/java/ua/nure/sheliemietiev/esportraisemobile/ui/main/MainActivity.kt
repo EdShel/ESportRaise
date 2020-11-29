@@ -2,6 +2,7 @@ package ua.nure.sheliemietiev.esportraisemobile.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import ua.nure.sheliemietiev.esportraisemobile.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

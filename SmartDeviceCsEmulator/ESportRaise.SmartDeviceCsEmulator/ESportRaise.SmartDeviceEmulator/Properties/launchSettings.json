@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ESportRaise.SmartDeviceEmulator": {
+      "commandName": "Project",
+      "commandLineArgs": "https://192.186.1.16:5003"
+    }
+  }
+}
