@@ -2,8 +2,11 @@ package ua.nure.sheliemietiev.esportraisemobile.ui.training
 
 import android.app.FragmentManager
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.view.LayoutInflaterCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -45,7 +48,7 @@ class TrainingActivity : AppCompatActivity() {
                         if (player == null) {
                             return;
                         }
-                        player.loadVideo("Yv4dVgTc1-g");
+                        player.loadVideo("mM7C_Pw7OL8");
                         player.play();
                     }
 

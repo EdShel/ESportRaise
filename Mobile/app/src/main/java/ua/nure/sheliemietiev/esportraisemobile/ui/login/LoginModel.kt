@@ -1,5 +1,6 @@
 package ua.nure.sheliemietiev.esportraisemobile.ui.login
 
+import ua.nure.sheliemietiev.esportraisemobile.R
 import ua.nure.sheliemietiev.esportraisemobile.api.Api
 import ua.nure.sheliemietiev.esportraisemobile.api.AuthorizationInfo
 import ua.nure.sheliemietiev.esportraisemobile.util.OperationResult
@@ -17,6 +18,9 @@ class LoginModel @Inject constructor(
             )
         )
 
+        if (response.statusCode != 200){
+            return OperationResult.error(R.string.wrong_credentials)
+        }
         val json = response.asJsonMap()
         val userName = json["userName"].asString
         val token = json["token"].asString

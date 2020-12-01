@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="false">
 
-    <fragment
-        android:id="@+id/trainingVideo"
-        android:name="com.google.android.youtube.player.YouTubePlayerFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="9" />
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/videoWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.AppCompat">
+
+        <fragment
+            android:id="@+id/trainingVideo"
+            android:name="com.google.android.youtube.player.YouTubePlayerFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="9" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <Button
         android:layout_width="match_parent"
