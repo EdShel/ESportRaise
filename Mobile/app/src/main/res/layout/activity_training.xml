@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:baselineAligned="false">
+    android:baselineAligned="false"
+    android:orientation="vertical">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/videoWrapper"
@@ -22,5 +23,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=")))" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/physStateChart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>
