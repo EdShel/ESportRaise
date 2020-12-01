@@ -3,6 +3,8 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Mime;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,13 +19,14 @@ namespace ESportRaise.SmartDeviceEmulator
         static void Main(string[] args)
         {
             backendUrl = args[0];
-            client = new HttpClient();
+            client = GetUntrustedCertHttpClient();
 
             string authToken = GetAuthToken();
-            client.DefaultRequestHeaders.Authorization = 
+            client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", authToken);
 
             int trainingId = InitiateTraining();
+            Console.WriteLine($"Starting training #{trainingId}");
 
             var cts = new CancellationTokenSource();
             Task.Run(() => SendPhysicalState(trainingId, cts.Token));
@@ -33,18 +36,31 @@ namespace ESportRaise.SmartDeviceEmulator
             cts.Cancel();
         }
 
+        private static HttpClient GetUntrustedCertHttpClient()
+        {
+            var handler = new HttpClientHandler();
+            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            handler.ServerCertificateCustomValidationCallback =
+                (httpRequestMessage, cert, cetChain, policyErrors) =>
+                {
+                    return true;
+                };
+            return new HttpClient(handler);
+        }
+
         private static string GetAuthToken()
         {
             const string userName = "Eduardo";
             const string password = "Qwerty12345@";
 
+            string requestBodyJson = JsonConvert.SerializeObject(new
+            {
+                emailOrUserName = userName,
+                password = password
+            });
             HttpRequestMessage authRequest = new HttpRequestMessage(HttpMethod.Post, $"{backendUrl}/auth/login")
             {
-                Content = new StringContent(JsonConvert.SerializeObject(new
-                {
-                    emailOrUserName = userName,
-                    password = password
-                }))
+                Content = new StringContent(requestBodyJson, Encoding.UTF8, MediaTypeNames.Application.Json)
             };
             var response = client.SendAsync(authRequest).Result;
             var body = response.Content.ReadAsStringAsync().Result;
@@ -77,7 +93,7 @@ namespace ESportRaise.SmartDeviceEmulator
 
             while (!ct.IsCancellationRequested)
             {
-                Task.Delay(sendingDelayMsecs, ct);
+                Task.Delay(sendingDelayMsecs, ct).Wait();
 
                 var stateRecordObject = new
                 {
@@ -85,6 +101,8 @@ namespace ESportRaise.SmartDeviceEmulator
                     heartrate = heartrate + (int)(Math.Max(0, Math.Sin(currentTime)) * heartrateAmplitude),
                     temperature = temperature + (float)(Math.Max(0, Math.Sin(currentTime)) * temperatureAmplitude)
                 };
+
+                Console.WriteLine($"Sending HR: {stateRecordObject.heartrate}, t: {stateRecordObject.temperature}");
 
                 currentTime += step;
 
