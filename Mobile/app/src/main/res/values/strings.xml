@@ -11,4 +11,6 @@
     <string name="login_failed">"Login failed"</string>
     <!-- Login -->
     <string name="wrong_credentials">"Invalid login or/and password!"</string>
+    <!-- Main -->
+    <string name="have_no_team">"You don't belong to a team!"</string>
 </resources>

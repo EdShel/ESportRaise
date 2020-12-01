@@ -37,7 +37,7 @@ open class OperationResult<out T> protected constructor(
         fun <T> failure(error: Throwable?): OperationResult<T> =
             OperationFailure(error ?: Exception("Operation failure!"))
 
-        fun <T> error(errorCode: Int): OperationResult<T> =
+        fun <T> error(errorCode: Int = 0): OperationResult<T> =
             OperationError(errorCode)
     }
 

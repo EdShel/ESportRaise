@@ -5,8 +5,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -36,16 +38,22 @@ class TrainingActivity : AppCompatActivity() {
 
         val lineChart = findViewById<LineChart>(R.id.physStateChart)
 
-        val xAxis = listOf("Hello", "darkness", "my", "old", "friend")
         val yValues = java.util.ArrayList<Entry>()
         yValues.add(Entry(0f, 1f))
         yValues.add(Entry(1f, 2f))
         yValues.add(Entry(2f, 3f))
         yValues.add(Entry(3f, 4f))
         yValues.add(Entry(4f, 5f))
-
         val lineDataSet = LineDataSet(yValues, "HR")
-        val data = LineData(lineDataSet)
+        val yValues2 = java.util.ArrayList<Entry>()
+        yValues2.add(Entry(0f, 10f))
+        yValues2.add(Entry(1f, 20f))
+        yValues2.add(Entry(2f, 30f))
+        yValues2.add(Entry(3f, 40f))
+        yValues2.add(Entry(4f, 50f))
+        val lineDataSet2 = LineDataSet(yValues2, "t")
+
+        val data = LineData(lineDataSet, lineDataSet2)
 
         lineChart.data = data
         val descr = Description()

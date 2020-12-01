@@ -7,6 +7,7 @@ import dagger.MapKey
 import dagger.Module
 import dagger.multibindings.IntoMap
 import ua.nure.sheliemietiev.esportraisemobile.ui.login.LoginViewModel
+import ua.nure.sheliemietiev.esportraisemobile.ui.main.MainViewModel
 import ua.nure.sheliemietiev.esportraisemobile.ui.training.TrainingViewModel
 import javax.inject.Inject
 import javax.inject.Provider
@@ -46,4 +47,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TrainingViewModel::class)
     internal abstract fun provideTrainingViewModel(viewModel: TrainingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MainViewModel::class)
+    internal abstract fun provideMainViewModel(viewModel: MainViewModel): ViewModel
 }
