@@ -69,14 +69,14 @@ class TrainingActivity : AppCompatActivity() {
         lineChart.invalidate()
 
         trainingViewModel.playerStateData.observe(this, Observer { stateData ->
-            val hrDataSet = LineDataSet(stateData.stateRecords.map {
+            val hrDataSet = LineDataSet(stateData.stateRecords.reversed().map {
                 Entry(it.date.time.toFloat(), it.heartrate.toFloat())
             }, "HR")
-            val temperatureDataSet = LineDataSet(stateData.stateRecords.map {
+            val temperatureDataSet = LineDataSet(stateData.stateRecords.reversed().map {
                 Entry(it.date.time.toFloat(), it.temperature)
             }, "Temperature")
             lineChart.data = LineData(hrDataSet, temperatureDataSet)
-            lineChart.notifyDataSetChanged()
+//            lineChart.notifyDataSetChanged()
             lineChart.invalidate()
         })
 
@@ -85,14 +85,14 @@ class TrainingActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val periodSeconds = 5000L
+        val periodSeconds = 10000L
         physStateRefreshHandler = Handler(Looper.getMainLooper())
-        physStateRefreshHandler.postDelayed(object : Runnable {
+        physStateRefreshHandler.post(object : Runnable {
             override fun run() {
                 trainingViewModel.updatePlayerState()
                 physStateRefreshHandler.postDelayed(this, periodSeconds)
             }
-        }, periodSeconds)
+        })
     }
 
     override fun onPause() {
@@ -121,7 +121,7 @@ class TrainingActivity : AppCompatActivity() {
                             return;
                         }
                         player.loadVideo("mM7C_Pw7OL8");
-                        player.play();
+//                        player.play();
                     }
 
                     override fun onInitializationFailure(

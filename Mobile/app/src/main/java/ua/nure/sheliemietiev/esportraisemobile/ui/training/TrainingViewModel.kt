@@ -46,7 +46,7 @@ class PhysStateCollectingModel @Inject constructor(
             val json = response.asJsonMap()
             val records = json["records"].asJsonArray.map {
                 val stateJson = it.asJsonObject
-                val heartrate = stateJson["heartrate"].asInt
+                val heartrate = stateJson["heartRate"].asInt
                 val temperature = stateJson["temperature"].asFloat
                 val dateFormatted = stateJson["createTime"].asString
                 StateRecord(
@@ -61,7 +61,7 @@ class PhysStateCollectingModel @Inject constructor(
     }
 }
 
-const val CHART_SECONDS_LENGTH = 30
+const val CHART_SECONDS_LENGTH = 3000
 
 class TrainingViewModel @Inject constructor(
     private val youTubeModel: YouTubeModel,
@@ -92,13 +92,7 @@ class TrainingViewModel @Inject constructor(
     }
 
     fun updatePlayerState() {
-        val secondsToRetrieve: Int = if (_playerStateData.value != null) {
-            val currentTimeMs = Date().time
-            val lastUpdateMs = _playerStateData.value!!.updateTime.time
-            ((currentTimeMs - lastUpdateMs) / 1000).toInt()
-        } else {
-            CHART_SECONDS_LENGTH
-        }
+        val secondsToRetrieve: Int = CHART_SECONDS_LENGTH
 
         viewModelScope.launch {
             val teamIdResult = teamModel.getTeamId()

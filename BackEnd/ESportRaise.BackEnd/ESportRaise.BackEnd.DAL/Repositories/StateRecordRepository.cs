@@ -37,7 +37,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             {
                 selectCommand.CommandText =
                     "SELECT * FROM StateRecord WHERE TrainingId = @trainingId AND " +
-                    "TeamMemberId = @userId AND DATEDIFF(SECOND, CreateTime, GETDATE()) < @secs " +
+                    "TeamMemberId = @userId AND DATEDIFF(SECOND, CreateTime, GETUTCDATE()) < @secs " +
                     "ORDER BY CreateTime DESC";
                 selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
                 selectCommand.Parameters.AddWithValue("@userId", userId);
@@ -62,7 +62,7 @@ namespace ESportRaise.BackEnd.DAL.Repositories
             {
                 selectCommand.CommandText =
                     "SELECT * FROM StateRecord WHERE TrainingId = @trainingId AND " +
-                    "DATEDIFF(SECOND, CreateTime, GETDATE()) < @secs " +
+                    "DATEDIFF(SECOND, CreateTime, GETUTCDATE()) < @secs " +
                     "ORDER BY CreateTime DESC";
                 selectCommand.Parameters.AddWithValue("@trainingId", trainingId);
                 selectCommand.Parameters.AddWithValue("@secs", seconds);
