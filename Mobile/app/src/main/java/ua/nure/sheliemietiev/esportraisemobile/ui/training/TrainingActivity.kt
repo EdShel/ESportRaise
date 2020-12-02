@@ -1,8 +1,11 @@
 package ua.nure.sheliemietiev.esportraisemobile.ui.training
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.postDelayed
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.charts.CombinedChart
@@ -25,7 +28,9 @@ class TrainingActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var trainingViewModel : TrainingViewModel
+    lateinit var trainingViewModel: TrainingViewModel
+
+    private lateinit var physStateRefreshHandler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (applicationContext as App).components.inject(this)
@@ -62,6 +67,37 @@ class TrainingActivity : AppCompatActivity() {
 
         lineChart.animateX(2000)
         lineChart.invalidate()
+
+        trainingViewModel.playerStateData.observe(this, Observer { stateData ->
+            val hrDataSet = LineDataSet(stateData.stateRecords.map {
+                Entry(it.date.time.toFloat(), it.heartrate.toFloat())
+            }, "HR")
+            val temperatureDataSet = LineDataSet(stateData.stateRecords.map {
+                Entry(it.date.time.toFloat(), it.temperature)
+            }, "Temperature")
+            lineChart.data = LineData(hrDataSet, temperatureDataSet)
+            lineChart.notifyDataSetChanged()
+            lineChart.invalidate()
+        })
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val periodSeconds = 5000L
+        physStateRefreshHandler = Handler(Looper.getMainLooper())
+        physStateRefreshHandler.postDelayed(object : Runnable {
+            override fun run() {
+                trainingViewModel.updatePlayerState()
+                physStateRefreshHandler.postDelayed(this, periodSeconds)
+            }
+        }, periodSeconds)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        physStateRefreshHandler.removeCallbacksAndMessages(null)
     }
 
     private fun TrainingActivity.setupYouTubePlayer() {
