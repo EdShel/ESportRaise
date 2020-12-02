@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
@@ -102,16 +103,28 @@ namespace ESportRaise.SmartDeviceEmulator
                     temperature = temperature + (float)(Math.Max(0, Math.Sin(currentTime)) * temperatureAmplitude)
                 };
 
-                Console.WriteLine($"Sending HR: {stateRecordObject.heartrate}, t: {stateRecordObject.temperature}");
+                Console.Write($"Sending HR: {stateRecordObject.heartrate}, t: {stateRecordObject.temperature} ");
 
                 currentTime += step;
 
                 var request = new HttpRequestMessage(
                     HttpMethod.Post, $"{backendUrl}/stateRecord/send")
                 {
-                    Content = new StringContent(JsonConvert.SerializeObject(stateRecordObject))
+                    Content = new StringContent(
+                        JsonConvert.SerializeObject(stateRecordObject),
+                        Encoding.UTF8,
+                        MediaTypeNames.Application.Json)
                 };
-                client.SendAsync(request, ct).Wait();
+
+                var response = client.SendAsync(request, ct).Result;
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    Console.WriteLine("OK");
+                }
+                else
+                {
+                    Console.WriteLine($"{response.StatusCode}: {response.Content.ReadAsStringAsync().Result}");
+                }
             }
         }
     }
