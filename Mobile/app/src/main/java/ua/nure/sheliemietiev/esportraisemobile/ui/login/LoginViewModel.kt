@@ -20,6 +20,14 @@ class LoginViewModel @Inject constructor(
     private val _loginResult = MutableLiveData<OperationResult<AuthResultView>>()
     val loginResult: LiveData<OperationResult<AuthResultView>> get() = _loginResult
 
+    init {
+        if (loginModel.authInfo.isAuthorized){
+            _loginResult.value = OperationResult.success(AuthResultView(
+                loginModel.authInfo.userName
+            ))
+        }
+    }
+
     fun loginButtonPressed(email: String, password: String) {
         viewModelScope.launch {
             val result = loginModel.signIn(email, password)

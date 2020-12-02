@@ -3,6 +3,10 @@ package ua.nure.sheliemietiev.esportraisemobile.ui.training
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.postDelayed
@@ -10,16 +14,21 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
 import ua.nure.sheliemietiev.esportraisemobile.App
 import ua.nure.sheliemietiev.esportraisemobile.R
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 
@@ -31,6 +40,8 @@ class TrainingActivity : AppCompatActivity() {
     lateinit var trainingViewModel: TrainingViewModel
 
     private lateinit var physStateRefreshHandler: Handler
+
+    private var youtubePlayer: YouTubePlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (applicationContext as App).components.inject(this)
@@ -51,28 +62,76 @@ class TrainingActivity : AppCompatActivity() {
         lineChart.invalidate()
 
         trainingViewModel.playerStateData.observe(this, Observer { stateData ->
+            if (stateData.stateRecords.count() == 0) {
+                return@Observer
+            }
+            val baseDate = stateData.stateRecords[0].date.time
+
             val hrDataSet = LineDataSet(stateData.stateRecords.map {
-                Entry(it.date.time.toFloat(), it.heartrate.toFloat())
+                Entry(
+                    ((it.date.time - baseDate) / 1000).toFloat(),
+                    it.heartrate.toFloat()
+                )
             }, "HR")
             val temperatureDataSet = LineDataSet(stateData.stateRecords.map {
-                Entry(it.date.time.toFloat(), it.temperature)
+                Entry(
+                    ((it.date.time - baseDate) / 1000).toFloat(),
+                    it.temperature
+                )
             }, "Temperature")
             lineChart.data = LineData(hrDataSet, temperatureDataSet)
 //            lineChart.notifyDataSetChanged()
+            val xAxis = lineChart.getXAxis()
+            xAxis.granularity = 10f
+            xAxis.valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float, axis: AxisBase): String {
+                    val time = baseDate + value * 1000
+                    return SimpleDateFormat("hh:mm:ss")
+                        .format(time) //TODO: take the format from from R.string
+                }
+            }
             lineChart.invalidate()
         })
 
+        val memberSelector = findViewById<Spinner>(R.id.memberSelectSpinner)
+        memberSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                adapter: AdapterView<*>?,
+                spinner: View?,
+                index: Int,
+                id: Long
+            ) {
+                trainingViewModel.selectedBroadcastChanged(index)
+            }
 
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+        }
+
+        trainingViewModel.trainingData.observe(this, Observer {
+            memberSelector.adapter = ArrayAdapter(
+                this@TrainingActivity,
+                R.layout.support_simple_spinner_dropdown_item,
+                it.videoStreams.toList()
+            )
+        })
+
+        trainingViewModel.broadcastUrl.observe(this, Observer {
+            if (youtubePlayer == null || it == null) {
+                return@Observer
+            }
+            youtubePlayer!!.loadVideo(it)
+            youtubePlayer!!.play()
+        })
     }
 
     override fun onResume() {
         super.onResume()
-        val periodSeconds = 10000L
+        val periodMilliseconds = 10 * 1000L
         physStateRefreshHandler = Handler(Looper.getMainLooper())
         physStateRefreshHandler.post(object : Runnable {
             override fun run() {
                 trainingViewModel.updatePlayerState()
-                physStateRefreshHandler.postDelayed(this, periodSeconds)
+                physStateRefreshHandler.postDelayed(this, periodMilliseconds)
             }
         })
     }
@@ -102,7 +161,11 @@ class TrainingActivity : AppCompatActivity() {
                         if (player == null) {
                             return;
                         }
-                        player.loadVideo("mM7C_Pw7OL8");
+                        youtubePlayer = player
+                        if (trainingViewModel.broadcastUrl.value != null) {
+                            player.loadVideo(trainingViewModel.broadcastUrl.value);
+                        }
+//                        player.pause()
 //                        player.play();
                     }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ua.nure.sheliemietiev.esportraisemobile.api.Api
 import ua.nure.sheliemietiev.esportraisemobile.api.StatusCode
+import ua.nure.sheliemietiev.esportraisemobile.ui.main.TeamMember
 import ua.nure.sheliemietiev.esportraisemobile.ui.main.TeamModel
 import ua.nure.sheliemietiev.esportraisemobile.ui.main.TrainingModel
 import ua.nure.sheliemietiev.esportraisemobile.util.Iso8601ToDate
@@ -61,6 +62,20 @@ class PhysStateCollectingModel @Inject constructor(
     }
 }
 
+class VideoStreamItem(
+    val videoId: String,
+    val teamMemberName: String
+) {
+    override fun toString(): String {
+        return teamMemberName
+    }
+}
+
+class TrainingData(
+    val teamMembers: Iterable<TeamMember>,
+    val videoStreams: Iterable<VideoStreamItem>
+)
+
 const val CHART_SECONDS_LENGTH = 3000
 
 class TrainingViewModel @Inject constructor(
@@ -69,12 +84,17 @@ class TrainingViewModel @Inject constructor(
     private val trainingModel: TrainingModel,
     private val teamModel: TeamModel
 ) : ViewModel() {
-    private val _youtubeKeyData: LiveData<String>;
+    private val _youtubeKeyData: LiveData<String>
     val youtubeKeyData get() = _youtubeKeyData
 
     private val _playerStateData: MutableLiveData<PlayerStateData>
-    val playerStateData: LiveData<PlayerStateData>
-        get() = _playerStateData
+    val playerStateData: LiveData<PlayerStateData> get() = _playerStateData
+
+    private val _trainingData: MutableLiveData<TrainingData>
+    val trainingData get() = _trainingData
+
+    private val _broadcastUrl = MutableLiveData<String?>(null)
+    val broadcastUrl: LiveData<String?> get() = _broadcastUrl
 
     init {
         _youtubeKeyData = object : LiveData<String>() {
@@ -87,6 +107,11 @@ class TrainingViewModel @Inject constructor(
         _playerStateData = object : MutableLiveData<PlayerStateData>() {
             override fun onActive() {
                 updatePlayerState()
+            }
+        }
+        _trainingData = object : MutableLiveData<TrainingData>() {
+            override fun onActive() {
+                updateTrainingData()
             }
         }
     }
@@ -120,5 +145,47 @@ class TrainingViewModel @Inject constructor(
                 physicalRecords.getOrThrow()
             )
         }
+    }
+
+    fun updateTrainingData() {
+        viewModelScope.launch {
+            val teamIdResult = teamModel.getTeamId()
+            if (teamIdResult.isFailure) {
+                return@launch
+            }
+            val teamId = teamIdResult.getOrThrow()
+            val teamMembersResult = teamModel.getTeamMembers(teamId)
+            if (teamMembersResult.isFailure) {
+                return@launch
+            }
+            val teamMembers = teamMembersResult.getOrThrow()
+
+            val trainingIdResult = trainingModel.getCurrentTrainingId(teamId)
+            if (trainingIdResult.isFailure) {
+                return@launch;
+            }
+            val trainingId = trainingIdResult.getOrThrow()
+
+            val videoStreamsResult = trainingModel.getBroadcasts(trainingId)
+            val videoStreams = videoStreamsResult.getOrThrow().map {
+                val memberName = teamMembers
+                    .find { m -> m.id == it.memberId }!!
+                    .userName
+                VideoStreamItem(it.streamId, memberName)
+            }
+            _trainingData.value = TrainingData(
+                teamMembers,
+                videoStreams
+            )
+        }
+    }
+
+    fun selectedBroadcastChanged(broadcastIndex: Int) {
+        val broadcasts = trainingData.value?.videoStreams ?: emptyList()
+        if (broadcastIndex < 0 || broadcastIndex >= broadcasts.count()) {
+            return
+        }
+        val selectedBroadcast = broadcasts.elementAt(broadcastIndex)
+        _broadcastUrl.value = selectedBroadcast.videoId
     }
 }
