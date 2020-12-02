@@ -43,24 +43,6 @@ class TrainingActivity : AppCompatActivity() {
 
         val lineChart = findViewById<LineChart>(R.id.physStateChart)
 
-        val yValues = java.util.ArrayList<Entry>()
-        yValues.add(Entry(0f, 1f))
-        yValues.add(Entry(1f, 2f))
-        yValues.add(Entry(2f, 3f))
-        yValues.add(Entry(3f, 4f))
-        yValues.add(Entry(4f, 5f))
-        val lineDataSet = LineDataSet(yValues, "HR")
-        val yValues2 = java.util.ArrayList<Entry>()
-        yValues2.add(Entry(0f, 10f))
-        yValues2.add(Entry(1f, 20f))
-        yValues2.add(Entry(2f, 30f))
-        yValues2.add(Entry(3f, 40f))
-        yValues2.add(Entry(4f, 50f))
-        val lineDataSet2 = LineDataSet(yValues2, "t")
-
-        val data = LineData(lineDataSet, lineDataSet2)
-
-        lineChart.data = data
         val descr = Description()
         descr.text = "Physical state"
         lineChart.description = descr
@@ -69,10 +51,10 @@ class TrainingActivity : AppCompatActivity() {
         lineChart.invalidate()
 
         trainingViewModel.playerStateData.observe(this, Observer { stateData ->
-            val hrDataSet = LineDataSet(stateData.stateRecords.reversed().map {
+            val hrDataSet = LineDataSet(stateData.stateRecords.map {
                 Entry(it.date.time.toFloat(), it.heartrate.toFloat())
             }, "HR")
-            val temperatureDataSet = LineDataSet(stateData.stateRecords.reversed().map {
+            val temperatureDataSet = LineDataSet(stateData.stateRecords.map {
                 Entry(it.date.time.toFloat(), it.temperature)
             }, "Temperature")
             lineChart.data = LineData(hrDataSet, temperatureDataSet)
