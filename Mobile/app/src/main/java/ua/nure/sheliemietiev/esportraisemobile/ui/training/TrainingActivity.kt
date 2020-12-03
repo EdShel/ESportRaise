@@ -1,5 +1,6 @@
 package ua.nure.sheliemietiev.esportraisemobile.ui.training
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.os.postDelayed
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +18,7 @@ import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -73,21 +76,27 @@ class TrainingActivity : AppCompatActivity() {
                     it.heartrate.toFloat()
                 )
             }, "HR")
+            hrDataSet.axisDependency = YAxis.AxisDependency.LEFT
+            hrDataSet.color =
+                ContextCompat.getColor(this, R.color.heartRate) // TODO: replace ints with constants from styles
             val temperatureDataSet = LineDataSet(stateData.stateRecords.map {
                 Entry(
                     ((it.date.time - baseDate) / 1000).toFloat(),
                     it.temperature
                 )
             }, "Temperature")
+            temperatureDataSet.axisDependency = YAxis.AxisDependency.RIGHT
+            temperatureDataSet.color =
+                ContextCompat.getColor(this, R.color.temperature) // TODO: replace ints with constants from styles
             lineChart.data = LineData(hrDataSet, temperatureDataSet)
 //            lineChart.notifyDataSetChanged()
-            val xAxis = lineChart.getXAxis()
+            val xAxis = lineChart.xAxis
             xAxis.granularity = 10f
             xAxis.valueFormatter = object : ValueFormatter() {
-                override fun getFormattedValue(value: Float, axis: AxisBase): String {
-                    val time = baseDate + value * 1000
-                    return SimpleDateFormat("hh:mm:ss")
-                        .format(time) //TODO: take the format from from R.string
+                override fun getFormattedValue(value: Float): String {
+                    val time = baseDate + (value * 1000).toLong()
+                    return SimpleDateFormat("HH:mm:ss")
+                        .format(time) //TODO: take the  format from from R.string
                 }
             }
             lineChart.invalidate()
