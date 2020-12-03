@@ -1,6 +1,7 @@
 package ua.nure.sheliemietiev.esportraisemobile.ui.login
 
 import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.Observer
 import android.os.Bundle
 import androidx.annotation.StringRes
@@ -14,7 +15,9 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.android.synthetic.main.activity_login.*
 import ua.nure.sheliemietiev.esportraisemobile.App
+import ua.nure.sheliemietiev.esportraisemobile.BuildConfig
 
 import ua.nure.sheliemietiev.esportraisemobile.R
 import ua.nure.sheliemietiev.esportraisemobile.api.AuthorizationInfo
@@ -42,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
 
         val username = findViewById<EditText>(R.id.username)
         val password = findViewById<EditText>(R.id.password)
-        val loginButton = findViewById<Button>(R.id.login)
+        val loginButton = findViewById<Button>(R.id.loginButton)
         this.loading = findViewById(R.id.loading)
 
         // TODO: remove it, it's just for test
@@ -90,14 +93,19 @@ class LoginActivity : AppCompatActivity() {
                 }
                 false
             }
+        }
 
-            loginButton.setOnClickListener {
-                loading.visibility = View.VISIBLE
-                loginViewModel.loginButtonPressed(
-                    username.text.toString(),
-                    password.text.toString()
-                )
-            }
+        loginButton.setOnClickListener {
+            loading.visibility = View.VISIBLE
+            loginViewModel.loginButtonPressed(
+                username.text.toString(),
+                password.text.toString()
+            )
+        }
+
+        registerButton.setOnClickListener {
+            val browseIntent = Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.WEB_URL))
+            startActivity(browseIntent)
         }
     }
 

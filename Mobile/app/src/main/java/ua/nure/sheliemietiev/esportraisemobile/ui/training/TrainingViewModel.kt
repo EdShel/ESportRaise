@@ -173,10 +173,10 @@ class TrainingViewModel @Inject constructor(
     }
 
     fun viewStateOfUser(userId: Int) {
-        if (_playerStateData.value == null) {
+        val stateData = _playerStateData.value
+        if (stateData == null || stateData.viewedUserId == userId) {
             return
         }
-        val stateData = _playerStateData.value!!
 
         _playerStateData.value = PlayerStateData(
             userId,

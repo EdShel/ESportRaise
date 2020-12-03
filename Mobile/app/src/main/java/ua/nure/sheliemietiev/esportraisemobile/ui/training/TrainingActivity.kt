@@ -158,6 +158,7 @@ class TrainingActivity : AppCompatActivity() {
                 val playerButton = Button(this@TrainingActivity)
                 playerButton.text = allTeamMembers[playerId]!!.userName
                 playerButton.tag = playerId
+                playerButton.setOnClickListener { trainingViewModel.viewStateOfUser(playerId) }
                 playersContainer.addView(playerButton)
             }
         }

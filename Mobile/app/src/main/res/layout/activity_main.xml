@@ -34,7 +34,7 @@
             android:textSize="24sp" />
 
         <Button
-            android:id="@+id/startTrainingButton"
+            android:id="@+id/start_training_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
