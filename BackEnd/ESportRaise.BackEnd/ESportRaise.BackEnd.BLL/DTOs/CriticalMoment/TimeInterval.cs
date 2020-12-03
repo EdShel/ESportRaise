@@ -17,6 +17,10 @@ namespace ESportRaise.BackEnd.BLL.DTOs.CriticalMoment
 
         public static IEnumerable<TimeInterval> MergeIntervals(IEnumerable<TimeInterval> intervals)
         {
+            if (!intervals.Any())
+            {
+                yield break;
+            }
             var accumulator = intervals.First();
             intervals = intervals.Skip(1);
 

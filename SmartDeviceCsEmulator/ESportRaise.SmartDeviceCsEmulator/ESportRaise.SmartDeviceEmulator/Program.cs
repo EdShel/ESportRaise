@@ -86,11 +86,11 @@ namespace ESportRaise.SmartDeviceEmulator
             const int heartrate = 90;
             const int heartrateAmplitude = 40;
             const float temperature = 36.6f;
-            const float temperatureAmplitude = 3f;
+            const float temperatureAmplitude = 0.4f;
 
             const int sendingsBeforeRepeat = 30;
             const double step = Math.PI / sendingsBeforeRepeat;
-            double currentTime = 0d;
+            double currentTime = -Math.PI / 4;
 
             while (!ct.IsCancellationRequested)
             {
