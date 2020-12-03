@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ua.nure.sheliemietiev.esportraisemobile.api.Api
 import ua.nure.sheliemietiev.esportraisemobile.api.StatusCode
+import ua.nure.sheliemietiev.esportraisemobile.models.StressFinder
 import ua.nure.sheliemietiev.esportraisemobile.ui.main.TeamMember
 import ua.nure.sheliemietiev.esportraisemobile.ui.main.TeamModel
 import ua.nure.sheliemietiev.esportraisemobile.ui.main.TrainingModel
@@ -16,42 +17,50 @@ import java.util.*
 import javax.inject.Inject
 
 data class StateRecord(
-    val heartrate: Int,
+    val userId: Int,
+    val heartRate: Int,
     val temperature: Float,
     val date: Date
 )
 
 class PlayerStateData(
-    val userId: Int,
-    val updateTime: Date,
-    val stateRecords: List<StateRecord>
-)
+    val viewedUserId: Int?,
+    val stateRecords: Map<Int, Iterable<StateRecord>>,
+    val nervousUsersIds: Iterable<Int>
+) {
+    val viewedUserStates
+        get() = if (viewedUserId == null) {
+            emptyList()
+        } else {
+            stateRecords[viewedUserId]
+        }
+}
 
 class PhysStateCollectingModel @Inject constructor(
     private val api: Api
 ) {
     suspend fun getPhysStateForLastSeconds(
         seconds: Int,
-        trainingId: Int,
-        userId: Int
+        trainingId: Int
     ): OperationResult<List<StateRecord>> {
         val response = api.get(
             "stateRecord/last",
             mapOf(
                 "trainingId" to trainingId.toString(),
-                "timeInSecs" to seconds.toString(),
-                "userId" to userId.toString()
+                "timeInSecs" to seconds.toString()
             )
         )
         if (response.statusCode == StatusCode.OK.code) {
             val json = response.asJsonMap()
             val records = json["records"].asJsonArray.map {
                 val stateJson = it.asJsonObject
-                val heartrate = stateJson["heartRate"].asInt
+                val userId = stateJson["teamMemberId"].asInt
+                val heartRate = stateJson["heartRate"].asInt
                 val temperature = stateJson["temperature"].asFloat
                 val dateFormatted = stateJson["createTime"].asString
                 StateRecord(
-                    heartrate,
+                    userId,
+                    heartRate,
                     temperature,
                     Iso8601ToDate(dateFormatted)
                 )
@@ -72,17 +81,18 @@ class VideoStreamItem(
 }
 
 class TrainingData(
-    val teamMembers: Iterable<TeamMember>,
+    val teamMembers: Map<Int, TeamMember>,
     val videoStreams: Iterable<VideoStreamItem>
 )
 
-const val CHART_SECONDS_LENGTH = 3000
+const val CHART_SECONDS_LENGTH = 60 * 3
 
 class TrainingViewModel @Inject constructor(
     private val youTubeModel: YouTubeModel,
     private val physStateCollector: PhysStateCollectingModel,
     private val trainingModel: TrainingModel,
-    private val teamModel: TeamModel
+    private val teamModel: TeamModel,
+    private val stressFinder: StressFinder
 ) : ViewModel() {
     private val _youtubeKeyData: LiveData<String>
     val youtubeKeyData get() = _youtubeKeyData
@@ -133,19 +143,48 @@ class TrainingViewModel @Inject constructor(
 
             val physicalRecords = physStateCollector.getPhysStateForLastSeconds(
                 seconds = secondsToRetrieve,
-                trainingId = trainingIdResult.getOrThrow(),
-                userId = 4
+                trainingId = trainingIdResult.getOrThrow()
             )
             if (physicalRecords.isFailure) {
                 return@launch
             }
+            val statesByPlayers = physicalRecords.getOrThrow().groupBy { k ->
+                k.userId
+            }
+            if (statesByPlayers.count() == 0) {
+                _playerStateData.value =
+                    PlayerStateData(null, emptyMap(), emptyList())
+                return@launch
+            }
+
+            val viewedUserId = statesByPlayers.keys.first()
             _playerStateData.value = PlayerStateData(
-                4,
-                Date(),
-                physicalRecords.getOrThrow()
+                viewedUserId,
+                statesByPlayers,
+                statesByPlayers.filter { s -> isNervous(s.value) }.map { s -> s.key }
             )
         }
     }
+
+    private fun isNervous(states: Iterable<StateRecord>): Boolean {
+        val abnormalHeartRate = stressFinder.isNervous(states.map { s -> s.heartRate.toFloat() })
+        val abnormalTemperature = stressFinder.isNervous(states.map { s -> s.temperature })
+        return abnormalHeartRate || abnormalTemperature
+    }
+
+    fun viewStateOfUser(userId: Int) {
+        if (_playerStateData.value == null) {
+            return
+        }
+        val stateData = _playerStateData.value!!
+
+        _playerStateData.value = PlayerStateData(
+            userId,
+            stateData.stateRecords,
+            stateData.nervousUsersIds
+        )
+    }
+
 
     fun updateTrainingData() {
         viewModelScope.launch {
@@ -174,7 +213,7 @@ class TrainingViewModel @Inject constructor(
                 VideoStreamItem(it.streamId, memberName)
             }
             _trainingData.value = TrainingData(
-                teamMembers,
+                teamMembers.associateBy { k -> k.id },
                 videoStreams
             )
         }

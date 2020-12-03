@@ -1,29 +1,22 @@
 package ua.nure.sheliemietiev.esportraisemobile.ui.training
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.AttributeSet
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.os.postDelayed
+import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.CombinedData
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
@@ -31,7 +24,6 @@ import com.google.android.youtube.player.YouTubePlayerFragment
 import ua.nure.sheliemietiev.esportraisemobile.App
 import ua.nure.sheliemietiev.esportraisemobile.R
 import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 
@@ -65,21 +57,32 @@ class TrainingActivity : AppCompatActivity() {
         lineChart.invalidate()
 
         trainingViewModel.playerStateData.observe(this, Observer { stateData ->
-            if (stateData.stateRecords.count() == 0) {
+            val trainingData = trainingViewModel.trainingData.value
+            if (trainingData != null) {
+                updateStressIcons(trainingData, stateData)
+            }
+
+            val viewedStateData = stateData.viewedUserStates
+
+            if (viewedStateData == null || viewedStateData.count() == 0) {
                 return@Observer
             }
-            val baseDate = stateData.stateRecords[0].date.time
 
-            val hrDataSet = LineDataSet(stateData.stateRecords.map {
+            val baseDate = viewedStateData.first().date.time
+
+            val hrDataSet = LineDataSet(viewedStateData.map {
                 Entry(
                     ((it.date.time - baseDate) / 1000).toFloat(),
-                    it.heartrate.toFloat()
+                    it.heartRate.toFloat()
                 )
             }, "HR")
             hrDataSet.axisDependency = YAxis.AxisDependency.LEFT
             hrDataSet.color =
-                ContextCompat.getColor(this, R.color.heartRate) // TODO: replace ints with constants from styles
-            val temperatureDataSet = LineDataSet(stateData.stateRecords.map {
+                ContextCompat.getColor(
+                    this,
+                    R.color.heartRate
+                ) // TODO: replace ints with constants from styles
+            val temperatureDataSet = LineDataSet(viewedStateData.map {
                 Entry(
                     ((it.date.time - baseDate) / 1000).toFloat(),
                     it.temperature
@@ -87,9 +90,11 @@ class TrainingActivity : AppCompatActivity() {
             }, "Temperature")
             temperatureDataSet.axisDependency = YAxis.AxisDependency.RIGHT
             temperatureDataSet.color =
-                ContextCompat.getColor(this, R.color.temperature) // TODO: replace ints with constants from styles
+                ContextCompat.getColor(
+                    this,
+                    R.color.temperature
+                ) // TODO: replace ints with constants from styles
             lineChart.data = LineData(hrDataSet, temperatureDataSet)
-//            lineChart.notifyDataSetChanged()
             val xAxis = lineChart.xAxis
             xAxis.granularity = 10f
             xAxis.valueFormatter = object : ValueFormatter() {
@@ -122,6 +127,10 @@ class TrainingActivity : AppCompatActivity() {
                 R.layout.support_simple_spinner_dropdown_item,
                 it.videoStreams.toList()
             )
+
+            val stateRecordsData = trainingViewModel.playerStateData.value
+            if (stateRecordsData != null)
+                updateStressIcons(it, stateRecordsData)
         })
 
         trainingViewModel.broadcastUrl.observe(this, Observer {
@@ -131,6 +140,40 @@ class TrainingActivity : AppCompatActivity() {
             youtubePlayer!!.loadVideo(it)
             youtubePlayer!!.play()
         })
+    }
+
+    private fun updateStressIcons(
+        trainingData: TrainingData,
+        stateData: PlayerStateData
+    ) {
+        val playersContainer = findViewById<LinearLayout>(R.id.activePlayersList)
+
+        val playerButtons = playersContainer.children
+        val displayedPlayersIds = playerButtons.map { b -> b.tag as Int }.toSet()
+        val activePlayersIds = stateData.stateRecords.keys
+        if (displayedPlayersIds != activePlayersIds) {
+            val allTeamMembers = trainingData.teamMembers
+            playersContainer.removeAllViews()
+            for (playerId in activePlayersIds) {
+                val playerButton = Button(this@TrainingActivity)
+                playerButton.text = allTeamMembers[playerId]!!.userName
+                playerButton.tag = playerId
+                playersContainer.addView(playerButton)
+            }
+        }
+
+        for (button in playerButtons) {
+            val playerId: Int = button.tag as Int
+            button.setBackgroundColor(
+                ContextCompat.getColor(
+                    this, if (stateData.nervousUsersIds.contains(playerId)) {
+                        R.color.colorAccent
+                    } else {
+                        R.color.design_default_color_surface
+                    }
+                )
+            )
+        }
     }
 
     override fun onResume() {
