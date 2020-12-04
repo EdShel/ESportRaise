@@ -17,8 +17,8 @@
     <string name="have_no_team">"Ви не належити до команди!"</string>
     <string name="view_current_training">Переглянути поточне тренування</string>
     <string name="start_training">Почати тренування</string>
-    <string name="language">Language</string>
-    <string name="goToWeb">Перейти на сайт</string>
+    <string name="language">Змінити мову</string>
+    <string name="go_to_web">Перейти на сайт</string>
     <string name="logout">Вийти</string>
     <!-- Date & time -->
     <string name="locale_time">hh:mm:ss</string>

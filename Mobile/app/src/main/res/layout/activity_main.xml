@@ -75,7 +75,7 @@
             android:layout_gravity="start"
             android:drawableStart="@drawable/ic_go_to_web"
             android:drawableLeft="@drawable/ic_go_to_web"
-            android:text="@string/goToWeb"
+            android:text="@string/go_to_web"
             android:textAlignment="viewStart"
             android:textSize="24sp"
             android:background="@color/menuButtonBack"

@@ -41,5 +41,4 @@ class DeviceAdapter(
         deviceNameView.text = devicesList[position].name
         return row
     }
-
 }

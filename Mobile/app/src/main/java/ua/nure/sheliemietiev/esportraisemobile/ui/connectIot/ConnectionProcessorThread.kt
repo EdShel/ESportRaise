@@ -8,7 +8,7 @@ import java.io.OutputStream
 import java.util.*
 
 class ConnectionProcessorThread(
-    private val device: BluetoothDevice,
+    device: BluetoothDevice,
     private val connectIotViewModel: ConnectIotViewModel
 ) : Thread() {
 
