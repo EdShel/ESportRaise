@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ua.nure.sheliemietiev.esportraisemobile.api.AuthorizationInfo
+import ua.nure.sheliemietiev.esportraisemobile.models.TeamModel
+import ua.nure.sheliemietiev.esportraisemobile.models.TrainingModel
+import java.lang.Exception
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -12,8 +15,7 @@ class MainViewModel @Inject constructor(
     private val trainingModel: TrainingModel,
     private val authorizationInfo: AuthorizationInfo
 ) : ViewModel() {
-    var teamMemberData: LiveData<TeamMemberStatus>
-        get() = field
+    val teamMemberData: LiveData<TeamMemberStatus>
 
     init {
         teamMemberData = object : LiveData<TeamMemberStatus>() {
@@ -33,12 +35,11 @@ class MainViewModel @Inject constructor(
                                 trainingId = trainingResult.getOrThrow()
                             }
                         }
+                    } catch (e: Exception) {
+                        teamId = null
+                        trainingId = null
                     } finally {
-                        value =
-                            TeamMemberStatus(
-                                teamId,
-                                trainingId
-                            )
+                        value = TeamMemberStatus(teamId, trainingId)
                     }
                 }
             }

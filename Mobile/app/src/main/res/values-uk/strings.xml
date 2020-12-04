@@ -17,4 +17,7 @@
     <!-- Date & time -->
     <string name="locale_time">HH:mm:ss</string>
     <string name="server_not_accessible">The server is not accessible!</string>
+    <string name="login_title">Login</string>
+    <string name="register_message">Do not have an account? Create one on the web in 30 seconds</string>
+    <string name="register_action">Register</string>
 </resources>

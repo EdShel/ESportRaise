@@ -1,26 +1,18 @@
-package ua.nure.sheliemietiev.esportraisemobile.ui.main
+package ua.nure.sheliemietiev.esportraisemobile.models
 
 import ua.nure.sheliemietiev.esportraisemobile.R
 import ua.nure.sheliemietiev.esportraisemobile.api.Api
 import ua.nure.sheliemietiev.esportraisemobile.api.StatusCode
+import ua.nure.sheliemietiev.esportraisemobile.data.TeamMember
 import ua.nure.sheliemietiev.esportraisemobile.util.OperationResult
 import javax.inject.Inject
-
-data class TeamMember(
-    val id: Int,
-    val userName: String
-) {
-    override fun toString(): String {
-        return userName
-    }
-}
 
 class TeamModel @Inject constructor(
     private val api: Api
 ) {
     suspend fun getTeamId(): OperationResult<Int> {
         val response = api.get("teamMember/me", null);
-        if (response.statusCode == 200) {
+        if (response.statusCode == StatusCode.OK.code) {
             val json = response.asJsonMap()
             val teamId = json["teamId"].asInt
             return OperationResult.success(
@@ -41,7 +33,8 @@ class TeamModel @Inject constructor(
                 val memberJson = it.asJsonObject
                 TeamMember(
                     memberJson["id"].asInt,
-                    memberJson["name"].asString)
+                    memberJson["name"].asString
+                )
             }
             return OperationResult.success(members)
         }

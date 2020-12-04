@@ -8,9 +8,9 @@ import kotlinx.coroutines.launch
 import ua.nure.sheliemietiev.esportraisemobile.api.Api
 import ua.nure.sheliemietiev.esportraisemobile.api.StatusCode
 import ua.nure.sheliemietiev.esportraisemobile.models.StressFinder
-import ua.nure.sheliemietiev.esportraisemobile.ui.main.TeamMember
-import ua.nure.sheliemietiev.esportraisemobile.ui.main.TeamModel
-import ua.nure.sheliemietiev.esportraisemobile.ui.main.TrainingModel
+import ua.nure.sheliemietiev.esportraisemobile.data.TeamMember
+import ua.nure.sheliemietiev.esportraisemobile.models.TeamModel
+import ua.nure.sheliemietiev.esportraisemobile.models.TrainingModel
 import ua.nure.sheliemietiev.esportraisemobile.util.iso8601ToDate
 import ua.nure.sheliemietiev.esportraisemobile.util.OperationResult
 import java.util.*

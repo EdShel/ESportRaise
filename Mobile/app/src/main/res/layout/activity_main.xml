@@ -20,62 +20,83 @@
             android:fontFamily="arial"
             android:gravity="center_horizontal"
             android:text="ESport Raise"
-            android:textSize="48sp" />
+            android:textSize="48sp"
+            android:textColor="@color/colorPrimary"/>
 
         <Button
-            android:id="@+id/viewCurrentTrainingButton"
+            android:id="@+id/view_current_training_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:drawableStart="@android:drawable/ic_menu_slideshow"
-            android:drawableLeft="@android:drawable/ic_menu_slideshow"
+            android:drawableStart="@drawable/ic_view_current_training"
+            android:drawableLeft="@drawable/ic_view_current_training"
             android:text="@string/view_current_training"
             android:textAlignment="viewStart"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:background="@color/menuButtonBack"
+            android:drawablePadding="10dp"
+            android:layout_marginTop="3dp"
+            android:paddingHorizontal="10dp"/>
 
         <Button
             android:id="@+id/start_training_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:drawableStart="@android:drawable/stat_sys_data_bluetooth"
-            android:drawableLeft="@android:drawable/stat_sys_data_bluetooth"
+            android:drawableStart="@drawable/ic_start_training"
+            android:drawableLeft="@drawable/ic_start_training"
             android:text="Start training"
             android:textAlignment="viewStart"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:background="@color/menuButtonBack"
+            android:drawablePadding="10dp"
+            android:layout_marginTop="3dp"
+            android:paddingHorizontal="10dp"/>
 
         <Button
             android:id="@+id/language_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:drawableStart="@android:drawable/ic_menu_mapmode"
-            android:drawableLeft="@android:drawable/ic_menu_mapmode"
+            android:drawableStart="@drawable/ic_language"
+            android:drawableLeft="@drawable/ic_language"
             android:text="Language"
             android:textAlignment="viewStart"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:background="@color/menuButtonBack"
+            android:drawablePadding="10dp"
+            android:layout_marginTop="3dp"
+            android:paddingHorizontal="10dp"/>
 
         <Button
             android:id="@+id/goToWebButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:drawableStart="@android:drawable/ic_menu_send"
-            android:drawableLeft="@android:drawable/ic_menu_send"
+            android:drawableStart="@drawable/ic_go_to_web"
+            android:drawableLeft="@drawable/ic_go_to_web"
             android:text="Go to web"
             android:textAlignment="viewStart"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:background="@color/menuButtonBack"
+            android:drawablePadding="10dp"
+            android:layout_marginTop="3dp"
+            android:paddingHorizontal="10dp"/>
 
         <Button
             android:id="@+id/logout_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:drawableStart="@android:drawable/ic_menu_close_clear_cancel"
-            android:drawableLeft="@android:drawable/ic_menu_close_clear_cancel"
+            android:drawableStart="@drawable/ic_logout"
+            android:drawableLeft="@drawable/ic_logout"
             android:text="Logout"
             android:textAlignment="viewStart"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:background="@color/menuButtonBack"
+            android:drawablePadding="10dp"
+            android:layout_marginTop="3dp"
+            android:paddingHorizontal="10dp"/>
 
     </LinearLayout>
 

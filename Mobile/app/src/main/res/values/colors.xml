@@ -7,4 +7,6 @@
     <!-- Chart colors -->
     <color name="heartRate">#EF3C3C</color>
     <color name="temperature">#1DAF2C</color>
+    <!-- Menu colors -->
+    <color name="menuButtonBack">#FFFFFF</color>
 </resources>

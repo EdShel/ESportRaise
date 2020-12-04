@@ -27,6 +27,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var startTrainingButton: Button
 
+    private lateinit var changeLanguageButton: Button
+
+    private lateinit var goToWebButton: Button
+
+    private lateinit var logoutButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         (applicationContext as App).components.inject(this)
         super.onCreate(savedInstanceState)
@@ -34,51 +40,58 @@ class MainActivity : AppCompatActivity() {
         mainViewModel = ViewModelProvider(this, viewModelFactory)
             .get(MainViewModel::class.java)
 
-        viewTrainingButton = findViewById(R.id.viewCurrentTrainingButton)
+        viewTrainingButton = findViewById(R.id.view_current_training_button)
         startTrainingButton = findViewById(R.id.start_training_button)
+        changeLanguageButton = findViewById(R.id.language_button)
+        goToWebButton = findViewById(R.id.goToWebButton)
+        logoutButton = findViewById(R.id.logout_button)
 
         viewTrainingButton.setOnClickListener {
             val trainingActivity = Intent(this, TrainingActivity::class.java)
             startActivity(trainingActivity)
         }
 
-        val changeLanguageButton = findViewById<Button>(R.id.language_button)
-        changeLanguageButton.setOnClickListener {
-            val languageActivity = Intent(this, LanguageActivity::class.java)
-            startActivity(languageActivity)
-        }
-
-        mainViewModel.teamMemberData.observe(this, Observer {
-            if (it.teamId == null) {
-                viewTrainingButton.isEnabled = false
-                startTrainingButton.isEnabled = false
-            } else if (it.currentTrainingId == null) {
-                viewTrainingButton.isEnabled = false
-                startTrainingButton.isEnabled = true
-            } else {
-                viewTrainingButton.isEnabled = true
-                startTrainingButton.isEnabled = true
-            }
-        })
-
-        val goToWebButton = findViewById<Button>(R.id.goToWebButton)
-        goToWebButton.setOnClickListener {
-            val browseIntent = Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.WEB_URL))
-            startActivity(browseIntent)
-        }
-
-        val startTrainingButton = findViewById<Button>(R.id.start_training_button)
         startTrainingButton.setOnClickListener {
             val connectIotActivity = Intent(this, ConnectIotActivity::class.java)
             startActivity(connectIotActivity)
         }
 
-        val logoutButton = findViewById<Button>(R.id.logout_button)
+        changeLanguageButton.setOnClickListener {
+            val languageActivity = Intent(this, LanguageActivity::class.java)
+            startActivity(languageActivity)
+        }
+
+        goToWebButton.setOnClickListener {
+            val browseIntent = Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.WEB_URL))
+            startActivity(browseIntent)
+        }
+
         logoutButton.setOnClickListener {
             mainViewModel.clearAuthorizationInfo()
             val connectIotActivity = Intent(this, LoginActivity::class.java)
             finish()
             startActivity(connectIotActivity)
         }
+
+        observeUserInfoChanged()
+    }
+
+    private fun observeUserInfoChanged() {
+        mainViewModel.teamMemberData.observe(this, Observer {
+            when {
+                it.teamId == null -> {
+                    viewTrainingButton.isEnabled = false
+                    startTrainingButton.isEnabled = false
+                }
+                it.currentTrainingId == null -> {
+                    viewTrainingButton.isEnabled = false
+                    startTrainingButton.isEnabled = true
+                }
+                else -> {
+                    viewTrainingButton.isEnabled = true
+                    startTrainingButton.isEnabled = true
+                }
+            }
+        })
     }
 }
