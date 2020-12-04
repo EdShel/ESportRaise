@@ -22,6 +22,7 @@ import ua.nure.sheliemietiev.esportraisemobile.BuildConfig
 import ua.nure.sheliemietiev.esportraisemobile.R
 import ua.nure.sheliemietiev.esportraisemobile.api.AuthorizationInfo
 import ua.nure.sheliemietiev.esportraisemobile.ui.main.MainActivity
+import ua.nure.sheliemietiev.esportraisemobile.util.afterTextChanged
 import javax.inject.Inject
 
 class LoginActivity : AppCompatActivity() {
@@ -32,7 +33,15 @@ class LoginActivity : AppCompatActivity() {
     @Inject
     lateinit var authorizationInfo: AuthorizationInfo
 
-    lateinit var loading: ProgressBar
+    private lateinit var loginViewModel: LoginViewModel
+
+    private lateinit var username: EditText
+
+    private lateinit var password: EditText
+
+    private lateinit var loginButton: Button
+
+    private lateinit var loading: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (applicationContext as App).components.inject(this)
@@ -40,59 +49,42 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val loginViewModel = ViewModelProvider(this, viewModelFactory)
+        loginViewModel = ViewModelProvider(this, viewModelFactory)
             .get(LoginViewModel::class.java)
 
-        val username = findViewById<EditText>(R.id.username)
-        val password = findViewById<EditText>(R.id.password)
-        val loginButton = findViewById<Button>(R.id.loginButton)
-        this.loading = findViewById(R.id.loading)
+        username = findViewById<EditText>(R.id.username)
+        password = findViewById<EditText>(R.id.password)
+        loginButton = findViewById<Button>(R.id.loginButton)
+        loading = findViewById(R.id.loading)
 
         // TODO: remove it, it's just for test
         username.setText("Eduardo")
         password.setText("Qwerty12345@")
         loginButton.isEnabled = true
 
-        loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
-            val loginState = it ?: return@Observer
-
-            // disable login button unless both username / password is valid
-            loginButton.isEnabled = loginState.isDataValid
-            if (loginState.usernameError != null) {
-                username.error = getString(loginState.usernameError)
-            }
-            if (loginState.passwordError != null) {
-                password.error = getString(loginState.passwordError)
-            }
-        })
+        observeValidationErrors()
 
         observeLoginResult(loginViewModel)
 
-        username.afterTextChanged {
-            loginViewModel.loginDataChanged(
-                username.text.toString(),
-                password.text.toString()
-            )
-        }
+        validateFieldsChanged(username, loginViewModel, password)
 
-        password.apply {
-            afterTextChanged {
-                loginViewModel.loginDataChanged(
-                    username.text.toString(),
-                    password.text.toString()
-                )
-            }
+        observeLoginSubmit()
 
-            setOnEditorActionListener { _, actionId, _ ->
-                when (actionId) {
-                    EditorInfo.IME_ACTION_DONE ->
-                        loginViewModel.loginButtonPressed(
-                            username.text.toString(),
-                            password.text.toString()
-                        )
+        observeRegisterPressed()
+    }
+
+    private fun observeLoginSubmit() {
+        password.setOnEditorActionListener { _, actionId, _ ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    loading.visibility = View.VISIBLE
+                    loginViewModel.loginButtonPressed(
+                        username.text.toString(),
+                        password.text.toString()
+                    )
                 }
-                false
             }
+            false
         }
 
         loginButton.setOnClickListener {
@@ -102,10 +94,39 @@ class LoginActivity : AppCompatActivity() {
                 password.text.toString()
             )
         }
+    }
 
-        registerButton.setOnClickListener {
-            val browseIntent = Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.WEB_URL))
-            startActivity(browseIntent)
+    private fun observeValidationErrors() {
+        loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
+            val loginState = it ?: return@Observer
+
+            loginButton.isEnabled = loginState.isDataValid
+            if (loginState.usernameError != null) {
+                username.error = getString(loginState.usernameError)
+            }
+            if (loginState.passwordError != null) {
+                password.error = getString(loginState.passwordError)
+            }
+        })
+    }
+
+    private fun validateFieldsChanged(
+        username: EditText,
+        loginViewModel: LoginViewModel,
+        password: EditText
+    ) {
+        username.afterTextChanged {
+            loginViewModel.loginDataChanged(
+                username.text.toString(),
+                password.text.toString()
+            )
+        }
+
+        password.afterTextChanged {
+            loginViewModel.loginDataChanged(
+                username.text.toString(),
+                password.text.toString()
+            )
         }
     }
 
@@ -143,19 +164,11 @@ class LoginActivity : AppCompatActivity() {
     private fun showLoginFailed(@StringRes errorString: Int) {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
-}
 
-/**
- * Extension function to simplify setting an afterTextChanged action to EditText components.
- */
-fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
-    this.addTextChangedListener(object : TextWatcher {
-        override fun afterTextChanged(editable: Editable?) {
-            afterTextChanged.invoke(editable.toString())
+    private fun observeRegisterPressed() {
+        registerButton.setOnClickListener {
+            val browseIntent = Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.WEB_URL))
+            startActivity(browseIntent)
         }
-
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-    })
+    }
 }

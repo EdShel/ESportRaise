@@ -12,6 +12,7 @@ import ua.nure.sheliemietiev.esportraisemobile.BuildConfig
 import ua.nure.sheliemietiev.esportraisemobile.R
 import ua.nure.sheliemietiev.esportraisemobile.ui.connectIot.ConnectIotActivity
 import ua.nure.sheliemietiev.esportraisemobile.ui.language.LanguageActivity
+import ua.nure.sheliemietiev.esportraisemobile.ui.login.LoginActivity
 import ua.nure.sheliemietiev.esportraisemobile.ui.training.TrainingActivity
 import javax.inject.Inject
 
@@ -69,6 +70,14 @@ class MainActivity : AppCompatActivity() {
         val startTrainingButton = findViewById<Button>(R.id.start_training_button)
         startTrainingButton.setOnClickListener {
             val connectIotActivity = Intent(this, ConnectIotActivity::class.java)
+            startActivity(connectIotActivity)
+        }
+
+        val logoutButton = findViewById<Button>(R.id.logout_button)
+        logoutButton.setOnClickListener {
+            mainViewModel.clearAuthorizationInfo()
+            val connectIotActivity = Intent(this, LoginActivity::class.java)
+            finish()
             startActivity(connectIotActivity)
         }
     }

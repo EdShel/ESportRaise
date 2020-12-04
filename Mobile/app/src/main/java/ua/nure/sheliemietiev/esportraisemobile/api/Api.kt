@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.Request
+import okhttp3.Response
 import ru.gildor.coroutines.okhttp.await
 import java.security.SecureRandom
 import java.security.cert.CertificateException
@@ -57,7 +59,17 @@ class Api @Inject constructor(
     }
 
     private suspend fun sendAsync(request: Request): ApiResponse {
-        return ApiResponse(client.newCall(request).await())
+        return try {
+            ApiResponse(client.newCall(request).await())
+        } catch (e: Exception) {
+            val networkErrorResponse = Response.Builder()
+                .request(request)
+                .protocol(Protocol.HTTP_2)
+                .message("Bad gateway")
+                .code(StatusCode.BAD_GATEWAY.code)
+                .build()
+            ApiResponse(networkErrorResponse)
+        }
     }
 
     suspend fun post(

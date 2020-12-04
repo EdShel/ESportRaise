@@ -11,7 +11,7 @@ import ua.nure.sheliemietiev.esportraisemobile.models.StressFinder
 import ua.nure.sheliemietiev.esportraisemobile.ui.main.TeamMember
 import ua.nure.sheliemietiev.esportraisemobile.ui.main.TeamModel
 import ua.nure.sheliemietiev.esportraisemobile.ui.main.TrainingModel
-import ua.nure.sheliemietiev.esportraisemobile.util.Iso8601ToDate
+import ua.nure.sheliemietiev.esportraisemobile.util.iso8601ToDate
 import ua.nure.sheliemietiev.esportraisemobile.util.OperationResult
 import java.util.*
 import javax.inject.Inject
@@ -62,7 +62,7 @@ class PhysStateCollectingModel @Inject constructor(
                     userId,
                     heartRate,
                     temperature,
-                    Iso8601ToDate(dateFormatted)
+                    iso8601ToDate(dateFormatted)
                 )
             }
             return OperationResult.success(records)

@@ -2,7 +2,9 @@ package ua.nure.sheliemietiev.esportraisemobile.ui.login
 
 import ua.nure.sheliemietiev.esportraisemobile.R
 import ua.nure.sheliemietiev.esportraisemobile.api.Api
+import ua.nure.sheliemietiev.esportraisemobile.api.ApiResponse
 import ua.nure.sheliemietiev.esportraisemobile.api.AuthorizationInfo
+import ua.nure.sheliemietiev.esportraisemobile.api.StatusCode
 import ua.nure.sheliemietiev.esportraisemobile.util.OperationResult
 import javax.inject.Inject
 
@@ -18,9 +20,20 @@ class LoginModel @Inject constructor(
             )
         )
 
-        if (response.statusCode != 200){
-            return OperationResult.error(R.string.wrong_credentials)
+        return when (response.statusCode) {
+            StatusCode.OK.code ->
+                createSuccessfulAuthorizationResult(response, email)
+            StatusCode.BAD_GATEWAY.code ->
+                OperationResult.error(R.string.server_not_accessible)
+            else ->
+                OperationResult.error(R.string.wrong_credentials)
         }
+    }
+
+    private fun createSuccessfulAuthorizationResult(
+        response: ApiResponse,
+        email: String
+    ): OperationResult<AuthResultView> {
         val json = response.asJsonMap()
         val userName = json["userName"].asString
         val token = json["token"].asString

@@ -23,7 +23,9 @@ import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
 import ua.nure.sheliemietiev.esportraisemobile.App
 import ua.nure.sheliemietiev.esportraisemobile.R
+import ua.nure.sheliemietiev.esportraisemobile.util.toLocaleTimeString
 import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 
@@ -81,7 +83,7 @@ class TrainingActivity : AppCompatActivity() {
                 ContextCompat.getColor(
                     this,
                     R.color.heartRate
-                ) // TODO: replace ints with constants from styles
+                )
             val temperatureDataSet = LineDataSet(viewedStateData.map {
                 Entry(
                     ((it.date.time - baseDate) / 1000).toFloat(),
@@ -93,15 +95,14 @@ class TrainingActivity : AppCompatActivity() {
                 ContextCompat.getColor(
                     this,
                     R.color.temperature
-                ) // TODO: replace ints with constants from styles
+                )
             lineChart.data = LineData(hrDataSet, temperatureDataSet)
             val xAxis = lineChart.xAxis
             xAxis.granularity = 10f
             xAxis.valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
                     val time = baseDate + (value * 1000).toLong()
-                    return SimpleDateFormat("HH:mm:ss")
-                        .format(time) //TODO: take the  format from from R.string
+                    return Date(time).toLocaleTimeString(this@TrainingActivity)
                 }
             }
             lineChart.invalidate()

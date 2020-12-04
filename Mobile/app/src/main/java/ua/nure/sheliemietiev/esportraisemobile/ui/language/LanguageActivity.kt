@@ -31,6 +31,7 @@ class LanguageActivity : AppCompatActivity() {
             val localeName = supportedLocales[position]
             setAppLocale(localeName)
             val refresh = Intent(this, MainActivity::class.java)
+            finish()
             startActivity(refresh)
         }
     }

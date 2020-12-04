@@ -21,24 +21,19 @@ class LoginViewModel @Inject constructor(
     val loginResult: LiveData<OperationResult<AuthResultView>> get() = _loginResult
 
     init {
-        if (loginModel.authInfo.isAuthorized){
-            _loginResult.value = OperationResult.success(AuthResultView(
-                loginModel.authInfo.userName
-            ))
+        if (loginModel.authInfo.isAuthorized) {
+            _loginResult.value = OperationResult.success(
+                AuthResultView(
+                    loginModel.authInfo.userName
+                )
+            )
         }
     }
 
     fun loginButtonPressed(email: String, password: String) {
         viewModelScope.launch {
             val result = loginModel.signIn(email, password)
-
-            if (result.isSuccess) {
-                val data = result.getOrThrow()
-                _loginResult.value = result
-                // not error, but
-            } else {
-                _loginResult.value = result
-            }
+            _loginResult.value = result
         }
     }
 

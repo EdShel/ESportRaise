@@ -4,11 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ua.nure.sheliemietiev.esportraisemobile.api.AuthorizationInfo
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
     private val teamModel: TeamModel,
-    private val trainingModel: TrainingModel
+    private val trainingModel: TrainingModel,
+    private val authorizationInfo: AuthorizationInfo
 ) : ViewModel() {
     var teamMemberData: LiveData<TeamMemberStatus>
         get() = field
@@ -41,5 +43,9 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun clearAuthorizationInfo() {
+        authorizationInfo.deauthorize()
     }
 }

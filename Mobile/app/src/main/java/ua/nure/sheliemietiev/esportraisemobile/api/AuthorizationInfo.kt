@@ -48,4 +48,8 @@ class AuthorizationInfo(
         storage.saveString("token", newToken)
         storage.saveString("refreshToken", newRefresh)
     }
+
+    fun deauthorize(){
+        changeAuth("", "")
+    }
 }

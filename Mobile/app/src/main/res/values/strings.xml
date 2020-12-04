@@ -10,8 +10,11 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <!-- Login -->
-    <string name="wrong_credentials">"Invalid login or/and password!"</string>
+    <string name="wrong_credentials">Invalid login or/and password!</string>
     <!-- Main -->
     <string name="have_no_team">"You don't belong to a team!"</string>
     <string name="view_current_training">View current training</string>
+    <!-- Date & time -->
+    <string name="locale_time">HH:mm:ss a</string>
+    <string name="server_not_accessible">The server is not accessible!</string>
 </resources>

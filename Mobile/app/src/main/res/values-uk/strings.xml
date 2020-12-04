@@ -14,4 +14,7 @@
     <!-- Main -->
     <string name="have_no_team">"You don't belong to a team!"</string>
     <string name="view_current_training">Дивитися поточне тренування</string>
+    <!-- Date & time -->
+    <string name="locale_time">HH:mm:ss</string>
+    <string name="server_not_accessible">The server is not accessible!</string>
 </resources>
