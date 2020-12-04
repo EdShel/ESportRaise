@@ -6,6 +6,7 @@ import dagger.Binds
 import dagger.MapKey
 import dagger.Module
 import dagger.multibindings.IntoMap
+import ua.nure.sheliemietiev.esportraisemobile.ui.connectIot.ConnectIotViewModel
 import ua.nure.sheliemietiev.esportraisemobile.ui.login.LoginViewModel
 import ua.nure.sheliemietiev.esportraisemobile.ui.main.MainViewModel
 import ua.nure.sheliemietiev.esportraisemobile.ui.training.TrainingViewModel
@@ -52,4 +53,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     internal abstract fun provideMainViewModel(viewModel: MainViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ConnectIotViewModel::class)
+    internal abstract fun provideConnectIotViewModel(viewModel: ConnectIotViewModel): ViewModel
 }

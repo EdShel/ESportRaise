@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.Component
 import ua.nure.sheliemietiev.esportraisemobile.api.ApiModule
 import ua.nure.sheliemietiev.esportraisemobile.models.ModelModule
+import ua.nure.sheliemietiev.esportraisemobile.ui.connectIot.ConnectIotActivity
 import ua.nure.sheliemietiev.esportraisemobile.ui.login.LoginActivity
 import ua.nure.sheliemietiev.esportraisemobile.ui.main.MainActivity
 import ua.nure.sheliemietiev.esportraisemobile.ui.training.TrainingActivity
@@ -27,5 +28,7 @@ interface ApplicationComponent {
     fun inject(trainingActivity: TrainingActivity)
 
     fun inject(mainActivity: MainActivity)
+
+    fun inject(mainActivity: ConnectIotActivity)
 }
 
