@@ -1,5 +1,6 @@
 package ua.nure.sheliemietiev.esportraisemobile.ui.training
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -116,6 +117,7 @@ class TrainingActivity : AppCompatActivity() {
                 this,
                 R.color.heartRate
             )
+        hrDataSet.setDrawValues(false)
         return hrDataSet
     }
 
@@ -123,18 +125,42 @@ class TrainingActivity : AppCompatActivity() {
         currentlyViewedState: Iterable<StateRecord>,
         baseDate: Long
     ): LineDataSet {
-        val temperatureDataSet = LineDataSet(currentlyViewedState.map {
-            Entry(
-                ((it.date.time - baseDate) / 1000).toFloat(),
-                it.temperature
-            )
-        }, getString(R.string.temperature))
+        val temperatureData = getLocaleDependantTemperatureData(currentlyViewedState, baseDate)
+        val temperatureDataSet = LineDataSet(temperatureData, getString(R.string.temperature))
         temperatureDataSet.axisDependency = YAxis.AxisDependency.RIGHT
         temperatureDataSet.color = ContextCompat.getColor(
             this,
             R.color.temperature
         )
+        temperatureDataSet.setDrawValues(false)
         return temperatureDataSet
+    }
+
+    private fun getLocaleDependantTemperatureData(
+        currentlyViewedState: Iterable<StateRecord>,
+        baseDate: Long
+    ): List<Entry> {
+        val culture = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            resources.configuration.locales[0].language
+        } else {
+            resources.configuration.locale.language
+        }
+        val isFahrenheit = culture == "en"
+        return if (isFahrenheit) {
+            currentlyViewedState.map {
+                Entry(
+                    ((it.date.time - baseDate) / 1000).toFloat(),
+                    (it.temperature * 1.8F) + 32F
+                )
+            }
+        } else {
+            currentlyViewedState.map {
+                Entry(
+                    ((it.date.time - baseDate) / 1000).toFloat(),
+                    it.temperature
+                )
+            }
+        }
     }
 
     private fun setupChartXAxisLabels(baseDate: Long) {
@@ -255,7 +281,7 @@ class TrainingActivity : AppCompatActivity() {
                 if (apiKey == "") {
                     Toast.makeText(
                         this@TrainingActivity,
-                        getString(R.string.cant_retreave_api_key),
+                        getString(R.string.cant_retrieve_api_key),
                         Toast.LENGTH_LONG
                     ).show()
                 } else {

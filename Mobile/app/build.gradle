@@ -24,6 +24,7 @@ android {
             dimension "mode"
             buildConfigField "String", "API_URL", "\"https://192.168.1.16:5003\""
             buildConfigField "String", "WEB_URL", "\"https://192.168.1.16:5004\""
+            buildConfigField "String", "APP_UUID", "\"00001101-0000-1000-8000-00805F9B34FB\""
         }
     }
 

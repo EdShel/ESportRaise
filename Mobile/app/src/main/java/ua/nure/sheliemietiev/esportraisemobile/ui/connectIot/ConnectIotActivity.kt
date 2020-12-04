@@ -73,7 +73,7 @@ class ConnectIotActivity : AppCompatActivity() {
         if (adapter == null) {
             Toast.makeText(
                 this,
-                "Bluetooth is not supported!",
+                getString(R.string.bluetooth_not_supported),
                 Toast.LENGTH_LONG
             ).show()
             finish()
@@ -126,7 +126,7 @@ class ConnectIotActivity : AppCompatActivity() {
                 if (successfulConnect) {
                     Toast.makeText(
                         this,
-                        "The device has started training!",
+                        getString(R.string.iot_connect_success),
                         Toast.LENGTH_LONG
                     ).show()
                     finish()
@@ -134,7 +134,7 @@ class ConnectIotActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this,
-                        "The connection can't be established!",
+                        getString(R.string.iot_connect_fail),
                         Toast.LENGTH_LONG
                     ).show()
                     devicesList.isEnabled = true
@@ -151,7 +151,7 @@ class ConnectIotActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(
                     this,
-                    "You need to enable Bluetooth",
+                    getString(R.string.enable_bluetooth),
                     Toast.LENGTH_LONG
                 ).show()
                 finish()
@@ -173,7 +173,7 @@ class ConnectIotActivity : AppCompatActivity() {
     private fun permissionsDenied() {
         Toast.makeText(
             this,
-            "Location permission isn't granted!",
+            getString(R.string.no_location_permission),
             Toast.LENGTH_LONG
         ).show()
         finish()

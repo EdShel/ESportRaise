@@ -2,6 +2,7 @@ package ua.nure.sheliemietiev.esportraisemobile.ui.connectIot
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import ua.nure.sheliemietiev.esportraisemobile.BuildConfig
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
@@ -11,7 +12,7 @@ class ConnectionProcessorThread(
     private val connectIotViewModel: ConnectIotViewModel
 ) : Thread() {
 
-    private val uuid = "00001101-0000-1000-8000-00805F9B34FB" // TODO: to build config
+    private val uuid = BuildConfig.APP_UUID
 
     private var socket = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString(uuid))
 

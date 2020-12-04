@@ -1,27 +1,44 @@
 <resources>
     <string name="app_name">ESport Raise</string>
-    <!-- Strings related to login -->
-    <string name="prompt_email">Електронна адреса або пошта</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
     <!-- Login -->
-    <string name="wrong_credentials">"Invalid login or/and password!"</string>
+    <string name="prompt_email">Пошта або ім\'я користувача</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Увійти</string>
+    <string name="action_sign_in_short">Увійти</string>
+    <string name="welcome">Ласкаво просимо,</string>
+    <string name="invalid_username">Некоректне ім\'я користувача</string>
+    <string name="invalid_password">Некоректний пароль</string>
+    <string name="login_failed">"Авторизація завершилася невдачею"</string>
+    <string name="wrong_credentials">Неправильне ім\'я користувача та/або пароль!</string>
+    <string name="login_title">Вхід</string>
+    <string name="register_message">Немає акаунту? Створіть на веб-сайті за 30 секунд</string>
+    <string name="register_action">Зареєстуватися</string>
     <!-- Main -->
-    <string name="have_no_team">"You don't belong to a team!"</string>
-    <string name="view_current_training">Дивитися поточне тренування</string>
+    <string name="have_no_team">"Ви не належити до команди!"</string>
+    <string name="view_current_training">Переглянути поточне тренування</string>
+    <string name="start_training">Почати тренування</string>
+    <string name="language">Language</string>
+    <string name="goToWeb">Перейти на сайт</string>
+    <string name="logout">Вийти</string>
     <!-- Date & time -->
-    <string name="locale_time">HH:mm:ss</string>
-    <string name="server_not_accessible">The server is not accessible!</string>
-    <string name="login_title">Login</string>
-    <string name="register_message">Do not have an account? Create one on the web in 30 seconds</string>
-    <string name="register_action">Register</string>
-    <string name="phys_state_chart_name">Physical state</string>
-    <string name="no_recent_data">No recent data available</string>
-    <string name="player_init_error">Error while initializing player</string>
-    <string name="temperature">Temperature</string>
+    <string name="locale_time">hh:mm:ss</string>
+    <!-- Api errors -->
+    <string name="server_not_accessible">Сервер недоступний!</string>
+    <!-- Training -->
+    <string name="phys_state_chart_name">Фізичний стан</string>
+    <string name="no_recent_data">Немає нещодавніх даних</string>
+    <string name="cant_retrieve_api_key">Неможилво отримати ключ YouTube API</string>
+    <string name="player_init_error">Помилка ініціалізації гравця</string>
+    <string name="temperature">Температура, С</string>
+    <string name="heart_rate">Частота серцевих скорочень</string>
+    <!-- IoT connect -->
+    <string name="bluetooth_not_supported">Bluetooth не підтримується!</string>
+    <string name="iot_connect_success">Пристрій почав успішно тренування!</string>
+    <string name="iot_connect_fail">Підключення не може бути встановлене!</string>
+    <string name="enable_bluetooth">Вам потрібно увімкнути Bluetooth</string>
+    <string name="no_location_permission">Дозвіл на отримання положення не виданий!</string>
+    <string name="enable_bluetooth_message">Увімкніть Bluetooth та оберіть розумний пристрій</string>
+    <string name="device_name">Назва пристрою</string>
+    <!-- Language -->
+    <string name="select_language_message">Оберіть мову, на якій бажаєте використовувати додаток</string>
 </resources>

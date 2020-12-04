@@ -41,9 +41,9 @@ class LanguageActivity : AppCompatActivity() {
         val dm: DisplayMetrics = resources.displayMetrics
         val config: Configuration = resources.configuration
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            config.setLocale(Locale(locale.toLowerCase()))
+            config.setLocale(Locale(locale))
         } else {
-            config.locale = Locale(locale.toLowerCase())
+            config.locale = Locale(locale)
         }
         resources.updateConfiguration(config, dm)
     }

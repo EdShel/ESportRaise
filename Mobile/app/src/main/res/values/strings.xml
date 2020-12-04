@@ -1,29 +1,43 @@
 <resources>
     <string name="app_name">ESport Raise</string>
-    <!-- Strings related to login -->
+    <!-- Login -->
     <string name="prompt_email">Email or user name</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
+    <string name="welcome">"Welcome, "</string>
     <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_password">Not a valid password</string>
     <string name="login_failed">"Login failed"</string>
-    <!-- Login -->
     <string name="wrong_credentials">Invalid login or/and password!</string>
+    <string name="login_title">Login</string>
+    <string name="register_message">Do not have an account? Create one on the web in 30 seconds</string>
+    <string name="register_action">Register</string>
     <!-- Main -->
     <string name="have_no_team">"You don't belong to a team!"</string>
     <string name="view_current_training">View current training</string>
     <!-- Date & time -->
     <string name="locale_time">HH:mm:ss a</string>
+    <!-- Api errors -->
     <string name="server_not_accessible">The server is not accessible!</string>
-    <string name="login_title">Login</string>
-    <string name="register_message">Do not have an account? Create one on the web in 30 seconds</string>
-    <string name="register_action">Register</string>
+    <!-- Training -->
     <string name="phys_state_chart_name">Physical state</string>
     <string name="no_recent_data">No recent data available</string>
-    <string name="cant_retreave_api_key">Unable to retrieve YouTube API key</string>
+    <string name="cant_retrieve_api_key">Unable to retrieve YouTube API key</string>
     <string name="player_init_error">Error while initializing player</string>
-    <string name="temperature">Temperature</string>
+    <string name="temperature">Temperature, F</string>
     <string name="heart_rate">HR</string>
+    <!-- IoT connect -->
+    <string name="bluetooth_not_supported">Bluetooth is not supported!</string>
+    <string name="iot_connect_success">The device has started training!</string>
+    <string name="iot_connect_fail">The connection can\'t be established!</string>
+    <string name="enable_bluetooth">You need to enable Bluetooth</string>
+    <string name="no_location_permission">Location permission isn\'t granted!</string>
+    <string name="enable_bluetooth_message">Enable Bluetooth and find your smart device</string>
+    <string name="select_language_message">Select a language you want the app to use</string>
+    <string name="start_training">Start training</string>
+    <string name="language">Language</string>
+    <string name="goToWeb">Go to web</string>
+    <string name="logout">Logout</string>
+    <string name="device_name">Device name</string>
 </resources>
