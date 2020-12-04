@@ -11,6 +11,7 @@ import ua.nure.sheliemietiev.esportraisemobile.App
 import ua.nure.sheliemietiev.esportraisemobile.BuildConfig
 import ua.nure.sheliemietiev.esportraisemobile.R
 import ua.nure.sheliemietiev.esportraisemobile.ui.connectIot.ConnectIotActivity
+import ua.nure.sheliemietiev.esportraisemobile.ui.language.LanguageActivity
 import ua.nure.sheliemietiev.esportraisemobile.ui.training.TrainingActivity
 import javax.inject.Inject
 
@@ -38,6 +39,12 @@ class MainActivity : AppCompatActivity() {
         viewTrainingButton.setOnClickListener {
             val trainingActivity = Intent(this, TrainingActivity::class.java)
             startActivity(trainingActivity)
+        }
+
+        val changeLanguageButton = findViewById<Button>(R.id.language_button)
+        changeLanguageButton.setOnClickListener {
+            val languageActivity = Intent(this, LanguageActivity::class.java)
+            startActivity(languageActivity)
         }
 
         mainViewModel.teamMemberData.observe(this, Observer {

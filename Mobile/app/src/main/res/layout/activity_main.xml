@@ -29,7 +29,7 @@
             android:layout_gravity="start"
             android:drawableStart="@android:drawable/ic_menu_slideshow"
             android:drawableLeft="@android:drawable/ic_menu_slideshow"
-            android:text="View current training"
+            android:text="@string/view_current_training"
             android:textAlignment="viewStart"
             android:textSize="24sp" />
 
@@ -45,7 +45,7 @@
             android:textSize="24sp" />
 
         <Button
-            android:id="@+id/languageButton"
+            android:id="@+id/language_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
