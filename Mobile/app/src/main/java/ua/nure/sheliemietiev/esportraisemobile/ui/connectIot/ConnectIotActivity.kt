@@ -87,7 +87,10 @@ class ConnectIotViewModel @Inject constructor(
     val deviceStarted: LiveData<Boolean?> get() = _deviceStarted
 
     fun addDevices(devices: Iterable<DeviceInfo>) {
-        devicesList.addAll(devices)
+        val notAddedDevices = devices.filter { d ->
+            !devicesList.any { saved -> saved.macAddress == d.macAddress }
+        }
+        devicesList.addAll(notAddedDevices)
         _devicesData.value = _devicesData.value
     }
 
