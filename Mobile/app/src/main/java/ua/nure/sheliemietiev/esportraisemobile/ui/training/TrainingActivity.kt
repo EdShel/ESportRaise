@@ -3,7 +3,6 @@ package ua.nure.sheliemietiev.esportraisemobile.ui.training
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.AttributeSet
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -23,11 +22,13 @@ import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
 import ua.nure.sheliemietiev.esportraisemobile.App
 import ua.nure.sheliemietiev.esportraisemobile.R
+import ua.nure.sheliemietiev.esportraisemobile.data.PlayerStateData
+import ua.nure.sheliemietiev.esportraisemobile.data.StateRecord
+import ua.nure.sheliemietiev.esportraisemobile.data.TrainingData
 import ua.nure.sheliemietiev.esportraisemobile.util.toLocaleTimeString
-import java.text.SimpleDateFormat
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
-
 
 class TrainingActivity : AppCompatActivity() {
 
@@ -36,7 +37,11 @@ class TrainingActivity : AppCompatActivity() {
 
     lateinit var trainingViewModel: TrainingViewModel
 
+    private lateinit var lineChart: LineChart
+
     private lateinit var physStateRefreshHandler: Handler
+
+    private lateinit var memberSelector: Spinner
 
     private var youtubePlayer: YouTubePlayer? = null
 
@@ -49,66 +54,101 @@ class TrainingActivity : AppCompatActivity() {
 
         setupYouTubePlayer()
 
-        val lineChart = findViewById<LineChart>(R.id.physStateChart)
+        lineChart = findViewById(R.id.physStateChart)
+        memberSelector = findViewById(R.id.memberSelectSpinner)
 
-        val descr = Description()
-        descr.text = "Physical state"
-        lineChart.description = descr
+        setupPhysicalStateChart()
 
+        observePhysicalStateDataCame()
+
+        observeVideoStreamerChanged()
+
+        observeTrainingInfoChanged()
+
+        observeVideoUrlChanged()
+    }
+
+    private fun setupPhysicalStateChart() {
+        val chartDescription = Description()
+        chartDescription.text = getString(R.string.phys_state_chart_name)
+        lineChart.description = chartDescription
         lineChart.animateX(2000)
+        lineChart.setNoDataText(getString(R.string.no_recent_data))
         lineChart.invalidate()
+    }
 
+    private fun observePhysicalStateDataCame() {
         trainingViewModel.playerStateData.observe(this, Observer { stateData ->
             val trainingData = trainingViewModel.trainingData.value
             if (trainingData != null) {
                 updateStressIcons(trainingData, stateData)
             }
 
-            val viewedStateData = stateData.viewedUserStates
-
-            if (viewedStateData == null || viewedStateData.count() == 0) {
+            val currentlyViewedState = stateData.viewedUserStates
+            if (currentlyViewedState == null || currentlyViewedState.count() == 0) {
                 return@Observer
             }
 
-            val baseDate = viewedStateData.first().date.time
-
-            val hrDataSet = LineDataSet(viewedStateData.map {
-                Entry(
-                    ((it.date.time - baseDate) / 1000).toFloat(),
-                    it.heartRate.toFloat()
-                )
-            }, "HR")
-            hrDataSet.axisDependency = YAxis.AxisDependency.LEFT
-            hrDataSet.color =
-                ContextCompat.getColor(
-                    this,
-                    R.color.heartRate
-                )
-            val temperatureDataSet = LineDataSet(viewedStateData.map {
-                Entry(
-                    ((it.date.time - baseDate) / 1000).toFloat(),
-                    it.temperature
-                )
-            }, "Temperature")
-            temperatureDataSet.axisDependency = YAxis.AxisDependency.RIGHT
-            temperatureDataSet.color =
-                ContextCompat.getColor(
-                    this,
-                    R.color.temperature
-                )
+            val baseDate = currentlyViewedState.first().date.time
+            val hrDataSet = getHeartRateDataSet(currentlyViewedState, baseDate)
+            val temperatureDataSet = getTemperatureDataSet(currentlyViewedState, baseDate)
             lineChart.data = LineData(hrDataSet, temperatureDataSet)
-            val xAxis = lineChart.xAxis
-            xAxis.granularity = 10f
-            xAxis.valueFormatter = object : ValueFormatter() {
-                override fun getFormattedValue(value: Float): String {
-                    val time = baseDate + (value * 1000).toLong()
-                    return Date(time).toLocaleTimeString(this@TrainingActivity)
-                }
-            }
+
+            setupChartXAxisLabels(baseDate)
+
             lineChart.invalidate()
         })
+    }
 
-        val memberSelector = findViewById<Spinner>(R.id.memberSelectSpinner)
+    private fun getHeartRateDataSet(
+        currentlyViewedState: Iterable<StateRecord>,
+        baseDate: Long
+    ): LineDataSet {
+        val hrDataSet = LineDataSet(currentlyViewedState.map {
+            Entry(
+                ((it.date.time - baseDate) / 1000).toFloat(),
+                it.heartRate.toFloat()
+            )
+        }, getString(R.string.heart_rate))
+        hrDataSet.axisDependency = YAxis.AxisDependency.LEFT
+        hrDataSet.color =
+            ContextCompat.getColor(
+                this,
+                R.color.heartRate
+            )
+        return hrDataSet
+    }
+
+    private fun getTemperatureDataSet(
+        currentlyViewedState: Iterable<StateRecord>,
+        baseDate: Long
+    ): LineDataSet {
+        val temperatureDataSet = LineDataSet(currentlyViewedState.map {
+            Entry(
+                ((it.date.time - baseDate) / 1000).toFloat(),
+                it.temperature
+            )
+        }, getString(R.string.temperature))
+        temperatureDataSet.axisDependency = YAxis.AxisDependency.RIGHT
+        temperatureDataSet.color = ContextCompat.getColor(
+            this,
+            R.color.temperature
+        )
+        return temperatureDataSet
+    }
+
+    private fun setupChartXAxisLabels(baseDate: Long) {
+        val xAxis = lineChart.xAxis
+        xAxis.granularity = 10f
+        xAxis.valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                val time = baseDate + (value * 1000).toLong()
+                return Date(time).toLocaleTimeString(this@TrainingActivity)
+            }
+        }
+    }
+
+    private fun observeVideoStreamerChanged() {
         memberSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 adapter: AdapterView<*>?,
@@ -121,7 +161,9 @@ class TrainingActivity : AppCompatActivity() {
 
             override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
+    }
 
+    private fun observeTrainingInfoChanged() {
         trainingViewModel.trainingData.observe(this, Observer {
             memberSelector.adapter = ArrayAdapter(
                 this@TrainingActivity,
@@ -133,13 +175,16 @@ class TrainingActivity : AppCompatActivity() {
             if (stateRecordsData != null)
                 updateStressIcons(it, stateRecordsData)
         })
+    }
 
-        trainingViewModel.broadcastUrl.observe(this, Observer {
-            if (youtubePlayer == null || it == null) {
+    private fun observeVideoUrlChanged() {
+        trainingViewModel.broadcastUrl.observe(this, Observer { videoId ->
+            val player = youtubePlayer
+            if (player == null || videoId == null) {
                 return@Observer
             }
-            youtubePlayer!!.loadVideo(it)
-            youtubePlayer!!.play()
+            player.loadVideo(videoId)
+            player.play()
         })
     }
 
@@ -153,15 +198,7 @@ class TrainingActivity : AppCompatActivity() {
         val displayedPlayersIds = playerButtons.map { b -> b.tag as Int }.toSet()
         val activePlayersIds = stateData.stateRecords.keys
         if (displayedPlayersIds != activePlayersIds) {
-            val allTeamMembers = trainingData.teamMembers
-            playersContainer.removeAllViews()
-            for (playerId in activePlayersIds) {
-                val playerButton = Button(this@TrainingActivity)
-                playerButton.text = allTeamMembers[playerId]!!.userName
-                playerButton.tag = playerId
-                playerButton.setOnClickListener { trainingViewModel.viewStateOfUser(playerId) }
-                playersContainer.addView(playerButton)
-            }
+            recreateStressIcons(trainingData, playersContainer, activePlayersIds)
         }
 
         for (button in playerButtons) {
@@ -175,6 +212,22 @@ class TrainingActivity : AppCompatActivity() {
                     }
                 )
             )
+        }
+    }
+
+    private fun recreateStressIcons(
+        trainingData: TrainingData,
+        playersContainer: LinearLayout,
+        activePlayersIds: Set<Int>
+    ) {
+        val allTeamMembers = trainingData.teamMembers
+        playersContainer.removeAllViews()
+        for (playerId in activePlayersIds) {
+            val playerButton = Button(this@TrainingActivity)
+            playerButton.text = allTeamMembers[playerId]!!.userName
+            playerButton.tag = playerId
+            playerButton.setOnClickListener { trainingViewModel.viewStateOfUser(playerId) }
+            playersContainer.addView(playerButton)
         }
     }
 
@@ -196,45 +249,57 @@ class TrainingActivity : AppCompatActivity() {
     }
 
     private fun TrainingActivity.setupYouTubePlayer() {
-        trainingViewModel.youtubeKeyData.observe(this@TrainingActivity, Observer<String>() {
-            if (it == "") {
-                Toast.makeText(
-                    this@TrainingActivity,
-                    "Unable to retrieve YouTube API key",
-                    Toast.LENGTH_LONG
-                ).show()
-            } else {
-                val playerFragment = fragmentManager
-                    .findFragmentById(R.id.trainingVideo) as YouTubePlayerFragment
-                playerFragment.initialize(it, object : YouTubePlayer.OnInitializedListener {
-                    override fun onInitializationSuccess(
-                        provider: YouTubePlayer.Provider?,
-                        player: YouTubePlayer?,
-                        hz: Boolean
-                    ) {
-                        if (player == null) {
-                            return;
-                        }
-                        youtubePlayer = player
-                        if (trainingViewModel.broadcastUrl.value != null) {
-                            player.loadVideo(trainingViewModel.broadcastUrl.value);
-                        }
-//                        player.pause()
-//                        player.play();
+        trainingViewModel.youtubeKeyData.observe(
+            this@TrainingActivity,
+            Observer<String> { apiKey ->
+                if (apiKey == "") {
+                    Toast.makeText(
+                        this@TrainingActivity,
+                        getString(R.string.cant_retreave_api_key),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    try {
+                        initPlayerWithApiKey(apiKey)
+                    } catch (e: Exception) {
+                        onPlayerInitFailed()
                     }
+                }
+            })
+    }
 
-                    override fun onInitializationFailure(
-                        p0: YouTubePlayer.Provider?,
-                        p1: YouTubeInitializationResult?
-                    ) {
-                        Toast.makeText(
-                            this@TrainingActivity,
-                            "Error while initializing player",
-                            Toast.LENGTH_LONG
-                        ).show();
-                    }
-                })
+    private fun initPlayerWithApiKey(apiKey: String) {
+        val playerFragment = fragmentManager
+            .findFragmentById(R.id.trainingVideo) as YouTubePlayerFragment
+        playerFragment.initialize(apiKey, object : YouTubePlayer.OnInitializedListener {
+            override fun onInitializationSuccess(
+                provider: YouTubePlayer.Provider?,
+                player: YouTubePlayer?,
+                b: Boolean
+            ) {
+                if (player == null) {
+                    return;
+                }
+                youtubePlayer = player
+                if (trainingViewModel.broadcastUrl.value != null) {
+                    player.loadVideo(trainingViewModel.broadcastUrl.value);
+                }
+            }
+
+            override fun onInitializationFailure(
+                provider: YouTubePlayer.Provider?,
+                result: YouTubeInitializationResult?
+            ) {
+                onPlayerInitFailed()
             }
         })
+    }
+
+    private fun onPlayerInitFailed() {
+        Toast.makeText(
+            this@TrainingActivity,
+            getString(R.string.player_init_error),
+            Toast.LENGTH_LONG
+        ).show()
     }
 }

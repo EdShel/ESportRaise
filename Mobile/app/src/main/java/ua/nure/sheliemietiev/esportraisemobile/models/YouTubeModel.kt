@@ -1,4 +1,4 @@
-package ua.nure.sheliemietiev.esportraisemobile.ui.training
+package ua.nure.sheliemietiev.esportraisemobile.models
 
 import ua.nure.sheliemietiev.esportraisemobile.api.Api
 import javax.inject.Inject

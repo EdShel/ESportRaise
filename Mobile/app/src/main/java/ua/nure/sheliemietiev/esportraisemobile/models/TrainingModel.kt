@@ -4,6 +4,7 @@ import ua.nure.sheliemietiev.esportraisemobile.api.Api
 import ua.nure.sheliemietiev.esportraisemobile.api.StatusCode
 import ua.nure.sheliemietiev.esportraisemobile.data.VideoStream
 import ua.nure.sheliemietiev.esportraisemobile.util.OperationResult
+import ua.nure.sheliemietiev.esportraisemobile.util.currentTimeUtc
 import ua.nure.sheliemietiev.esportraisemobile.util.iso8601ToDate
 import java.util.*
 import javax.inject.Inject
@@ -34,7 +35,10 @@ class TrainingModel @Inject constructor(
 
     private fun isTrainingIdleTooLong(trainingBeginTime: Date): Boolean {
         val maxIdleMilliseconds = 1000L * 60L * 60L
-        return (Date().time - trainingBeginTime.time) >= maxIdleMilliseconds
+        val nowMilliseconds = currentTimeUtc()
+        val trainingBeginMilliseconds = trainingBeginTime.time
+        val differenceMilliseconds = nowMilliseconds - trainingBeginMilliseconds
+        return differenceMilliseconds >= maxIdleMilliseconds
     }
 
     suspend fun getBroadcasts(trainingId: Int)

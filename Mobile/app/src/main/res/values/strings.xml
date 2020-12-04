@@ -20,4 +20,10 @@
     <string name="login_title">Login</string>
     <string name="register_message">Do not have an account? Create one on the web in 30 seconds</string>
     <string name="register_action">Register</string>
+    <string name="phys_state_chart_name">Physical state</string>
+    <string name="no_recent_data">No recent data available</string>
+    <string name="cant_retreave_api_key">Unable to retrieve YouTube API key</string>
+    <string name="player_init_error">Error while initializing player</string>
+    <string name="temperature">Temperature</string>
+    <string name="heart_rate">HR</string>
 </resources>

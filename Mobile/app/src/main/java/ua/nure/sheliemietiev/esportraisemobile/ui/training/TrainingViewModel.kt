@@ -5,85 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import ua.nure.sheliemietiev.esportraisemobile.api.Api
-import ua.nure.sheliemietiev.esportraisemobile.api.StatusCode
-import ua.nure.sheliemietiev.esportraisemobile.models.StressFinder
-import ua.nure.sheliemietiev.esportraisemobile.data.TeamMember
-import ua.nure.sheliemietiev.esportraisemobile.models.TeamModel
-import ua.nure.sheliemietiev.esportraisemobile.models.TrainingModel
-import ua.nure.sheliemietiev.esportraisemobile.util.iso8601ToDate
-import ua.nure.sheliemietiev.esportraisemobile.util.OperationResult
-import java.util.*
+import ua.nure.sheliemietiev.esportraisemobile.data.PlayerStateData
+import ua.nure.sheliemietiev.esportraisemobile.data.StateRecord
+import ua.nure.sheliemietiev.esportraisemobile.data.TrainingData
+import ua.nure.sheliemietiev.esportraisemobile.data.VideoStreamItem
+import ua.nure.sheliemietiev.esportraisemobile.models.*
 import javax.inject.Inject
-
-data class StateRecord(
-    val userId: Int,
-    val heartRate: Int,
-    val temperature: Float,
-    val date: Date
-)
-
-class PlayerStateData(
-    val viewedUserId: Int?,
-    val stateRecords: Map<Int, Iterable<StateRecord>>,
-    val nervousUsersIds: Iterable<Int>
-) {
-    val viewedUserStates
-        get() = if (viewedUserId == null) {
-            emptyList()
-        } else {
-            stateRecords[viewedUserId]
-        }
-}
-
-class PhysStateCollectingModel @Inject constructor(
-    private val api: Api
-) {
-    suspend fun getPhysStateForLastSeconds(
-        seconds: Int,
-        trainingId: Int
-    ): OperationResult<List<StateRecord>> {
-        val response = api.get(
-            "stateRecord/last",
-            mapOf(
-                "trainingId" to trainingId.toString(),
-                "timeInSecs" to seconds.toString()
-            )
-        )
-        if (response.statusCode == StatusCode.OK.code) {
-            val json = response.asJsonMap()
-            val records = json["records"].asJsonArray.map {
-                val stateJson = it.asJsonObject
-                val userId = stateJson["teamMemberId"].asInt
-                val heartRate = stateJson["heartRate"].asInt
-                val temperature = stateJson["temperature"].asFloat
-                val dateFormatted = stateJson["createTime"].asString
-                StateRecord(
-                    userId,
-                    heartRate,
-                    temperature,
-                    iso8601ToDate(dateFormatted)
-                )
-            }
-            return OperationResult.success(records)
-        }
-        return OperationResult.error(0)
-    }
-}
-
-class VideoStreamItem(
-    val videoId: String,
-    val teamMemberName: String
-) {
-    override fun toString(): String {
-        return teamMemberName
-    }
-}
-
-class TrainingData(
-    val teamMembers: Map<Int, TeamMember>,
-    val videoStreams: Iterable<VideoStreamItem>
-)
 
 const val CHART_SECONDS_LENGTH = 60 * 3
 
@@ -153,16 +80,21 @@ class TrainingViewModel @Inject constructor(
             }
             if (statesByPlayers.count() == 0) {
                 _playerStateData.value =
-                    PlayerStateData(null, emptyMap(), emptyList())
+                    PlayerStateData(
+                        null,
+                        emptyMap(),
+                        emptyList()
+                    )
                 return@launch
             }
 
             val viewedUserId = statesByPlayers.keys.first()
-            _playerStateData.value = PlayerStateData(
-                viewedUserId,
-                statesByPlayers,
-                statesByPlayers.filter { s -> isNervous(s.value) }.map { s -> s.key }
-            )
+            _playerStateData.value =
+                PlayerStateData(
+                    viewedUserId,
+                    statesByPlayers,
+                    statesByPlayers.filter { s -> isNervous(s.value) }.map { s -> s.key }
+                )
         }
     }
 
@@ -178,11 +110,12 @@ class TrainingViewModel @Inject constructor(
             return
         }
 
-        _playerStateData.value = PlayerStateData(
-            userId,
-            stateData.stateRecords,
-            stateData.nervousUsersIds
-        )
+        _playerStateData.value =
+            PlayerStateData(
+                userId,
+                stateData.stateRecords,
+                stateData.nervousUsersIds
+            )
     }
 
 
@@ -210,12 +143,16 @@ class TrainingViewModel @Inject constructor(
                 val memberName = teamMembers
                     .find { m -> m.id == it.memberId }!!
                     .userName
-                VideoStreamItem(it.streamId, memberName)
+                VideoStreamItem(
+                    it.streamId,
+                    memberName
+                )
             }
-            _trainingData.value = TrainingData(
-                teamMembers.associateBy { k -> k.id },
-                videoStreams
-            )
+            _trainingData.value =
+                TrainingData(
+                    teamMembers.associateBy { k -> k.id },
+                    videoStreams
+                )
         }
     }
 
