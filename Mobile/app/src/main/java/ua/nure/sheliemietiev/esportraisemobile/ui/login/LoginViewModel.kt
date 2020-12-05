@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ua.nure.sheliemietiev.esportraisemobile.R
+import ua.nure.sheliemietiev.esportraisemobile.models.LoginModel
 import ua.nure.sheliemietiev.esportraisemobile.util.OperationResult
 import java.util.regex.Pattern
 import javax.inject.Inject

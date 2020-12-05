@@ -1,10 +1,11 @@
-package ua.nure.sheliemietiev.esportraisemobile.ui.login
+package ua.nure.sheliemietiev.esportraisemobile.models
 
 import ua.nure.sheliemietiev.esportraisemobile.R
 import ua.nure.sheliemietiev.esportraisemobile.api.Api
 import ua.nure.sheliemietiev.esportraisemobile.api.ApiResponse
 import ua.nure.sheliemietiev.esportraisemobile.api.AuthorizationInfo
 import ua.nure.sheliemietiev.esportraisemobile.api.StatusCode
+import ua.nure.sheliemietiev.esportraisemobile.ui.login.AuthResultView
 import ua.nure.sheliemietiev.esportraisemobile.util.OperationResult
 import javax.inject.Inject
 

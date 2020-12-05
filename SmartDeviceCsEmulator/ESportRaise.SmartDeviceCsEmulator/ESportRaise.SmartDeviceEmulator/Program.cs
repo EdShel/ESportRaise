@@ -15,11 +15,18 @@ namespace ESportRaise.SmartDeviceEmulator
     {
         private static string backendUrl;
 
+        private static string userName;
+
+        private static string password;
+
         private static HttpClient client;
 
         static void Main(string[] args)
         {
             backendUrl = args[0];
+            userName = args[1];
+            password = args[2];
+
             client = GetUntrustedCertHttpClient();
 
             string authToken = GetAuthToken();
@@ -51,9 +58,6 @@ namespace ESportRaise.SmartDeviceEmulator
 
         private static string GetAuthToken()
         {
-            const string userName = "Eduardo";
-            const string password = "Qwerty12345@";
-
             string requestBodyJson = JsonConvert.SerializeObject(new
             {
                 emailOrUserName = userName,

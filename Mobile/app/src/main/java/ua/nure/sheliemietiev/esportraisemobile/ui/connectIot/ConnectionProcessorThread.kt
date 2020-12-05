@@ -14,7 +14,7 @@ class ConnectionProcessorThread(
 
     private val uuid = BuildConfig.APP_UUID
 
-    private var socket = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString(uuid))
+    private var socket = device.createRfcommSocketToServiceRecord(UUID.fromString(uuid))
 
     override fun run() {
         try {
