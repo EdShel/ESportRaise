@@ -4,6 +4,8 @@
 
 #define PULSE_SENSOR_PIN A0
 #define TEMPERATURE_PIN A1
+#define BLUETOOTH_RX 8
+#define BLUETOOTH_TX 9
 #define HALF_OF_TEAM_STRESSED_PIN 11
 #define FULL_TEAM_STRESSED_PIN 12
 #define USER_STRESSED_PIN 13
@@ -13,15 +15,23 @@
 int pulseUpdateMillis = 0;
 PulseSensorPlayground pulseSensor;
 
+#define SEND_STATE_COMMAND 'S'
 #define SEND_STATE_TIMEOUT_MS 5000
 int stateSentTimeMillis = 0;
+bool waitingForSendStateResponse = false;
 
+#define READ_STATE_COMMAND 'R'
+#define READ_STATE_TIMEOUT_MS 15000
 #define READING_TEAM_MEMBER_ID 'M'
 #define READING_HEART_RATE 'H'
 #define READING_TEMPERATURE 'T'
 char stateReaderIs = READING_TEAM_MEMBER_ID;
-bool waitingForPhysicalState = true;
+bool waitingForPhysicalState = false;
+int stateReadTimeMillis = 0;
 int currentTeamMemberId = 0;
+
+#define GET_MEMBER_ID_COMMAND 'I'
+bool waitingForMemberId = false;
 
 char* readBuffer[4];
 int readBufferSize = 0;
@@ -45,14 +55,17 @@ int stressedTeamMembersCount = 0;
 int teamMembersCount = 0;
 bool amIStressed = false;
 
+#define AUTH_TOKEN_END '\n'
+SoftwareSerial bluetooth(BLUETOOTH_RX, BLUETOOTH_TX);
+bool isAuthenticated = false;
+
 /* Initialization */
 
 void setup() {   
   Serial.begin(9600);
-
+  bluetooth.begin(9600);
   initializePulseSensor();
 }
-
 
 void initializePulseSensor() {
   pulseSensor.analogInput(PULSE_SENSOR_PIN);
@@ -60,25 +73,92 @@ void initializePulseSensor() {
   pulseSensor.begin();
 }
 
-/* Activity */
+/* Activity scheduling */
 
 void loop() {
-  int currentTime = millis();
-  if (currentTime - pulseUpdateMillis > PULSE_UPDATE_TIMEOUT_MS) {
-    pulseUpdateMillis = currentTime;
-    bool beat = pulseSensor.sawStartOfBeat();
-    if (beat) {
-      Serial.println("Beat!");
+  if (!isAuthenticated) {
+    isAuthenticated = receiveAuthToken();
+    if (isAuthenticated) {
+      waitingForMemberId = true;
+      requestMemberId();
     }
   }
-  if (currentTime - stateSentTimeMillis > SEND_STATE_TIMEOUT_MS) {
-    sendPhysicalState(); 
-    stateSentTimeMillis = millis(); 
+  
+  if (millis() - pulseUpdateMillis >= PULSE_UPDATE_TIMEOUT_MS) {
+    pulseUpdateMillis = millis();
+    bool beat = pulseSensor.sawStartOfBeat();
+                    if (beat) {
+                      Serial.println("Beat!");
+                    }
   }
 
-  if (waitingForPhysicalState) {
-    proccessTeamMembersState();
+  if (isWiFiBusy()){
+    if (waitingForMemberId) {
+      bool gotId = readTeamMemberId();
+      if (gotId) {
+        waitingForMemberId = false;
+      }
+    } else if (waitingForSendStateResponse) {
+      bool gotReponse = receivePhysicalStateResponse();
+      if (gotReponse) {
+        stateSentTimeMillis = millis(); 
+        waitingForSendStateResponse = false;
+      }
+    } else if (waitingForPhysicalState) {
+      bool gotState = proccessTeamMembersState();
+      if (gotState) {
+        stateReadTimeMillis = millis();
+        waitingForPhysicalState = false;
+      }
+    }
   }
+  
+  if (!isWiFiBusy() && millis() - stateSentTimeMillis >= SEND_STATE_TIMEOUT_MS) {
+    sendPhysicalState(); 
+    waitingForSendStateResponse = true;
+  }
+
+  if (!isWiFiBusy() && millis() - stateReadTimeMillis >= READ_STATE_TIMEOUT_MS) {
+    requestPhysicalState();
+    waitingForPhysicalState = true;
+  }
+}
+
+/* Bluetooth communication */
+
+bool receiveAuthToken() {
+  while(bluetooth.available() > 0) {
+    char tokenChar = bluetooth.read();
+    
+    Serial.write(tokenChar);
+    
+    if (tokenChar == AUTH_TOKEN_END) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/* Directing WiFi module */
+
+inline bool isWiFiBusy() {
+  return waitingForMemberId || waitingForPhysicalState || waitingForSendStateResponse;
+}
+
+void requestMemberId() {
+  Serial.write(GET_MEMBER_ID_COMMAND);
+}
+
+bool readTeamMemberId() {
+  while(Serial.available() > 0) {
+    readBuffer[readBufferSize++] = Serial.read();
+    if (readBufferSize == sizeof(myTeamMemberId)) {
+      myTeamMemberId = *((int*)readBuffer);
+      readBufferSize = 0;
+      return true;
+    }
+  }
+  return false;
 }
 
 void sendPhysicalState() {
@@ -88,6 +168,21 @@ void sendPhysicalState() {
   Serial.print(heartRate);
   Serial.print(" t: ");
   Serial.println(temperature);
+
+  char* heartRateBytes = (char*)(&heartRate);
+  char* temperatureBytes = (char*)(&temperature);
+  
+  Serial.write(SEND_STATE_COMMAND);
+  Serial.write(heartRateBytes, sizeof(heartRate));
+  Serial.write(temperatureBytes, sizeof(temperature));
+}
+
+bool receivePhysicalStateResponse() {
+  if (Serial.available() > 0) {
+    char response = Serial.read();
+    return true;
+  }
+  return false;
 }
 
 float getTemperatureCelsius()
@@ -98,17 +193,21 @@ float getTemperatureCelsius()
   return celsius;
 }
 
+void requestPhysicalState() {
+  Serial.write(READ_STATE_COMMAND);
+  
+  beginReadingPhysicalState();
+}
+
 /* Processing physical state */
 
-/////////////////////////////////////////////// TODO: call me
 void beginReadingPhysicalState() {
   stressedTeamMembersCount = 0;
   teamMembersCount = 0;
   amIStressed = false;
-  waitingForPhysicalState = true;
 }
 
-void proccessTeamMembersState() {
+bool proccessTeamMembersState() {
   while (Serial.available() > 0) {
     char cur = Serial.read();
     readBuffer[readBufferSize] = cur;
@@ -117,7 +216,8 @@ void proccessTeamMembersState() {
     if (stateReaderIs == READING_TEAM_MEMBER_ID) {
       bool hasNextTeamMember = isTeamMemberIdReadSuccessfully();
       if (!hasNextTeamMember) {
-        return;
+        endReadingPhysicalState();
+        return true;
       }
     } else if (stateReaderIs == READING_HEART_RATE) {
       readAndProcessHeartRate();
@@ -125,6 +225,7 @@ void proccessTeamMembersState() {
       readAndProcessTemperature();
     }
   }
+  return false;
 }
 
 bool isTeamMemberIdReadSuccessfully() {
@@ -175,8 +276,6 @@ bool isAbnormalByTwoSigma(float value, float mean, float variance) {
 }
 
 void endReadingPhysicalState() {
-  waitingForPhysicalState = false;
-
   bool stressedPlayersPercentage = 
     (float)stressedTeamMembersCount / (float)teamMembersCount;
     
